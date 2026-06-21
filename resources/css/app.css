@@ -1,0 +1,444 @@
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-sans:
+        'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --color-sidebar: var(--sidebar-background);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+:root {
+    --background: hsl(0, 0%, 100%);
+    --foreground: hsl(0, 0%, 3.9%);
+    --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(0, 0%, 3.9%);
+    --popover: hsl(0, 0%, 100%);
+    --popover-foreground: hsl(0, 0%, 3.9%);
+    --primary: hsl(0, 0%, 9%);
+    --primary-foreground: hsl(0, 0%, 98%);
+    --secondary: hsl(0, 0%, 96.1%);
+    --secondary-foreground: hsl(0, 0%, 9%);
+    --muted: hsl(0, 0%, 96.1%);
+    --muted-foreground: hsl(0, 0%, 45.1%);
+    --accent: hsl(0, 0%, 96.1%);
+    --accent-foreground: hsl(0, 0%, 9%);
+    --destructive: hsl(0, 84.2%, 60.2%);
+    --destructive-foreground: hsl(0, 0%, 98%);
+    --border: hsl(0, 0%, 92.8%);
+    --input: hsl(0, 0%, 89.8%);
+    --ring: hsl(0, 0%, 3.9%);
+    --chart-1: hsl(12, 76%, 61%);
+    --chart-2: hsl(173, 58%, 39%);
+    --chart-3: hsl(197, 37%, 24%);
+    --chart-4: hsl(43, 74%, 66%);
+    --chart-5: hsl(27, 87%, 67%);
+    --radius: 0.5rem;
+    --sidebar-background: hsl(0, 0%, 98%);
+    --sidebar-foreground: hsl(240, 5.3%, 30%);
+    --sidebar-primary: hsl(0, 0%, 10%);
+    --sidebar-primary-foreground: hsl(0, 0%, 98%);
+    --sidebar-accent: hsl(0, 0%, 94%);
+    --sidebar-accent-foreground: hsl(0, 0%, 30%);
+    --sidebar-border: hsl(0, 0%, 91%);
+    --sidebar-ring: hsl(217.2, 91.2%, 59.8%);
+}
+
+.dark {
+    --background: hsl(0, 0%, 3.9%);
+    --foreground: hsl(0, 0%, 98%);
+    --card: hsl(0, 0%, 3.9%);
+    --card-foreground: hsl(0, 0%, 98%);
+    --popover: hsl(0, 0%, 3.9%);
+    --popover-foreground: hsl(0, 0%, 98%);
+    --primary: hsl(0, 0%, 98%);
+    --primary-foreground: hsl(0, 0%, 9%);
+    --secondary: hsl(0, 0%, 14.9%);
+    --secondary-foreground: hsl(0, 0%, 98%);
+    --muted: hsl(0, 0%, 6.9%);
+    --muted-foreground: hsl(0, 0%, 63.9%);
+    --accent: hsl(0, 0%, 14.9%);
+    --accent-foreground: hsl(0, 0%, 98%);
+    --destructive: hsl(0, 84%, 60%);
+    --destructive-foreground: hsl(0, 0%, 98%);
+    --border: hsl(0, 0%, 14.9%);
+    --input: hsl(0, 0%, 14.9%);
+    --ring: hsl(0, 0%, 83.1%);
+    --chart-1: hsl(220, 70%, 50%);
+    --chart-2: hsl(160, 60%, 45%);
+    --chart-3: hsl(30, 80%, 55%);
+    --chart-4: hsl(280, 65%, 60%);
+    --chart-5: hsl(340, 75%, 55%);
+    --sidebar-background: hsl(0, 0%, 7%);
+    --sidebar-foreground: hsl(0, 0%, 80%);
+    --sidebar-primary: hsl(360, 100%, 100%);
+    --sidebar-primary-foreground: hsl(0, 0%, 100%);
+    --sidebar-accent: hsl(0, 0%, 15.9%);
+    --sidebar-accent-foreground: hsl(240, 4.8%, 95.9%);
+    --sidebar-border: hsl(0, 0%, 15.9%);
+    --sidebar-ring: hsl(217.2, 91.2%, 59.8%);
+}
+
+html[data-theme='modern'] {
+    --background: hsl(230, 30%, 12%);
+    --foreground: hsl(0, 0%, 96%);
+    --card: hsl(230, 25%, 16%);
+    --card-foreground: hsl(0, 0%, 96%);
+    --popover: hsl(230, 25%, 16%);
+    --popover-foreground: hsl(0, 0%, 96%);
+    --primary: hsl(172, 76%, 42%);
+    --primary-foreground: hsl(0, 0%, 100%);
+    --secondary: hsl(225, 22%, 18%);
+    --secondary-foreground: hsl(0, 0%, 94%);
+    --muted: hsl(228, 16%, 20%);
+    --muted-foreground: hsl(210, 18%, 78%);
+    --accent: hsl(34, 100%, 65%);
+    --accent-foreground: hsl(0, 0%, 10%);
+    --destructive: hsl(355, 76%, 61%);
+    --destructive-foreground: hsl(0, 0%, 100%);
+    --border: hsl(230, 16%, 24%);
+    --input: hsl(230, 20%, 18%);
+    --ring: hsl(172, 76%, 42%);
+    --chart-1: hsl(172, 76%, 42%);
+    --chart-2: hsl(204, 86%, 46%);
+    --chart-3: hsl(35, 100%, 62%);
+    --chart-4: hsl(286, 65%, 59%);
+    --chart-5: hsl(12, 78%, 59%);
+    --sidebar-background: hsl(230, 22%, 14%);
+    --sidebar-foreground: hsl(0, 0%, 90%);
+    --sidebar-primary: hsl(0, 0%, 100%);
+    --sidebar-primary-foreground: hsl(0, 0%, 10%);
+    --sidebar-accent: hsl(172, 76%, 42%);
+    --sidebar-accent-foreground: hsl(0, 0%, 100%);
+    --sidebar-border: hsl(230, 16%, 26%);
+    --sidebar-ring: hsl(172, 76%, 42%);
+}
+
+html[data-theme='minimal'] {
+    --background: hsl(0, 0%, 98%);
+    --foreground: hsl(222, 15%, 18%);
+    --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(222, 15%, 18%);
+    --popover: hsl(0, 0%, 100%);
+    --popover-foreground: hsl(222, 15%, 18%);
+    --primary: hsl(222, 12%, 18%);
+    --primary-foreground: hsl(0, 0%, 100%);
+    --secondary: hsl(210, 28%, 94%);
+    --secondary-foreground: hsl(222, 12%, 32%);
+    --muted: hsl(210, 24%, 94%);
+    --muted-foreground: hsl(222, 12%, 48%);
+    --accent: hsl(42, 100%, 64%);
+    --accent-foreground: hsl(0, 0%, 10%);
+    --destructive: hsl(358, 70%, 57%);
+    --destructive-foreground: hsl(0, 0%, 100%);
+    --border: hsl(210, 16%, 84%);
+    --input: hsl(0, 0%, 100%);
+    --ring: hsl(222, 12%, 18%);
+    --chart-1: hsl(42, 100%, 64%);
+    --chart-2: hsl(166, 66%, 40%);
+    --chart-3: hsl(204, 86%, 46%);
+    --chart-4: hsl(332, 65%, 54%);
+    --chart-5: hsl(45, 100%, 55%);
+    --sidebar-background: hsl(0, 0%, 100%);
+    --sidebar-foreground: hsl(222, 12%, 18%);
+    --sidebar-primary: hsl(222, 12%, 18%);
+    --sidebar-primary-foreground: hsl(0, 0%, 100%);
+    --sidebar-accent: hsl(42, 100%, 64%);
+    --sidebar-accent-foreground: hsl(0, 0%, 10%);
+    --sidebar-border: hsl(210, 16%, 84%);
+    --sidebar-ring: hsl(42, 100%, 64%);
+}
+
+/* ============================================================
+   শুকটি বাজার থিম — লাইট অর্গানিক
+   Sage Green · Honey Amber · Terracotta · Warm Cream
+   কোনো dark background নেই — সম্পূর্ণ লাইট থিম
+   ============================================================ */
+
+/* ── Palette tokens (CSS custom props) ── */
+html[data-theme='shutki'] {
+    /* Core sage green (button image color) */
+    --shutki-sage:        hsl(89, 32%, 54%);
+    --shutki-sage-dark:   hsl(89, 35%, 42%);
+    --shutki-sage-light:  hsl(89, 28%, 88%);
+    --shutki-sage-bg:     hsl(89, 22%, 95%);
+
+    /* Honey amber */
+    --shutki-honey:       hsl(38, 72%, 52%);
+    --shutki-honey-light: hsl(38, 70%, 92%);
+
+    /* Terracotta */
+    --shutki-terra:       hsl(18, 55%, 52%);
+    --shutki-terra-light: hsl(18, 55%, 94%);
+
+    /* Neutrals — all light */
+    --shutki-cream:       hsl(48, 40%, 97%);
+    --shutki-white:       #ffffff;
+    --shutki-border:      hsl(89, 20%, 86%);
+    --shutki-border-soft: hsl(89, 15%, 92%);
+
+    /* Text — warm earth, never pure black */
+    --shutki-earth:       hsl(35, 28%, 18%);
+    --shutki-earth-mid:   hsl(35, 22%, 36%);
+    --shutki-earth-light: hsl(35, 18%, 52%);
+
+    /* ── Tailwind design tokens ── */
+    --background:           hsl(48, 40%, 97%);      /* warm cream page bg */
+    --foreground:           hsl(35, 28%, 18%);       /* earth text */
+    --card:                 #ffffff;
+    --card-foreground:      hsl(35, 28%, 18%);
+    --popover:              #ffffff;
+    --popover-foreground:   hsl(35, 28%, 18%);
+    --primary:              hsl(89, 32%, 54%);        /* sage green */
+    --primary-foreground:   #ffffff;
+    --secondary:            hsl(38, 72%, 52%);        /* honey */
+    --secondary-foreground: hsl(35, 28%, 18%);
+    --muted:                hsl(89, 22%, 93%);
+    --muted-foreground:     hsl(35, 18%, 48%);
+    --accent:               hsl(18, 55%, 52%);        /* terracotta */
+    --accent-foreground:    #ffffff;
+    --destructive:          hsl(0, 65%, 50%);
+    --destructive-foreground: #ffffff;
+    --border:               hsl(89, 20%, 86%);
+    --input:                hsl(89, 18%, 92%);
+    --ring:                 hsl(89, 32%, 54%);
+    --chart-1:              hsl(89, 32%, 54%);
+    --chart-2:              hsl(38, 72%, 52%);
+    --chart-3:              hsl(18, 55%, 52%);
+    --chart-4:              hsl(89, 28%, 70%);
+    --chart-5:              hsl(38, 55%, 70%);
+    --radius: 0.625rem;
+
+    /* Sidebar uses sage bg — still light */
+    --sidebar-background:   hsl(89, 25%, 94%);
+    --sidebar-foreground:   hsl(35, 28%, 18%);
+    --sidebar-primary:      hsl(89, 32%, 54%);
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent:       hsl(89, 22%, 88%);
+    --sidebar-accent-foreground: hsl(35, 28%, 18%);
+    --sidebar-border:       hsl(89, 20%, 84%);
+    --sidebar-ring:         hsl(89, 32%, 54%);
+}
+
+/* Body — warm cream bg, subtle sage glow */
+html[data-theme='shutki'] body {
+    background: hsl(48, 40%, 97%);
+    background-image:
+        radial-gradient(ellipse at 10% 0%, hsl(89, 32%, 85%, 0.30) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 100%, hsl(38, 72%, 88%, 0.20) 0%, transparent 50%);
+}
+
+/* Scrollbar */
+html[data-theme='shutki'] ::-webkit-scrollbar { width: 6px; }
+html[data-theme='shutki'] ::-webkit-scrollbar-track { background: hsl(89, 20%, 93%); }
+html[data-theme='shutki'] ::-webkit-scrollbar-thumb { background: hsl(89, 32%, 65%); border-radius: 99px; }
+html[data-theme='shutki'] ::-webkit-scrollbar-thumb:hover { background: hsl(89, 32%, 54%); }
+
+/* Selection */
+html[data-theme='shutki'] ::selection {
+    background: hsl(89, 32%, 54%, 0.25);
+    color: hsl(35, 28%, 18%);
+}
+
+/* Header styling is now handled by Tailwind classes in Header.tsx */
+
+/* Primary buttons (slate-950 → sage) */
+html[data-theme='shutki'] button[class*="bg-slate-950"],
+html[data-theme='shutki'] a[class*="bg-slate-950"] {
+    background: hsl(89, 32%, 54%) !important;
+    border-color: hsl(89, 35%, 42%) !important;
+    color: #fff !important;
+}
+html[data-theme='shutki'] button[class*="bg-slate-950"]:hover,
+html[data-theme='shutki'] a[class*="bg-slate-950"]:hover {
+    background: hsl(89, 35%, 44%) !important;
+}
+
+/* Orange → terracotta */
+html[data-theme='shutki'] [class*="text-orange-"] {
+    color: hsl(18, 55%, 48%) !important;
+}
+html[data-theme='shutki'] [class*="bg-orange-600"],
+html[data-theme='shutki'] [class*="bg-orange-5"] {
+    background-color: hsl(18, 55%, 94%) !important;
+    color: hsl(18, 55%, 42%) !important;
+}
+html[data-theme='shutki'] [class*="border-orange-"] {
+    border-color: hsl(18, 55%, 72%) !important;
+}
+
+/* Cards & product cards */
+html[data-theme='shutki'] [class*="border border-slate-2"],
+html[data-theme='shutki'] [class*="border-slate-200"] {
+    border-color: hsl(89, 20%, 86%) !important;
+}
+
+/* Footer — LIGHT cream, NOT dark */
+html[data-theme='shutki'] footer {
+    background: hsl(89, 22%, 95%) !important;
+    color: hsl(35, 28%, 25%) !important;
+    border-top: 3px solid hsl(89, 32%, 54%) !important;
+}
+
+/* Headings */
+html[data-theme='shutki'] h1,
+html[data-theme='shutki'] h2,
+html[data-theme='shutki'] h3 {
+    color: hsl(89, 38%, 32%);
+}
+
+/* ============================================================
+   Wildtannery Theme — Premium Dark Leather
+   Black · Gold/Bronze/Leather
+   ============================================================ */
+html[data-theme='wildtannery'] {
+    --background: hsl(0, 0%, 0%); /* #000000 */
+    --foreground: hsl(0, 0%, 100%); /* #ffffff */
+    
+    --card: hsl(0, 0%, 5%); /* slightly off-black for cards */
+    --card-foreground: hsl(0, 0%, 100%);
+    
+    --popover: hsl(0, 0%, 5%);
+    --popover-foreground: hsl(0, 0%, 100%);
+    
+    --primary: hsl(35, 45%, 60%); /* Leather Gold/Bronze accent */
+    --primary-foreground: hsl(0, 0%, 0%);
+    
+    --secondary: hsl(0, 0%, 15%);
+    --secondary-foreground: hsl(0, 0%, 100%);
+    
+    --muted: hsl(0, 0%, 15%);
+    --muted-foreground: hsl(0, 0%, 65%);
+    
+    --accent: hsl(35, 45%, 60%);
+    --accent-foreground: hsl(0, 0%, 0%);
+    
+    --destructive: hsl(0, 65%, 50%);
+    --destructive-foreground: hsl(0, 0%, 100%);
+    
+    --border: hsl(0, 0%, 20%);
+    --input: hsl(0, 0%, 15%);
+    --ring: hsl(35, 45%, 60%);
+    
+    --radius: 0.25rem; /* sharper corners for premium feel */
+}
+
+/* Base Body styles for Wildtannery */
+html[data-theme='wildtannery'] body {
+    background-color: #000000;
+    color: #ffffff;
+    background-image: none; /* remove shutki pattern */
+}
+
+html[data-theme='wildtannery'] a:hover {
+    color: hsl(35, 45%, 60%);
+    transition: color 0.3s ease;
+}
+
+html[data-theme='wildtannery'] button[class*="bg-slate-950"],
+html[data-theme='wildtannery'] a[class*="bg-slate-950"] {
+    background: transparent !important;
+    border: 1px solid hsl(35, 45%, 60%) !important;
+    color: hsl(35, 45%, 60%) !important;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+}
+
+html[data-theme='wildtannery'] button[class*="bg-slate-950"]:hover,
+html[data-theme='wildtannery'] a[class*="bg-slate-950"]:hover {
+    background: hsl(35, 45%, 60%) !important;
+    color: #000000 !important;
+}
+
+html[data-theme='wildtannery'] footer {
+    background: #050505 !important;
+    color: #ffffff !important;
+    border-top: 1px solid hsl(0, 0%, 15%) !important;
+}
+
+html[data-theme='wildtannery'] h1,
+html[data-theme='wildtannery'] h2,
+html[data-theme='wildtannery'] h3 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}

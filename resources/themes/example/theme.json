@@ -1,0 +1,9 @@
+{
+  "name": "Example Theme",
+  "slug": "example",
+  "version": "1.0.0",
+  "author": "Dev",
+  "description": "A sample theme demonstrating Blade overrides.",
+  "views": "views",
+  "assets": "assets"
+}

@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Models\MenuItem;
+use App\Models\SiteSetting;
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Middleware;
+
+class HandleInertiaRequests extends Middleware
+{
+    /**
+     * The root template that's loaded on the first page visit.
+     *
+     * @see https://inertiajs.com/server-side-setup#root-template
+     *
+     * @var string
+     */
+    protected $rootView = 'app';
+
+    /**
+     * Determines the current asset version.
+     *
+     * @see https://inertiajs.com/asset-versioning
+     */
+    public function version(Request $request): ?string
+    {
+        return parent::version($request);
+    }
+
+    /**
+     * Define the props that are shared by default.
+     *
+     * @see https://inertiajs.com/shared-data
+     *
+     * @return array<string, mixed>
+     */
+    public function share(Request $request): array
+    {
+        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+
+        return array_merge(parent::share($request), [
+            ...parent::share($request),
+            'name' => config('app.name'),
+            'quote' => ['message' => trim($message), 'author' => trim($author)],
+            'auth' => [
+                'user' => $request->user(),
+            ],
+            'pixels' => app(\App\Services\PixelService::class)->getActivePixels(),
+            'cart' => $request->session()->get('cart', []),
+            'cartCount' => collect($request->session()->get('cart', []))->sum('quantity'),
+            'menus' => MenuItem::whereNull('parent_id')
+                ->with(['children' => function ($query) {
+                    $query->with('category')->orderBy('order')->orderBy('id');
+                }, 'category'])
+                ->orderBy('order')
+                ->orderBy('id')
+                ->get(),
+            'settings' => [
+                'site_name' => SiteSetting::getValue('site_name', 'Believers'),
+                'shipping_cost' => SiteSetting::getValue('shipping_cost', '60'),
+                'footer_description' => SiteSetting::getValue('footer_description', 'One of the largest Islamic Lifestyle brands in Bangladesh'),
+                'footer_facebook_url' => SiteSetting::getValue('footer_facebook_url', 'https://facebook.com'),
+                'footer_youtube_url' => SiteSetting::getValue('footer_youtube_url', 'https://youtube.com'),
+                'footer_phone' => SiteSetting::getValue('footer_phone', '09638090000'),
+                'footer_email' => SiteSetting::getValue('footer_email', 'cc.believerssign@gmail.com'),
+                'footer_address' => SiteSetting::getValue('footer_address', 'Shop-3/1, Eastern Plaza, Hatirpool, Dhaka, Dhaka, Bangladesh'),
+                'footer_copyright' => SiteSetting::getValue('footer_copyright', '© 2026 Believers. All Rights Reserved'),
+                'footer_account_links' => SiteSetting::getValue('footer_account_links', []),
+                'footer_info_links' => SiteSetting::getValue('footer_info_links', []),
+                'site_theme' => SiteSetting::getValue('site_theme', 'classic'),
+                'site_logo_url' => SiteSetting::getValue('site_logo') ? Storage::disk('public')->url(SiteSetting::getValue('site_logo')) : '',
+            ],
+        ]);
+    }
+}
