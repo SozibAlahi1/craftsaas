@@ -10,14 +10,28 @@ declare global {
     const route: typeof routeFn;
 }
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const getSiteName = () => {
+    try {
+        if (router.page?.props?.settings?.site_name) {
+            return router.page.props.settings.site_name;
+        }
+        const el = document.getElementById('app');
+        const page = el?.dataset.page ? JSON.parse(el.dataset.page) : null;
+        if (page?.props?.settings?.site_name) {
+            return page.props.settings.site_name;
+        }
+    } catch (e) {
+        // ignore
+    }
+    return import.meta.env.VITE_APP_NAME || 'Believers';
+};
 
 // Pre-glob all theme pages and default pages at build time
 const themePageModules = import.meta.glob('./themes/*/pages/**/*.tsx');
 const defaultPageModules = import.meta.glob('./pages/**/*.tsx');
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => title ? `${title} - ${getSiteName()}` : getSiteName(),
 
     resolve: (name) => {
         // Read the active theme from the initial Inertia page data
@@ -63,6 +77,24 @@ let isPixelInitialized = false;
 router.on('navigate', (event) => {
     if (typeof window !== 'undefined') {
         const page = event.detail.page;
+
+        // Dynamically set HTML data-theme attribute on navigation
+        const name = page.component;
+        const isStorefrontPage =
+            !name.startsWith('admin/') &&
+            !name.startsWith('auth/') &&
+            !name.startsWith('settings/') &&
+            name !== 'dashboard';
+        const theme = (page.props as any)?.settings?.site_theme ?? 'default';
+
+        console.log('[Theme Debug] Component Name:', name, 'isStorefrontPage:', isStorefrontPage, 'theme:', theme);
+
+        if (isStorefrontPage) {
+            document.documentElement.setAttribute('data-theme', theme);
+        } else {
+            document.documentElement.setAttribute('data-theme', 'default');
+        }
+
         const pixels = (page.props.pixels as any[]) || [];
         
         if (pixels.length > 0 && !isPixelInitialized) {

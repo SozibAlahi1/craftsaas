@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\MenuItem;
 use App\Models\SiteSetting;
+use App\Services\PixelService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -48,7 +49,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'pixels' => app(\App\Services\PixelService::class)->getActivePixels(),
+            'pixels' => app(PixelService::class)->getActivePixels(),
             'cart' => $request->session()->get('cart', []),
             'cartCount' => collect($request->session()->get('cart', []))->sum('quantity'),
             'menus' => MenuItem::whereNull('parent_id')
@@ -72,6 +73,7 @@ class HandleInertiaRequests extends Middleware
                 'footer_info_links' => SiteSetting::getValue('footer_info_links', []),
                 'site_theme' => SiteSetting::getValue('site_theme', 'classic'),
                 'site_logo_url' => SiteSetting::getValue('site_logo') ? Storage::disk('public')->url(SiteSetting::getValue('site_logo')) : '',
+                'site_favicon_url' => SiteSetting::getValue('site_favicon') ? Storage::disk('public')->url(SiteSetting::getValue('site_favicon')) : '',
             ],
         ]);
     }

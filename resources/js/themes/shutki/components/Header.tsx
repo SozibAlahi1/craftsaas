@@ -85,10 +85,10 @@ export function ShutkirHeader() {
                         <div className="flex shrink-0">
                             <Link href={route('home')} className="flex shrink-0 items-center gap-2">
                                 {logoUrl ? (
-                                    <img src={logoUrl} alt={siteName} className="h-10 w-auto object-contain" />
+                                    <img src={logoUrl} alt={siteName} className="h-14 md:h-16 w-auto object-contain" />
                                 ) : (
                                     <span className="text-[28px] font-black tracking-tighter text-[#1e1e1e]">
-                                        <span className="text-[#8ba45e] italic mr-1">/ /</span>WoodMart<span className="text-[#8ba45e]">.</span>
+                                        <span className="text-[#8ba45e] italic mr-1">/ /</span>{siteName}<span className="text-[#8ba45e]">.</span>
                                     </span>
                                 )}
                             </Link>

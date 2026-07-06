@@ -2,11 +2,21 @@
 
 namespace Tests\Feature;
 
+use Database\Seeders\ProductSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class ProductShowTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(ProductSeeder::class);
+    }
+
     public function test_product_page_can_be_rendered(): void
     {
         $this->get('/products/premium-leather-wallet')

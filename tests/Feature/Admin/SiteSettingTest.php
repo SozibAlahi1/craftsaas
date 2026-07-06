@@ -56,7 +56,7 @@ class SiteSettingTest extends TestCase
 
         $payload = [
             'site_name' => 'Brand New Store',
-            'site_theme' => 'modern',
+            'site_theme' => 'wildtannery',
             'shipping_cost' => '85',
             'footer_description' => 'A custom description that is dynamic!',
             'footer_facebook_url' => 'https://facebook.com/newbrandpage',
@@ -83,7 +83,7 @@ class SiteSettingTest extends TestCase
         // Assert database holds the new values
         $this->assertEquals('Brand New Store', SiteSetting::getValue('site_name'));
         $this->assertEquals('85', SiteSetting::getValue('shipping_cost'));
-        $this->assertEquals('modern', SiteSetting::getValue('site_theme'));
+        $this->assertEquals('wildtannery', SiteSetting::getValue('site_theme'));
         $this->assertEquals('A custom description that is dynamic!', SiteSetting::getValue('footer_description'));
         $this->assertEquals('https://facebook.com/newbrandpage', SiteSetting::getValue('footer_facebook_url'));
         $this->assertEquals('0123456789', SiteSetting::getValue('footer_phone'));
@@ -100,7 +100,7 @@ class SiteSettingTest extends TestCase
         Storage::fake('public');
 
         $user = User::factory()->create();
-        $logo = UploadedFile::fake()->image('logo.png');
+        $logo = UploadedFile::fake()->create('logo.png', 100, 'image/png');
 
         $payload = [
             'site_name' => 'Brand New Store',

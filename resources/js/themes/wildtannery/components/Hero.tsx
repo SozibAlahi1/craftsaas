@@ -1,50 +1,94 @@
+import { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
 
 export function Hero({ banners }: { banners: any[] }) {
-    // Use the first banner or fallback to our generated leather hero image
-    const heroImage = banners?.length > 0 && banners[0].image_url 
-        ? banners[0].image_url 
-        : '/images/leather_hero.png';
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    // Fallback default banners if none are provided, resolved dynamically using image_path
+    const slides = banners && banners.length > 0 ? banners.map((b: any) => ({
+        id: b.id,
+        image_url: b.image_path.startsWith('http') ? b.image_path : `/storage/${b.image_path}`,
+        title: b.title,
+        link: b.link
+    })) : [
+        {
+            id: 1,
+            image_url: 'https://saifexbd.com/wp-content/uploads/2025/11/aqsmyqjjxzu1jjoywaha.webp',
+            title: 'Crafted to Carry Confidence',
+            description: 'Experience premium lifestyle and fashion accessories crafted with perfection.'
+        },
+        {
+            id: 2,
+            image_url: 'https://saifexbd.com/wp-content/uploads/2025/11/v7hnaqb5kfumsublvax2.webp',
+            title: 'Genuine Leather Collection',
+            description: 'Meticulously designed for your everyday carry needs.'
+        },
+        {
+            id: 3,
+            image_url: 'https://saifexbd.com/wp-content/uploads/2025/11/wssijuhmii6up9tg1uee.webp',
+            title: 'Elevate Your Style',
+            description: 'Discover the latest shoes, bags, and luxury accessories.'
+        }
+    ];
+
+    useEffect(() => {
+        if (slides.length <= 1) return;
+
+        const interval = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % slides.length);
+        }, 5000); // Auto-slide every 5 seconds
+
+        return () => clearInterval(interval);
+    }, [slides.length]);
 
     return (
-        <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-            {/* Background Image */}
-            <div 
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url('${heroImage}')` }}
-            >
-                <div className="absolute inset-0 bg-black/50" /> {/* Dark overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+        <section className="relative w-full aspect-[21/9] lg:aspect-[24/9] md:h-[65vh] min-h-[350px] overflow-hidden bg-black select-none">
+            {/* Slides Wrapper */}
+            <div className="w-full h-full relative">
+                {slides.map((slide, index) => (
+                    <div
+                        key={slide.id || index}
+                        className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                            index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                        }`}
+                    >
+                        {/* Slide Image */}
+                        {slide.link ? (
+                            <Link href={slide.link} className="block w-full h-full">
+                                <img
+                                    src={slide.image_url}
+                                    alt={slide.title || 'Slide Image'}
+                                    className="w-full h-full object-cover object-center"
+                                />
+                            </Link>
+                        ) : (
+                            <img
+                                src={slide.image_url}
+                                alt={slide.title || 'Slide Image'}
+                                className="w-full h-full object-cover object-center"
+                            />
+                        )}
+                    </div>
+                ))}
             </div>
 
-            {/* Content */}
-            <div className="relative z-10 container mx-auto px-4 text-center">
-                <p className="text-[#cba876] text-sm md:text-base tracking-[0.3em] uppercase mb-4 font-medium">
-                    Premium Leather Goods
-                </p>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif-display font-bold text-white mb-6 leading-tight">
-                    Where Craft Meets <br className="hidden md:block" />
-                    <span className="text-[#cba876] italic font-serif">Innovation</span>
-                </h1>
-                <p className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light">
-                    Elevate your everyday carry with our meticulously crafted leather wallets and accessories. Designed for the modern gentleman.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <Link 
-                        href="/products" 
-                        className="bg-[#cba876] text-black px-8 py-4 rounded font-medium tracking-wider uppercase text-sm hover:bg-white transition-colors w-full sm:w-auto"
-                    >
-                        Shop Collection
-                    </Link>
-                    <Link 
-                        href="#categories" 
-                        className="border border-[#cba876] text-[#cba876] px-8 py-4 rounded font-medium tracking-wider uppercase text-sm hover:bg-[#cba876] hover:text-black transition-colors w-full sm:w-auto"
-                    >
-                        Explore Series
-                    </Link>
+            {/* Carousel Dot Indicators (Woodmart style: simple round dots) */}
+            {slides.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center space-x-2 z-30">
+                    {slides.map((_, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => setCurrentSlide(idx)}
+                            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                                idx === currentSlide 
+                                    ? 'bg-[#cba876] w-6' 
+                                    : 'bg-white/40 hover:bg-white/70'
+                            }`}
+                            aria-label={`Go to slide ${idx + 1}`}
+                        />
+                    ))}
                 </div>
-            </div>
+            )}
         </section>
     );
 }

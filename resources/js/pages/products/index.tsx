@@ -1,16 +1,25 @@
-import { StorefrontFooter } from '@/components/storefront-footer';
-import { StorefrontHeader } from '@/components/storefront-header';
 import { Head, Link } from '@inertiajs/react';
-import { ChevronRight, Filter, LayoutGrid, List } from 'lucide-react';
+import { ChevronRight, Filter, LayoutGrid } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
+import { Header } from '../../themes/wildtannery/components/Header';
+import { StorefrontFooter as Footer } from '@/components/storefront-footer';
+import { ProductCard } from '../../themes/wildtannery/components/ProductCard';
+
 type Product = {
+    id: number;
     slug: string;
     name: string;
     price: string;
     old_price: string | null;
     discount_text: string | null;
     image: string;
+    gallery: string[];
+    description: string;
+    variations: {
+        colors: any[];
+        sizes: any[];
+    };
     category: {
         name: string;
         slug: string;
@@ -25,106 +34,87 @@ interface ProductIndexProps {
 export default function Index({ products, initialCategory = 'All' }: ProductIndexProps) {
     const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
 
-
-    // Filter products based on selected category
+    // Filter products based on selected category (matching against slug or name case-insensitively)
     const filteredProducts = useMemo(() => {
-        if (selectedCategory === 'All') return products;
-        return products.filter(p => p.category?.name === selectedCategory);
+        if (!selectedCategory || selectedCategory === 'All') return products;
+        return products.filter(p => 
+            p.category?.name?.toLowerCase() === selectedCategory.toLowerCase() ||
+            p.category?.slug?.toLowerCase() === selectedCategory.toLowerCase()
+        );
     }, [products, selectedCategory]);
+
+    const displayCategoryName = useMemo(() => {
+        if (selectedCategory === 'All') return 'Our Collection';
+        const matched = products.find(p => 
+            p.category?.name?.toLowerCase() === selectedCategory.toLowerCase() ||
+            p.category?.slug?.toLowerCase() === selectedCategory.toLowerCase()
+        );
+        return matched?.category?.name ?? (selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1));
+    }, [selectedCategory, products]);
 
     return (
         <>
-            <Head title={`${selectedCategory === 'All' ? 'Shop' : selectedCategory} - Wild Tannery`} />
-            <main className="bg-background text-foreground min-h-screen">
-                <StorefrontHeader />
+            <Head title={selectedCategory === 'All' ? 'Shop' : displayCategoryName} />
+            <main className="bg-[#050505] text-white selection:bg-[#cba876] selection:text-black font-sans min-h-screen">
+                <Header />
 
                 {/* Breadcrumbs & Header */}
-                <div className="bg-white border-b border-slate-200">
+                <div className="bg-[#0a0a0a] border-b border-white/5">
                     <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
-                        <div className="flex items-center gap-2 text-sm font-medium text-slate-500 mb-4">
-                            <Link href={route('home')} className="hover:text-slate-950 transition-colors">Home</Link>
-                            <ChevronRight className="h-4 w-4" />
-                            <span className="text-slate-900 font-bold">Shop</span>
+                        <div className="flex items-center gap-2 text-sm font-medium text-gray-400 mb-4">
+                            <Link href={route('home')} className="hover:text-[#cba876] transition-colors">Home</Link>
+                            <ChevronRight className="h-4 w-4 text-gray-600" />
+                            <span className="text-[#cba876] font-bold">Shop</span>
                         </div>
-                        <h1 className="text-4xl font-black tracking-tight text-slate-950">
-                            {selectedCategory === 'All' ? 'Our Collection' : selectedCategory}
+                        <h1 className="text-4xl font-bold tracking-tight text-white uppercase">
+                            {displayCategoryName}
                         </h1>
-                        <p className="mt-2 text-slate-600 max-w-2xl">আমাদের সংগ্রহ থেকে বাছাইকৃত সেরা মানের পণ্য ব্রাউজ করুন।</p>
+                        <p className="mt-2 text-gray-400 max-w-2xl text-sm">
+                            Browse our curated collection of premium quality products.
+                        </p>
                     </div>
                 </div>
 
                 <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
                     {/* Toolbar */}
-                    <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                    <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-lg border border-white/5 bg-[#0a0a0a] p-4 shadow-md">
                         <div className="flex items-center gap-6">
-                            <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                                <Filter className="h-4 w-4 text-orange-600" />
-                                Showing {selectedCategory === 'All' ? 'All Products' : `${selectedCategory}`}
+                            <div className="flex items-center gap-2 text-sm font-bold text-white">
+                                <Filter className="h-4 w-4 text-[#cba876]" />
+                                Showing {selectedCategory === 'All' ? 'All Products' : displayCategoryName}
                             </div>
-                            <div className="h-4 w-px bg-slate-200" />
-                            <p className="text-sm text-slate-500 font-medium">
-                                <span className="text-slate-950 font-bold">{filteredProducts.length}</span> products found
+                            <div className="h-4 w-px bg-white/10" />
+                            <p className="text-sm text-gray-400 font-medium">
+                                <span className="text-[#cba876] font-bold">{filteredProducts.length}</span> products found
                             </p>
                         </div>
                         
                         <div className="flex items-center gap-3">
-                            <div className="flex items-center rounded-md border border-slate-200 p-1 bg-slate-50">
-                                <button className="p-1.5 rounded bg-white text-slate-950 shadow-sm" aria-label="Grid view">
+                            <div className="flex items-center rounded-md border border-white/10 p-1 bg-white/5">
+                                <button className="p-1.5 rounded bg-[#cba876] text-black shadow-sm" aria-label="Grid view">
                                     <LayoutGrid className="h-4 w-4" />
-                                </button>
-                                <button className="p-1.5 rounded text-slate-400 hover:text-slate-600" aria-label="List view">
-                                    <List className="h-4 w-4" />
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     {/* Unified Product Grid */}
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-5">
                         {filteredProducts.map((product) => (
-                            <Link
-                                key={product.slug}
-                                href={route('products.show', product.slug)}
-                                className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-transform duration-300 hover:-translate-y-1"
-                            >
-                                <div className="flex h-full min-h-[340px] flex-col">
-                                    <div className="flex-1">
-                                        <img
-                                            src={product.image}
-                                            alt={product.name}
-                                            className="h-[220px] w-full object-cover"
-                                            loading="lazy"
-                                        />
-                                    </div>
-
-                                    <div className="px-4 pb-4 pt-3">
-                                        <h3 className="text-[1.05rem] font-semibold leading-6 text-slate-950">{product.name}</h3>
-                                        <div className="mt-2 text-[1.35rem] font-bold leading-none text-orange-600">{product.price}</div>
-
-                                        <div className="mt-3 flex items-center gap-3 text-sm">
-                                            {product.old_price && <span className="text-slate-500 line-through">{product.old_price}</span>}
-                                            {product.discount_text && (
-                                                <span className="rounded-md bg-orange-50 px-3 py-1 font-medium text-orange-600">
-                                                    {product.discount_text}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
+                            <ProductCard key={product.slug} product={product} />
                         ))}
                     </div>
 
                     {filteredProducts.length === 0 && (
                         <div className="flex flex-col items-center justify-center py-20 text-center">
-                            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 text-slate-300">
+                            <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/5 text-gray-600">
                                 <LayoutGrid className="h-10 w-10" />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-950">No products found</h3>
-                            <p className="mt-2 text-slate-500">Try selecting a different category or clearing filters.</p>
+                            <h3 className="text-xl font-bold text-white">No products found</h3>
+                            <p className="mt-2 text-gray-400 text-sm">Try selecting a different category or clearing filters.</p>
                             <button 
                                 onClick={() => setSelectedCategory('All')}
-                                className="mt-6 font-bold text-orange-600 underline"
+                                className="mt-6 font-bold text-[#cba876] underline hover:text-[#b89563]"
                             >
                                 Show all products
                             </button>
@@ -132,14 +122,14 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                     )}
 
                     {/* Back to Home Placeholder */}
-                    <div className="mt-16 flex justify-center border-t border-slate-200 pt-10">
-                        <Link href={route('home')} className="rounded-md border border-slate-950 px-8 py-3 text-sm font-bold text-slate-950 transition-colors hover:bg-slate-950 hover:text-white uppercase tracking-widest">
+                    <div className="mt-16 flex justify-center border-t border-white/5 pt-10">
+                        <Link href={route('home')} className="rounded-md border border-[#cba876] px-8 py-3 text-sm font-bold text-white transition-colors hover:bg-[#cba876] hover:!text-black uppercase tracking-widest">
                             Back to Home
                         </Link>
                     </div>
                 </div>
 
-                <StorefrontFooter />
+                <Footer />
             </main>
         </>
     );

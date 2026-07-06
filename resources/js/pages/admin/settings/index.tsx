@@ -24,6 +24,8 @@ interface SettingsData {
     site_theme: string;
     site_logo?: File | null;
     site_logo_url?: string;
+    site_favicon?: File | null;
+    site_favicon_url?: string;
     enable_ai_voice_confirmation: boolean;
 }
 
@@ -79,6 +81,7 @@ export default function SiteSettings({
     const [activatingTheme, setActivatingTheme] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [logoPreview, setLogoPreview] = useState<string>(settings.site_logo_url || '');
+    const [faviconPreview, setFaviconPreview] = useState<string>(settings.site_favicon_url || '');
 
     const { data, setData, post, processing, errors } = useForm<SettingsData>({
         site_name: settings.site_name || 'Believers',
@@ -95,6 +98,8 @@ export default function SiteSettings({
         site_theme: settings.site_theme || 'classic',
         site_logo: null,
         site_logo_url: settings.site_logo_url || '',
+        site_favicon: null,
+        site_favicon_url: settings.site_favicon_url || '',
         enable_ai_voice_confirmation: settings.enable_ai_voice_confirmation || false,
     });
 
@@ -429,6 +434,34 @@ export default function SiteSettings({
                                         )}
                                         <p className="mt-2 text-xs text-slate-500">Upload a website logo for the storefront header. SVG, PNG, JPG, and WebP are supported.</p>
                                     </div>
+
+                                    <div>
+                                         <label htmlFor="site_favicon" className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+                                             Site Favicon
+                                         </label>
+                                         <input
+                                             id="site_favicon"
+                                             type="file"
+                                             accept="image/x-icon,image/png,image/jpeg,image/webp,image/svg+xml"
+                                             onChange={(e) => {
+                                                 const file = e.target.files?.[0] ?? null;
+                                                 setData('site_favicon', file);
+                                                 if (file) {
+                                                     setFaviconPreview(URL.createObjectURL(file));
+                                                 }
+                                             }}
+                                             className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-950 placeholder-slate-400 focus:border-slate-950 focus:ring-1 focus:ring-slate-950 focus:outline-none transition-all shadow-sm"
+                                         />
+                                         {errors.site_favicon && (
+                                             <p className="mt-1.5 text-xs font-bold text-red-600 uppercase tracking-tight">{errors.site_favicon}</p>
+                                         )}
+                                         {faviconPreview && (
+                                             <div className="mt-3 max-w-[80px] overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-2">
+                                                 <img src={faviconPreview} alt="Favicon preview" className="h-10 w-10 object-contain mx-auto" />
+                                             </div>
+                                         )}
+                                         <p className="mt-2 text-xs text-slate-500">Upload a browser tab icon (favicon). ICO, PNG, JPG, and SVG are supported.</p>
+                                     </div>
 
                                     <div>
                                         <label htmlFor="footer_copyright" className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">

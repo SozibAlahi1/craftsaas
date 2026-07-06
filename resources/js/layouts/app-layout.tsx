@@ -6,8 +6,18 @@ interface AppLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
-    <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-        {children}
-    </AppLayoutTemplate>
-);
+import { useEffect } from 'react';
+
+export default function AppLayout({ children, breadcrumbs, ...props }: AppLayoutProps) {
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            document.documentElement.setAttribute('data-theme', 'default');
+        }
+    }, []);
+
+    return (
+        <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
+            {children}
+        </AppLayoutTemplate>
+    );
+}

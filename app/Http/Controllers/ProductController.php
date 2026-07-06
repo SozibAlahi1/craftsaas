@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,12 +30,13 @@ class ProductController extends Controller
                 'reviews' => function ($query) {
                     $query->latest();
                 },
-                'variants.attributeValues.attribute'
+                'variants.attributeValues.attribute',
             ])
             ->firstOrFail();
 
         $relatedProducts = Product::where('slug', '!=', $slug)
-            ->take(4)
+            ->with('category')
+            ->take(5)
             ->get();
 
         return Inertia::render('products/show', [
@@ -46,15 +48,15 @@ class ProductController extends Controller
     /**
      * Search products for AJAX.
      */
-    public function search(\Illuminate\Http\Request $request)
+    public function search(Request $request)
     {
         $query = $request->input('q');
-        
+
         if (empty($query)) {
             return response()->json([]);
         }
 
-        $products = Product::where('name', 'like', '%' . $query . '%')
+        $products = Product::where('name', 'like', '%'.$query.'%')
             ->select('id', 'name', 'slug', 'price', 'old_price', 'image')
             ->take(5)
             ->get();

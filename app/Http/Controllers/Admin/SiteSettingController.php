@@ -36,6 +36,7 @@ class SiteSettingController extends Controller
             'footer_info_links' => SiteSetting::getValue('footer_info_links', []),
             'site_theme' => SiteSetting::getValue('site_theme', 'classic'),
             'site_logo_url' => SiteSetting::getValue('site_logo') ? Storage::disk('public')->url(SiteSetting::getValue('site_logo')) : '',
+            'site_favicon_url' => SiteSetting::getValue('site_favicon') ? Storage::disk('public')->url(SiteSetting::getValue('site_favicon')) : '',
             'enable_ai_voice_confirmation' => filter_var(SiteSetting::getValue('enable_ai_voice_confirmation', false), FILTER_VALIDATE_BOOLEAN),
         ];
 
@@ -117,6 +118,7 @@ class SiteSettingController extends Controller
             'footer_info_links.*.label' => 'required|string|max:100',
             'footer_info_links.*.url' => 'required|string|max:255',
             'site_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
+            'site_favicon' => 'nullable|file|max:2048',
             'enable_ai_voice_confirmation' => 'nullable|boolean',
         ]);
 
@@ -131,8 +133,19 @@ class SiteSettingController extends Controller
             SiteSetting::setValue('site_logo', $siteLogoPath);
         }
 
+        if ($request->hasFile('site_favicon')) {
+            $siteFaviconPath = $request->file('site_favicon')->store('site_favicons', 'public');
+            $existingFaviconPath = SiteSetting::getValue('site_favicon');
+
+            if ($existingFaviconPath && ! str_starts_with($existingFaviconPath, 'http') && Storage::disk('public')->exists($existingFaviconPath)) {
+                Storage::disk('public')->delete($existingFaviconPath);
+            }
+
+            SiteSetting::setValue('site_favicon', $siteFaviconPath);
+        }
+
         foreach ($validated as $key => $value) {
-            if ($key === 'site_logo') {
+            if ($key === 'site_logo' || $key === 'site_favicon') {
                 continue;
             }
 

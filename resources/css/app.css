@@ -442,3 +442,10 @@ html[data-theme='wildtannery'] h3 {
         @apply bg-background text-foreground;
     }
 }
+
+/* Force dark text color for inputs in the admin panel/default theme */
+html[data-theme='default'] input,
+html[data-theme='default'] textarea,
+html[data-theme='default'] select {
+    color: #0f172a !important;
+}

@@ -65,7 +65,16 @@
 
         @routes
         @viteReactRefresh
-        @vite(['resources/js/app.tsx', "resources/js/themes/wildtannery/pages/{$page['component']}.tsx", "resources/js/pages/{$page['component']}.tsx"])
+        @php
+            $themeComponent = "resources/js/themes/wildtannery/pages/{$page['component']}.tsx";
+            $viteFiles = ['resources/js/app.tsx'];
+            if (file_exists(base_path($themeComponent))) {
+                $viteFiles[] = $themeComponent;
+            } else {
+                $viteFiles[] = "resources/js/pages/{$page['component']}.tsx";
+            }
+        @endphp
+        @vite($viteFiles)
         @inertiaHead
     </head>
     <body class="font-sans antialiased text-white bg-black">

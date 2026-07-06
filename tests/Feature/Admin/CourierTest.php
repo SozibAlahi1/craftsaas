@@ -28,7 +28,7 @@ class CourierTest extends TestCase
     public function test_courier_configuration_page_can_be_rendered(): void
     {
         $response = $this->actingAs($this->adminUser)
-            ->get(route('courier.index'));
+            ->get(route('admin.courier.index'));
 
         $response->assertStatus(200);
     }
@@ -39,7 +39,7 @@ class CourierTest extends TestCase
     public function test_courier_credentials_can_be_saved(): void
     {
         $response = $this->actingAs($this->adminUser)
-            ->post(route('courier.update'), [
+            ->post(route('admin.courier.update'), [
                 'courier_api_key' => 'test-api-key',
                 'courier_secret_key' => 'test-secret-key',
             ]);
@@ -86,8 +86,7 @@ class CourierTest extends TestCase
         $response = $this->actingAs($this->adminUser)
             ->post(route('admin.orders.fraud-check', $order->id));
 
-        $response->assertOk()
-            ->assertJson(['success_ratio' => 85.48]);
+        $response->assertRedirect(route('admin.orders.index'));
 
         $order->refresh();
         $this->assertSame(85.48, (float) $order->fraud_success_ratio);
@@ -144,7 +143,7 @@ class CourierTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->adminUser)
-            ->post(route('orders.send-courier', $order->id));
+            ->post(route('admin.orders.send-courier', $order->id));
 
         $response->assertRedirect();
 
@@ -187,7 +186,7 @@ class CourierTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->adminUser)
-            ->post(route('orders.sync-courier', $order->id));
+            ->post(route('admin.orders.sync-courier', $order->id));
 
         $response->assertRedirect();
 

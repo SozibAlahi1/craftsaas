@@ -1,9 +1,11 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import { ArrowLeft, Check, Heart, ShoppingCart, ShieldCheck, ShoppingBag, Star } from 'lucide-react';
+import { ArrowLeft, Check, Heart, ShoppingCart, ShieldCheck, ShoppingBag, Star, Eye } from 'lucide-react';
 
-import { StorefrontFooter } from '@/components/storefront-footer';
-import { StorefrontHeader } from '@/components/storefront-header';
+import { Header } from '../../themes/wildtannery/components/Header';
+import { StorefrontFooter as Footer } from '@/components/storefront-footer';
+
+import { ProductCard } from '../../themes/wildtannery/components/ProductCard';
 
 type Review = {
     id: number;
@@ -36,13 +38,13 @@ type Product = {
     stock_quantity: number;
     is_in_stock: boolean;
     reviews: Review[];
+    variants: any[];
+    category: any;
 };
-
-type RelatedProduct = Pick<Product, 'slug' | 'name' | 'price' | 'old_price' | 'discount_text' | 'image'>;
 
 interface ProductShowProps {
     product: Product;
-    relatedProducts: RelatedProduct[];
+    relatedProducts: any[];
 }
 
 export default function Show({ product, relatedProducts }: ProductShowProps) {
@@ -157,20 +159,24 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
         });
     };
 
-    const bundleItems = [
-        { name: 'Leather Wallet', price: '৳1,250', image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=200&h=200&auto=format&fit=crop' },
-        { name: 'Keyring', price: '৳450', image: 'https://images.unsplash.com/photo-1582201942988-13e60e4556ee?q=80&w=200&h=200&auto=format&fit=crop' }
-    ];
+    const formatPrice = (price: any) => {
+        if (price === null || price === undefined) return '';
+        const numericPrice = parseFloat(String(price).replace(/[^0-9.]/g, ''));
+        if (isNaN(numericPrice)) return price;
+        return `৳ ${numericPrice.toLocaleString('en-BD', { minimumFractionDigits: 0 })}`;
+    };
+
+    const bundleItems = relatedProducts.slice(0, 2);
 
     return (
         <>
             <Head title={product.name} />
-            <main className="bg-background text-foreground">
-                <StorefrontHeader />
+            <main className="bg-[#050505] text-white selection:bg-[#cba876] selection:text-black font-sans">
+                <Header />
 
                 {successMessage && (
                     <div className="fixed bottom-24 right-6 z-[60] animate-in fade-in slide-in-from-right-4 duration-300">
-                        <div className="flex items-center gap-3 rounded-md bg-orange-600 px-6 py-4 font-bold text-white shadow-2xl shadow-orange-600/20">
+                        <div className="flex items-center gap-3 rounded-md bg-[#cba876] px-6 py-4 font-bold text-black shadow-2xl">
                             <Check className="h-5 w-5" />
                             {successMessage}
                         </div>
@@ -178,13 +184,13 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                 )}
 
                 <section className="mx-auto max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-                    <div className="mb-6 flex items-center gap-3 text-sm font-medium text-slate-600">
-                        <Link href={route('home')} className="inline-flex items-center gap-2 transition-colors hover:text-slate-950">
+                    <div className="mb-6 flex items-center gap-3 text-sm font-medium text-gray-400">
+                        <Link href={route('home')} className="inline-flex items-center gap-2 transition-colors hover:text-[#cba876]">
                             <ArrowLeft className="h-4 w-4" />
                             Back to home
                         </Link>
-                        <span className="text-slate-300">/</span>
-                        <span className="text-slate-900">{product.name}</span>
+                        <span className="text-gray-700">/</span>
+                        <span className="text-[#cba876]">{product.name}</span>
                     </div>
 
                     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
@@ -196,8 +202,8 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                         onClick={() => setActiveImage(image)}
                                         className={`overflow-hidden rounded-md border transition-all hover:scale-[1.02] focus:outline-none ${
                                             activeImage === image 
-                                                ? 'border-slate-950 ring-1 ring-slate-950 shadow-md' 
-                                                : 'border-slate-200 bg-white shadow-sm grayscale-[0.5] hover:grayscale-0'
+                                                ? 'border-[#cba876] ring-1 ring-[#cba876] shadow-md shadow-[#cba876]/10' 
+                                                : 'border-white/5 bg-[#0a0a0a] shadow-sm grayscale-[0.5] hover:grayscale-0'
                                         }`}
                                     >
                                         <img src={image} alt={`${product.name} thumbnail ${index}`} className="aspect-square h-full w-full object-cover" />
@@ -206,19 +212,19 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                             </div>
 
                             <div className="flex-1">
-                                <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-                                    <div className="relative aspect-square bg-gradient-to-br from-slate-50 via-white to-slate-100">
+                                <div className="overflow-hidden rounded-lg border border-white/5 bg-[#0a0a0a] shadow-sm">
+                                    <div className="relative aspect-square bg-[#0d0d0d]">
                                         <img src={activeImage} alt={product.name} className="h-full w-full object-cover animate-in fade-in duration-500" />
 
                                         {product.discount_text && (
-                                            <span className="absolute left-4 top-4 rounded-md bg-orange-600 px-4 py-2 text-sm font-bold text-white shadow-lg">
+                                            <span className="absolute left-4 top-4 rounded-md bg-[#cba876] text-black px-4 py-2 text-sm font-bold shadow-lg">
                                                 {product.discount_text}
                                             </span>
                                         )}
 
                                         <button
                                             type="button"
-                                            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-lg backdrop-blur"
+                                            className="absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0a0a0a]/90 text-white hover:text-[#cba876] border border-white/5 shadow-lg backdrop-blur"
                                             aria-label="Add to wishlist"
                                         >
                                             <Heart className="h-5 w-5" />
@@ -229,22 +235,22 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                         </div>
 
                         <div className="space-y-6">
-                            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-                                <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+                            <div className="rounded-lg border border-white/5 bg-[#0a0a0a] p-6 shadow-sm sm:p-8">
+                                <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-white/5 border border-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#cba876]">
                                     New arrival
                                 </div>
 
-                                <h1 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl">{product.name}</h1>
+                                <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl text-white">{product.name}</h1>
 
                                 <div className="mt-4 flex flex-wrap items-center gap-3">
-                                    <div className="text-3xl font-black text-orange-600 sm:text-4xl">
+                                    <div className="text-3xl font-black text-[#cba876] sm:text-4xl">
                                         {getSelectedVariant()?.price ? `৳${getSelectedVariant()?.price.toLocaleString()}` : product.price}
                                     </div>
                                     {product.old_price && !getSelectedVariant()?.price && (
                                         <div className="flex items-center gap-3">
                                             <div className="text-lg font-semibold text-slate-500 line-through">{product.old_price}</div>
                                             {product.discount_text && (
-                                                <span className="rounded-md bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600">
+                                                <span className="rounded-md bg-[#cba876]/10 border border-[#cba876]/20 px-3 py-1 text-xs font-bold text-[#cba876]">
                                                     {product.discount_text}
                                                 </span>
                                             )}
@@ -253,31 +259,31 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                     
                                     <div className="ml-auto">
                                         {(getSelectedVariant() ? getSelectedVariant()?.stock_quantity > 0 : product.is_in_stock && product.stock_quantity > 0) ? (
-                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-700">
-                                                <div className="h-1.5 w-1.5 rounded-full bg-green-600"></div>
+                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-green-950/40 border border-green-500/20 px-3 py-1 text-xs font-bold text-emerald-400">
+                                                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
                                                 In Stock
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700">
-                                                <div className="h-1.5 w-1.5 rounded-full bg-red-600"></div>
+                                            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-950/40 border border-red-500/20 px-3 py-1 text-xs font-bold text-red-400">
+                                                <div className="h-1.5 w-1.5 rounded-full bg-red-500"></div>
                                                 Out of Stock
                                             </span>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
+                                <div className="mt-4 flex items-center gap-2 text-sm text-gray-400">
                                     <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                                     <span>{averageRating} rating from {reviews.length} verified buyers</span>
                                 </div>
 
-                                <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 line-clamp-2">{product.description}</p>
+                                <p className="mt-5 max-w-2xl text-base leading-7 text-gray-300 line-clamp-2">{product.description}</p>
 
                                 {((product.variations.colors.filter(c => { const l = getLabel(c); return l && l.trim(); }).length > 0) || (product.variations.sizes.filter(s => { const l = getLabel(s); return l && l.trim(); }).length > 0)) && (
                                     <div className="grid gap-4 sm:grid-cols-2 mt-6">
                                         {product.variations.colors.filter(c => { const l = getLabel(c); return l && l.trim(); }).length > 0 && (
                                             <div>
-                                                <div className="text-sm font-semibold text-slate-950">Color</div>
+                                                <div className="text-sm font-semibold text-white">Color</div>
                                                 <div className="mt-3 flex flex-wrap gap-2">
                                                     {product.variations.colors.map((color) => {
                                                         const label = getLabel(color);
@@ -289,8 +295,8 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                                 type="button"
                                                                 className={`rounded-md border px-4 py-2 text-sm font-medium transition ${
                                                                     selectedColor === label
-                                                                        ? 'border-slate-950 bg-slate-950 text-white'
-                                                                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-950'
+                                                                        ? 'border-[#cba876] bg-[#cba876] text-black font-bold'
+                                                                        : 'border-white/10 bg-[#0d0d0d] text-gray-300 hover:border-[#cba876] hover:text-white'
                                                                 }`}
                                                                 onClick={() => selectColor(label, img)}
                                                             >
@@ -304,7 +310,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
 
                                         {product.variations.sizes.filter(s => { const l = getLabel(s); return l && l.trim(); }).length > 0 && (
                                             <div>
-                                                <div className="text-sm font-semibold text-slate-950">Size</div>
+                                                <div className="text-sm font-semibold text-white">Size</div>
                                                 <div className="mt-3 flex flex-wrap gap-2">
                                                     {product.variations.sizes.map((size) => {
                                                         const label = getLabel(size);
@@ -316,8 +322,8 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                                 type="button"
                                                                 className={`rounded-md border px-4 py-2 text-sm font-medium transition ${
                                                                     selectedSize === label
-                                                                        ? 'border-slate-950 bg-slate-950 text-white'
-                                                                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-950'
+                                                                        ? 'border-[#cba876] bg-[#cba876] text-black font-bold'
+                                                                        : 'border-white/10 bg-[#0d0d0d] text-gray-300 hover:border-[#cba876] hover:text-white'
                                                                 }`}
                                                                 onClick={() => selectSize(label, img)}
                                                             >
@@ -333,23 +339,23 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
 
                                 <div className="mt-6 flex flex-col gap-3">
                                     <div className="flex gap-3 sm:hidden">
-                                        <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                                        <div className="inline-flex items-center rounded-full border border-white/10 bg-[#0d0d0d] px-2 py-1">
                                             <button
                                                 type="button"
                                                 onClick={() => setQuantity((current) => Math.max(1, current - 1))}
-                                                className="inline-flex h-10 min-h-[2.5rem] w-10 items-center justify-center rounded-full text-lg font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                                                className="inline-flex h-10 min-h-[2.5rem] w-10 items-center justify-center rounded-full text-lg font-semibold text-gray-300 hover:bg-white/10 disabled:opacity-50"
                                                 aria-label="Decrease quantity"
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
                                             >
                                                 –
                                             </button>
 
-                                            <span className="mx-3 min-w-[2rem] text-center text-base font-semibold text-slate-950">{quantity}</span>
+                                            <span className="mx-3 min-w-[2rem] text-center text-base font-semibold text-white">{quantity}</span>
 
                                             <button
                                                 type="button"
                                                 onClick={() => setQuantity((current) => Math.min(product.stock_quantity, current + 1))}
-                                                className="inline-flex h-10 min-h-[2.5rem] w-10 items-center justify-center rounded-full text-lg font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                                                className="inline-flex h-10 min-h-[2.5rem] w-10 items-center justify-center rounded-full text-lg font-semibold text-gray-300 hover:bg-white/10 disabled:opacity-50"
                                                 aria-label="Increase quantity"
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0 || quantity >= product.stock_quantity}
                                             >
@@ -361,7 +367,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                             type="button"
                                             onClick={() => handleAddToCart(product, quantity, selectedColor, selectedSize)}
                                             disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-slate-950 px-6 py-4 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+                                            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-[#cba876] hover:bg-[#b89563] px-6 py-4 text-sm font-bold text-black transition-all disabled:opacity-50"
                                         >
                                             <ShoppingBag className="h-4 w-4" />
                                             {product.is_in_stock && product.stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
@@ -369,23 +375,23 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                     </div>
 
                                     <div className="hidden sm:flex sm:items-center">
-                                        <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                                        <div className="inline-flex items-center rounded-full border border-white/10 bg-[#0d0d0d] px-2 py-1">
                                             <button
                                                 type="button"
                                                 onClick={() => setQuantity((current) => Math.max(1, current - 1))}
-                                                className="inline-flex h-10 min-h-[2.5rem] w-10 items-center justify-center rounded-full text-lg font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                                                className="inline-flex h-10 min-h-[2.5rem] w-10 items-center justify-center rounded-full text-lg font-semibold text-gray-300 hover:bg-white/10 disabled:opacity-50"
                                                 aria-label="Decrease quantity"
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
                                             >
                                                 –
                                             </button>
 
-                                            <span className="mx-3 min-w-[2rem] text-center text-base font-semibold text-slate-950">{quantity}</span>
+                                            <span className="mx-3 min-w-[2rem] text-center text-base font-semibold text-white">{quantity}</span>
 
                                             <button
                                                 type="button"
                                                 onClick={() => setQuantity((current) => Math.min(product.stock_quantity, current + 1))}
-                                                className="inline-flex h-10 min-h-[2.5rem] w-10 items-center justify-center rounded-full text-lg font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                                                className="inline-flex h-10 min-h-[2.5rem] w-10 items-center justify-center rounded-full text-lg font-semibold text-gray-300 hover:bg-white/10 disabled:opacity-50"
                                                 aria-label="Increase quantity"
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0 || quantity >= product.stock_quantity}
                                             >
@@ -398,7 +404,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                 type="button"
                                                 onClick={() => handleAddToCart(product, quantity, selectedColor, selectedSize)}
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-slate-950 px-6 py-4 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:w-1/2 disabled:opacity-50 disabled:hover:translate-y-0"
+                                                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#cba876] hover:bg-[#cba876] hover:!text-black px-6 py-4 text-sm font-bold text-white transition-all sm:w-1/2 disabled:opacity-50"
                                             >
                                                 <ShoppingBag className="h-4 w-4" />
                                                 Add to Cart
@@ -408,7 +414,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                 type="button"
                                                 onClick={() => handleBuyNow(product, quantity, selectedColor, selectedSize)}
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-orange-600 px-6 py-4 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:w-1/2 disabled:opacity-50 disabled:hover:translate-y-0"
+                                                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#cba876] hover:bg-[#b89563] text-black px-6 py-4 text-sm font-bold transition-all sm:w-1/2 disabled:opacity-50"
                                             >
                                                 <ShoppingCart className="h-4 w-4" />
                                                 Buy Now
@@ -420,53 +426,55 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                         type="button"
                                         onClick={() => handleBuyNow(product, quantity, selectedColor, selectedSize)}
                                         disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-orange-600 px-6 py-4 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:hidden disabled:opacity-50 disabled:hover:translate-y-0"
+                                        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#cba876] hover:bg-[#b89563] px-6 py-4 text-sm font-bold text-black transition-all sm:hidden disabled:opacity-50"
                                     >
                                         <ShoppingCart className="h-4 w-4" />
                                         Buy Now
                                     </button>
                                 </div>
 
-                                <div className="mt-8 border-t border-slate-100 pt-8">
-                                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-950">Frequently Bought Together</h3>
-                                    <div className="mt-4 grid grid-cols-2 gap-3">
-                                        {bundleItems.map((item, i) => (
-                                            <div 
-                                                key={i} 
-                                                className="flex items-center gap-3 rounded-lg border border-slate-100 bg-white p-2 shadow-sm transition-all hover:shadow-md"
-                                            >
-                                                <div className="relative h-12 w-12 flex-none overflow-hidden rounded-md bg-slate-50">
-                                                    <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
-                                                </div>
-                                                <div className="min-w-0 flex-1">
-                                                    <h4 className="truncate text-[10px] font-bold text-slate-950">{item.name}</h4>
-                                                    <div className="text-[10px] font-black text-slate-600">{item.price}</div>
-                                                </div>
-                                                <button 
-                                                    type="button"
-                                                    onClick={() => handleAddToCart({
-                                                        slug: item.name.toLowerCase().replace(/\s+/g, '-'),
-                                                        name: item.name,
-                                                        price: item.price,
-                                                        image: item.image
-                                                    })}
-                                                    className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-slate-100 text-slate-950 transition-colors hover:bg-slate-950 hover:text-white"
-                                                    aria-label="Add to cart"
-                                                >
-                                                    <ShoppingCart className="h-3.5 w-3.5" />
-                                                </button>
-                                            </div>
-                                        ))}
+                                {bundleItems.length > 0 && (
+                                    <div className="mt-8 border-t border-white/5 pt-8">
+                                        <h3 className="text-sm font-bold uppercase tracking-wider text-white">Frequently Bought Together</h3>
+                                        <div className="mt-4 grid grid-cols-2 gap-3">
+                                            {bundleItems.map((item, i) => {
+                                                const itemUrl = `/products/${item.slug}`;
+                                                const itemImage = item.image 
+                                                    ? (item.image.startsWith('http') ? item.image : `/storage/${item.image}`) 
+                                                    : '/images/placeholder.png';
+                                                return (
+                                                    <Link 
+                                                        key={i} 
+                                                        href={itemUrl}
+                                                        className="flex items-center gap-3 rounded-lg border border-white/5 bg-[#0d0d0d] p-2 shadow-sm transition-all hover:shadow-md hover:border-white/10 group/bundle"
+                                                    >
+                                                        <div className="relative h-12 w-12 flex-none overflow-hidden rounded-md bg-[#050505]">
+                                                            <img src={itemImage} alt={item.name} className="h-full w-full object-cover" />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <h4 className="truncate text-[10px] font-bold text-white group-hover/bundle:text-[#cba876] transition-colors">{item.name}</h4>
+                                                            <div className="text-[10px] font-black text-[#cba876]">{formatPrice(item.price)}</div>
+                                                        </div>
+                                                        <div 
+                                                            className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-white/5 text-[#cba876] border border-white/10 transition-colors group-hover/bundle:bg-[#cba876] group-hover/bundle:text-black group-hover/bundle:border-[#cba876]"
+                                                            aria-label="View Product"
+                                                        >
+                                                            <Eye className="h-3.5 w-3.5" />
+                                                        </div>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>
                 </section>
 
                 <section className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
-                        <div className="border-b border-slate-200 bg-slate-50/50">
+                    <div className="rounded-lg border border-white/5 bg-[#0a0a0a] shadow-sm overflow-hidden">
+                        <div className="border-b border-white/5 bg-[#0d0d0d]">
                             <nav className="flex gap-8 px-6 sm:px-8" aria-label="Tabs">
                                 {['details', 'delivery', 'reviews'].map((tab) => (
                                     <button
@@ -474,16 +482,16 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                         onClick={() => setActiveTab(tab as 'details' | 'delivery' | 'reviews')}
                                         className={`relative py-4 text-sm font-bold uppercase tracking-wider transition-colors ${
                                             activeTab === tab
-                                                ? 'text-slate-950'
-                                                : 'text-slate-500 hover:text-slate-700'
+                                                ? 'text-[#cba876]'
+                                                : 'text-gray-400 hover:text-white'
                                         }`}
                                     >
                                         {tab === 'details' ? 'Product Details' : tab === 'delivery' ? 'Delivery' : 'Reviews'}
                                         {activeTab === tab && (
-                                            <span className="absolute bottom-0 left-0 h-0.5 w-full bg-slate-950" />
+                                            <span className="absolute bottom-0 left-0 h-0.5 w-full bg-[#cba876]" />
                                         )}
                                         {tab === 'reviews' && (
-                                            <span className="ml-2 rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-600">
+                                            <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-gray-300">
                                                 {reviews.length}
                                             </span>
                                         )}
@@ -497,11 +505,9 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                                     <div className="space-y-12">
                                         <div className="space-y-6">
-                                            <h3 className="text-xl font-black tracking-tight text-slate-950">Description</h3>
-                                            <p className="text-base leading-8 text-slate-600">{product.description}</p>
+                                            <h3 className="text-xl font-bold tracking-tight text-white">Description</h3>
+                                            <p className="text-base leading-8 text-gray-300">{product.description}</p>
                                         </div>
-
-
                                     </div>
                                 </div>
                             )}
@@ -510,24 +516,24 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                                     <div className="max-w-3xl space-y-8">
                                         <div className="space-y-4">
-                                            <h3 className="text-xl font-black tracking-tight text-slate-950">Shipping & Delivery</h3>
-                                            <p className="text-base leading-8 text-slate-600">
+                                            <h3 className="text-xl font-bold tracking-tight text-white">Shipping & Delivery</h3>
+                                            <p className="text-base leading-8 text-gray-300">
                                                 {product.delivery_info || 'We offer fast and reliable shipping across Bangladesh. All orders are carefully packaged to ensure your items arrive in perfect condition.'}
                                             </p>
                                         </div>
                                         <div className="grid gap-6 sm:grid-cols-2">
-                                            <div className="rounded-xl border border-slate-100 bg-white/40 p-6 backdrop-blur-md shadow-sm">
-                                                <div className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">Inside Dhaka</div>
-                                                <div className="text-sm font-semibold text-slate-950">{product.delivery_dhaka || '1-3 Working Days'}</div>
+                                            <div className="rounded-xl border border-white/5 bg-[#0d0d0d] p-6 shadow-sm">
+                                                <div className="mb-3 text-xs font-bold uppercase tracking-widest text-[#cba876]">Inside Dhaka</div>
+                                                <div className="text-sm font-semibold text-white">{product.delivery_dhaka || '1-3 Working Days'}</div>
                                             </div>
-                                            <div className="rounded-xl border border-slate-100 bg-white/40 p-6 backdrop-blur-md shadow-sm">
-                                                <div className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">Outside Dhaka</div>
-                                                <div className="text-sm font-semibold text-slate-950">{product.delivery_outside || '3-5 Working Days'}</div>
+                                            <div className="rounded-xl border border-white/5 bg-[#0d0d0d] p-6 shadow-sm">
+                                                <div className="mb-3 text-xs font-bold uppercase tracking-widest text-[#cba876]">Outside Dhaka</div>
+                                                <div className="text-sm font-semibold text-white">{product.delivery_outside || '3-5 Working Days'}</div>
                                             </div>
                                         </div>
                                         <div className="space-y-4">
-                                            <h3 className="text-xl font-black tracking-tight text-slate-950">Returns & Exchanges</h3>
-                                            <p className="text-base leading-8 text-slate-600">
+                                            <h3 className="text-xl font-bold tracking-tight text-white">Returns & Exchanges</h3>
+                                            <p className="text-base leading-8 text-gray-300">
                                                 {product.return_info || 'If you are not satisfied with your purchase, you can return or exchange the product within 7 days of delivery, provided it is in its original condition and packaging.'}
                                             </p>
                                         </div>
@@ -539,8 +545,8 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                                     <div className="flex flex-col gap-10 lg:flex-row">
                                         <div className="lg:w-1/3">
-                                            <div className="rounded-lg bg-slate-50 p-8 text-center sticky top-24">
-                                                <div className="text-5xl font-black text-slate-950">{averageRating}</div>
+                                            <div className="rounded-lg bg-[#0d0d0d] border border-white/5 p-8 text-center sticky top-24">
+                                                <div className="text-5xl font-black text-white">{averageRating}</div>
                                                 <div className="mt-2 flex justify-center gap-1">
                                                     {[1, 2, 3, 4, 5].map((star) => (
                                                         <Star 
@@ -549,10 +555,10 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                         />
                                                     ))}
                                                 </div>
-                                                <div className="mt-2 text-sm font-medium text-slate-500">Based on {reviews.length} reviews</div>
+                                                <div className="mt-2 text-sm font-medium text-gray-400">Based on {reviews.length} reviews</div>
                                                 <button 
                                                     onClick={() => setIsReviewFormOpen(!isReviewFormOpen)}
-                                                    className="mt-6 w-full rounded-md bg-slate-950 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
+                                                    className="mt-6 w-full rounded-md border border-[#cba876] text-[#cba876] hover:bg-[#cba876] hover:!text-black px-6 py-3 text-sm font-bold transition-all"
                                                 >
                                                     {isReviewFormOpen ? 'Cancel Review' : 'Write a Review'}
                                                 </button>
@@ -561,23 +567,23 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
 
                                         <div className="flex-1 space-y-8">
                                             {isReviewFormOpen && (
-                                                <div className="rounded-lg border border-slate-200 bg-white p-6 animate-in slide-in-from-top-4 duration-500">
-                                                    <h3 className="text-lg font-bold text-slate-950 mb-6">Write your review</h3>
+                                                <div className="rounded-lg border border-white/5 bg-[#0d0d0d] p-6 animate-in slide-in-from-top-4 duration-500">
+                                                    <h3 className="text-lg font-bold text-white mb-6">Write your review</h3>
                                                     <form onSubmit={submitReview} className="space-y-4">
                                                         <div className="grid gap-4 sm:grid-cols-2">
                                                             <div className="space-y-2">
-                                                                <label className="text-xs font-black uppercase tracking-widest text-slate-400">Your Name</label>
+                                                                <label className="text-xs font-black uppercase tracking-widest text-gray-400">Your Name</label>
                                                                 <input 
                                                                     type="text"
                                                                     value={reviewData.name}
                                                                     onChange={e => setReviewData('name', e.target.value)}
-                                                                    className="w-full rounded-md border border-slate-200 px-4 py-2 text-sm focus:border-slate-400 focus:ring-0 outline-none"
+                                                                    className="w-full rounded-md border border-white/10 bg-[#050505] text-white px-4 py-2 text-sm focus:border-[#cba876] focus:ring-0 outline-none"
                                                                     placeholder="Enter your name"
                                                                 />
                                                                 {reviewErrors.name && <p className="text-xs font-bold text-red-500 mt-1 uppercase">{reviewErrors.name}</p>}
                                                             </div>
                                                             <div className="space-y-2">
-                                                                <label className="text-xs font-black uppercase tracking-widest text-slate-400">Rating</label>
+                                                                <label className="text-xs font-black uppercase tracking-widest text-gray-400">Rating</label>
                                                                 <div className="flex gap-2 h-10 items-center">
                                                                     {[1, 2, 3, 4, 5].map((star) => (
                                                                         <button
@@ -596,12 +602,12 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                             </div>
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <label className="text-xs font-black uppercase tracking-widest text-slate-400">Your Comment</label>
+                                                            <label className="text-xs font-black uppercase tracking-widest text-gray-400">Your Comment</label>
                                                             <textarea 
                                                                 value={reviewData.comment}
                                                                 onChange={e => setReviewData('comment', e.target.value)}
                                                                 rows={4}
-                                                                className="w-full rounded-md border border-slate-200 px-4 py-2 text-sm focus:border-slate-400 focus:ring-0 outline-none resize-none"
+                                                                className="w-full rounded-md border border-white/10 bg-[#050505] text-white px-4 py-2 text-sm focus:border-[#cba876] focus:ring-0 outline-none resize-none"
                                                                 placeholder="Share your thoughts about this product..."
                                                             />
                                                             {reviewErrors.comment && <p className="text-xs font-bold text-red-500 mt-1 uppercase">{reviewErrors.comment}</p>}
@@ -609,7 +615,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                         <button 
                                                             type="submit"
                                                             disabled={submittingReview}
-                                                            className="w-full rounded-md bg-slate-950 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-slate-800 disabled:opacity-50"
+                                                            className="w-full rounded-md bg-[#cba876] hover:bg-[#b89563] text-black px-6 py-3 text-sm font-bold transition-all disabled:opacity-50"
                                                         >
                                                             {submittingReview ? 'Posting...' : 'Post Review'}
                                                         </button>
@@ -619,23 +625,23 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
 
                                             {reviews.length === 0 ? (
                                                 <div className="py-10 text-center">
-                                                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 text-slate-300 mb-4">
+                                                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-white/5 text-gray-600 mb-4">
                                                         <Star className="h-8 w-8" />
                                                     </div>
-                                                    <h4 className="text-lg font-bold text-slate-950">No reviews yet</h4>
-                                                    <p className="text-sm text-slate-500 mt-1">Be the first to share your thoughts on this product.</p>
+                                                    <h4 className="text-lg font-bold text-white">No reviews yet</h4>
+                                                    <p className="text-sm text-gray-400 mt-1">Be the first to share your thoughts on this product.</p>
                                                 </div>
                                             ) : (
                                                 reviews.map((review) => (
-                                                    <div key={review.id} className="border-b border-slate-100 pb-8 last:border-0 last:pb-0 animate-in fade-in duration-500">
+                                                    <div key={review.id} className="border-b border-white/5 pb-8 last:border-0 last:pb-0 animate-in fade-in duration-500">
                                                         <div className="flex items-center justify-between">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 font-bold text-slate-600 uppercase">
+                                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 font-bold text-[#cba876] uppercase">
                                                                     {review.name.charAt(0)}
                                                                 </div>
                                                                 <div>
-                                                                    <div className="text-sm font-bold text-slate-950">{review.name}</div>
-                                                                    <div className="text-xs text-slate-500">
+                                                                    <div className="text-sm font-bold text-white">{review.name}</div>
+                                                                    <div className="text-xs text-gray-500">
                                                                         {new Date(review.created_at).toLocaleDateString('en-US', { 
                                                                             month: 'long', 
                                                                             day: 'numeric', 
@@ -653,7 +659,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                                 ))}
                                                             </div>
                                                         </div>
-                                                        <p className="mt-4 text-sm leading-7 text-slate-600">{review.comment}</p>
+                                                        <p className="mt-4 text-sm leading-7 text-gray-300">{review.comment}</p>
                                                     </div>
                                                 ))
                                             )}
@@ -665,68 +671,36 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                     </div>
                 </section>
 
-                <section className="bg-white py-8 sm:py-10 lg:py-12">
+                <section className="bg-[#050505] border-t border-white/5 py-8 sm:py-10 lg:py-12">
                     <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
                         <div className="mb-6 flex items-center justify-between gap-4">
-                            <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Related Products</h2>
-                            <Link href={route('products.index')} className="text-sm font-semibold text-slate-600 transition-colors hover:text-slate-950">
+                            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">Related Products</h2>
+                            <Link href={route('products.index')} className="text-sm font-semibold text-[#cba876] transition-colors hover:text-[#b89563]">
                                 View all
                             </Link>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
                             {relatedProducts.map((item) => (
-                                <Link
-                                    key={item.slug}
-                                    href={route('products.show', item.slug)}
-                                    className="group block overflow-hidden rounded-md border border-slate-200 bg-white transition-all duration-300 hover:shadow-lg hover:shadow-slate-200/40"
-                                >
-                                    <div className="relative aspect-square overflow-hidden bg-slate-50">
-                                        <img 
-                                            src={item.image} 
-                                            alt={item.name} 
-                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                                        />
-                                    </div>
-                                    <div className="p-4 sm:p-5">
-                                        <h3 className="line-clamp-1 text-sm font-bold text-slate-950 sm:text-base">{item.name}</h3>
-                                        <div className="mt-2 flex flex-col gap-1">
-                                            <div className="text-lg font-black text-slate-950 sm:text-xl">{item.price}</div>
-                                            {(item.old_price || item.discount_text) && (
-                                                <div className="flex items-center gap-2">
-                                                    {item.old_price && (
-                                                        <span className="text-xs font-semibold text-slate-400 line-through sm:text-sm">
-                                                            {item.old_price}
-                                                        </span>
-                                                    )}
-                                                    {item.discount_text && (
-                                                        <span className="rounded-md bg-orange-50 px-2.5 py-1 text-[10px] font-bold text-orange-600 sm:text-xs">
-                                                            {item.discount_text}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </Link>
+                                <ProductCard key={item.slug} product={item} />
                             ))}
                         </div>
                     </div>
                 </section>
 
-                <StorefrontFooter />
+                <Footer />
 
                 {/* Sticky Mobile Buy Now Bar */}
-                <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/90 p-4 backdrop-blur-md sm:hidden">
+                <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#0a0a0a]/90 p-4 backdrop-blur-md sm:hidden">
                     <div className="flex items-center justify-between gap-4">
                         <div className="min-w-0">
-                            <div className="truncate text-sm font-bold text-slate-950">{product.name}</div>
-                            <div className="text-lg font-black text-slate-950">{product.price}</div>
+                            <div className="truncate text-sm font-bold text-white">{product.name}</div>
+                            <div className="text-lg font-black text-[#cba876]">{product.price}</div>
                         </div>
                         <button
                             type="button"
                             onClick={() => handleBuyNow(product, quantity, selectedColor, selectedSize)}
-                            className="inline-flex items-center justify-center gap-2 rounded-md bg-orange-600 px-8 py-3.5 text-sm font-bold text-white shadow-lg active:scale-95"
+                            className="inline-flex items-center justify-center gap-2 rounded-md bg-[#cba876] px-8 py-3.5 text-sm font-bold text-black shadow-lg active:scale-95"
                         >
                             <ShoppingCart className="h-4 w-4" />
                             Buy Now

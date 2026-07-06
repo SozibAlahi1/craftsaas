@@ -1,6 +1,6 @@
-import { Link } from '@inertiajs/react';
-import { Star, Eye, ShoppingCart } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { Link, router } from '@inertiajs/react';
+import { Star, Eye, ShoppingCart, Heart, BarChart2 } from 'lucide-react';
+import { useState } from 'react';
 
 export function ProductCard({ product }: { product: any }) {
     // Determine the product image
@@ -12,117 +12,170 @@ export function ProductCard({ product }: { product: any }) {
     const galleryImages = [
         defaultImage,
         ...(Array.isArray(product.gallery) ? product.gallery : []).map((img: string) => img.startsWith('http') ? img : `/storage/${img}`)
-    ];
+    ].filter(Boolean);
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [isHovering, setIsHovering] = useState(false);
-    const hoverIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const [isHovered, setIsHovered] = useState(false);
 
-    // Format price safely
-    const formatPrice = (price: number) => {
-        if (!price || isNaN(price)) return '';
-        return new Intl.NumberFormat('en-BD', { style: 'currency', currency: 'BDT', minimumFractionDigits: 2 }).format(price).replace('BDT', 'Tk').trim();
+    // Format price safely as "৳ value.00"
+    const formatPrice = (price: any) => {
+        if (price === null || price === undefined) return '';
+        const numericPrice = parseFloat(String(price).replace(/[^0-9.]/g, ''));
+        if (isNaN(numericPrice)) return price;
+        return `৳ ${numericPrice.toLocaleString('en-BD', { minimumFractionDigits: 2 })}`;
     };
 
-    const hasDiscount = product.old_price && product.old_price > product.price;
+    const hasDiscount = product.old_price && parseFloat(String(product.old_price).replace(/[^0-9.]/g, '')) > parseFloat(String(product.price).replace(/[^0-9.]/g, ''));
     const discountPercent = hasDiscount 
-        ? Math.round(((product.old_price - product.price) / product.old_price) * 100) 
+        ? Math.round(((parseFloat(String(product.old_price).replace(/[^0-9.]/g, '')) - parseFloat(String(product.price).replace(/[^0-9.]/g, ''))) / parseFloat(String(product.old_price).replace(/[^0-9.]/g, ''))) * 100) 
         : 0;
 
-    // Hover effect logic
-    useEffect(() => {
-        if (isHovering && galleryImages.length > 1) {
-            hoverIntervalRef.current = setInterval(() => {
-                setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
-            }, 1200); // Change image every 1.2 seconds on hover
-        } else {
-            if (hoverIntervalRef.current) clearInterval(hoverIntervalRef.current);
-        }
+    const getLabel = (v: any) => (typeof v === 'string' ? v : v?.label ?? '');
+    const colors = product.variations?.colors || [];
+    const sizes = product.variations?.sizes || [];
+    const hasColorVariations = colors.filter((c: any) => getLabel(c)?.trim() !== '').length > 0;
+    const hasSizeVariations = sizes.filter((s: any) => getLabel(s)?.trim() !== '').length > 0;
+    const isVariableProduct = hasColorVariations || hasSizeVariations;
 
-        return () => {
-            if (hoverIntervalRef.current) clearInterval(hoverIntervalRef.current);
-        };
-    }, [isHovering, galleryImages.length]);
+    const handleBuyNow = (e: React.MouseEvent) => {
+        e.preventDefault();
+        router.post(route('cart.buyNow'), {
+            product_id: product.id,
+            slug: product.slug,
+            name: product.name,
+            price: String(product.price),
+            image: product.image || '',
+            quantity: 1,
+            color: null,
+            size: null
+        });
+    };
 
     return (
         <div 
-            className="group flex flex-col bg-[#151515] rounded-2xl overflow-hidden relative shadow-sm border border-[#2a2a2a] hover:border-[#444444] transition-colors duration-300 h-full"
-            onMouseEnter={() => setIsHovering(true)}
+            className="group flex flex-col bg-[#050505] rounded-[10px] overflow-hidden relative shadow-md border border-[#1a1a1a] hover:border-[#cba876]/40 transition-all duration-300 h-full"
+            onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => {
-                setIsHovering(false);
-                setCurrentImageIndex(0); // Reset to primary image when mouse leaves
+                setIsHovered(false);
+                setCurrentImageIndex(0);
             }}
         >
             {/* Image Container */}
-            <div className="relative aspect-[4/4.5] overflow-hidden bg-[#0a0a0a] rounded-t-2xl">
+            <div className="relative aspect-[1/1] w-full overflow-hidden bg-[#0d0d0d] select-none">
                 <Link href={`/products/${product.slug}`} className="block w-full h-full">
                     <img 
                         src={galleryImages[currentImageIndex]} 
                         alt={product.name} 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-all duration-500"
                     />
                 </Link>
 
                 {/* Badges */}
-                {hasDiscount ? (
-                    <div className="absolute top-3 left-3 bg-[#e43a53] text-white text-[11px] font-medium px-3 py-1 rounded-full z-10 shadow-md">
-                        Save {discountPercent}%
+                {hasDiscount && (
+                    <div className="absolute top-3 left-3 bg-[#e43a53] text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-sm z-20 shadow-md">
+                        -{discountPercent}%
                     </div>
-                ) : null}
+                )}
                 
-                <div className="absolute top-3 right-3 bg-[#111111]/80 backdrop-blur-md text-gray-200 text-[11px] font-medium px-2 py-1 rounded-full flex items-center shadow-sm z-10 border border-white/10">
+                {/* Rating Badge */}
+                <div className="absolute bottom-3 left-3 bg-black/75 backdrop-blur-sm text-gray-200 text-[10px] font-bold px-2 py-0.5 rounded-sm flex items-center shadow-sm z-20 border border-white/5">
                     <Star className="w-3 h-3 fill-[#fbbf24] text-[#fbbf24] mr-1" />
                     <span>5.0</span>
                 </div>
 
-                {/* Eye Icon (Quick View) */}
-                <button className="absolute top-12 right-3 w-8 h-8 bg-[#111111]/80 backdrop-blur-md rounded-full flex items-center justify-center text-gray-300 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:text-white hover:bg-[#222] border border-white/10">
-                    <Eye className="w-4 h-4" />
-                </button>
-            </div>
-
-            {/* Product Info */}
-            <div className="p-5 flex flex-col flex-grow bg-[#151515] text-left">
-                {/* Title */}
-                <Link href={`/products/${product.slug}`} className="text-gray-200 font-semibold text-[17px] hover:text-[#cba876] transition-colors mb-2 line-clamp-2">
-                    {product.name}
-                </Link>
-
-                {/* Price */}
-                <div className="flex flex-col items-start mb-4 mt-1">
-                    {hasDiscount ? (
-                        <div className="flex items-center space-x-2">
-                            <span className="text-[#e43a53] text-[18px] font-bold">{formatPrice(product.price)}</span>
-                            <span className="text-gray-500 text-[13px] line-through relative">
-                                {formatPrice(product.old_price)}
-                            </span>
-                        </div>
-                    ) : (
-                        <span className="text-gray-200 text-[18px] font-bold">{formatPrice(product.price)}</span>
-                    )}
+                {/* Right Side Hover Actions (Compare, Quick View, Wishlist) */}
+                <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                    <button 
+                        className="w-9 h-9 bg-black/85 hover:bg-[#cba876] hover:text-black text-white rounded-full flex items-center justify-center shadow-md transition-all duration-200 border border-white/10"
+                        title="Add to Wishlist"
+                    >
+                        <Heart className="w-4 h-4" />
+                    </button>
+                    <button 
+                        className="w-9 h-9 bg-black/85 hover:bg-[#cba876] hover:text-black text-white rounded-full flex items-center justify-center shadow-md transition-all duration-200 border border-white/10"
+                        title="Compare"
+                    >
+                        <BarChart2 className="w-4 h-4" />
+                    </button>
+                    <Link 
+                        href={`/products/${product.slug}`}
+                        className="w-9 h-9 bg-black/85 hover:bg-[#cba876] hover:text-black text-white rounded-full flex items-center justify-center shadow-md transition-all duration-200 border border-white/10"
+                        title="Quick View"
+                    >
+                        <Eye className="w-4 h-4" />
+                    </Link>
                 </div>
 
-                {/* Gallery Thumbnails */}
+                {/* Gallery Slide Indicator Dots (Visible on hover at bottom center) */}
                 {galleryImages.length > 1 && (
-                    <div className="flex justify-start space-x-2 mb-5">
-                        {galleryImages.slice(0, 5).map((img, idx) => (
-                            <button 
+                    <div className="absolute bottom-3 right-3 flex items-center space-x-1.5 z-20 bg-black/60 px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        {galleryImages.map((_, idx) => (
+                            <button
                                 key={idx}
                                 onMouseEnter={() => setCurrentImageIndex(idx)}
-                                onClick={(e) => { e.preventDefault(); setCurrentImageIndex(idx); }}
-                                className={`w-9 h-9 rounded-md overflow-hidden border transition-all ${currentImageIndex === idx ? 'border-[#cba876] shadow-sm' : 'border-[#333] opacity-60 hover:opacity-100 hover:border-gray-400'}`}
-                            >
-                                <img src={img} alt="" className="w-full h-full object-cover" />
-                            </button>
+                                className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
+                                    currentImageIndex === idx ? 'bg-[#cba876] scale-125' : 'bg-white/40'
+                                }`}
+                                aria-label={`View image ${idx + 1}`}
+                            />
                         ))}
                     </div>
                 )}
+            </div>
 
-                {/* Buy Now Button */}
-                <button className="w-full mt-auto bg-[#cba876] text-black font-semibold uppercase tracking-wider text-[13px] py-3.5 rounded-lg hover:bg-white transition-colors shadow-lg flex items-center justify-center">
-                    <ShoppingCart className="w-[18px] h-[18px] mr-2" />
-                    Buy Now
-                </button>
+            {/* Product Info */}
+            <div className="p-3 pt-2 flex flex-col flex-grow text-left">
+                {/* Title */}
+                <Link 
+                    href={`/products/${product.slug}`} 
+                    className="text-white font-medium text-xs md:text-sm hover:text-[#cba876] transition-colors mb-0.5 line-clamp-2 leading-snug"
+                >
+                    {product.name}
+                </Link>
+
+                {/* Category name */}
+                {product.category && (
+                    <span className="text-[9px] uppercase tracking-wider text-gray-400 font-bold mb-1 block">
+                        {product.category.name}
+                    </span>
+                )}
+
+                {/* Stock Status */}
+                <p className="text-[10px] font-semibold text-emerald-500 mb-1.5 flex items-center">
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block mr-1.5 animate-pulse"></span>
+                    In Stock
+                </p>
+
+                {/* Price block */}
+                <div className="flex items-center space-x-2 mb-2.5">
+                    {hasDiscount ? (
+                        <>
+                            <span className="text-white text-sm md:text-base font-black">{formatPrice(product.price)}</span>
+                            <span className="text-gray-500 text-[10px] md:text-xs line-through">{formatPrice(product.old_price)}</span>
+                        </>
+                    ) : (
+                        <span className="text-white text-sm md:text-base font-black">{formatPrice(product.price)}</span>
+                    )}
+                </div>
+
+                {/* Buy Now / View Details Button */}
+                {isVariableProduct ? (
+                    <Link 
+                        href={`/products/${product.slug}`}
+                        className="w-full mt-auto border border-[#cba876] text-white hover:bg-[#cba876] hover:!text-black font-bold uppercase tracking-wider text-[10px] py-2 rounded-[5px] transition-all duration-200 shadow-md flex items-center justify-center"
+                    >
+                        <Eye className="w-3.5 h-3.5 mr-1.5" />
+                        View Details
+                    </Link>
+                ) : (
+                    <button 
+                        onClick={handleBuyNow}
+                        className="w-full mt-auto border border-[#cba876] text-white hover:bg-[#cba876] hover:!text-black font-bold uppercase tracking-wider text-[10px] py-2 rounded-[5px] transition-all duration-200 shadow-md flex items-center justify-center"
+                    >
+                        <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
+                        Buy Now
+                    </button>
+                )}
             </div>
         </div>
     );
