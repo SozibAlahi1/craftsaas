@@ -139,6 +139,7 @@ export default function CreateBanner() {
                                                     <Upload className="h-6 w-6" />
                                                 </div>
                                                 <p className="mt-4 text-xs font-black uppercase tracking-widest text-slate-500">Upload Banner Image</p>
+                                                <p className="mt-1 text-[10px] font-bold text-slate-400 uppercase">Recommended Size: 1920x640px</p>
                                                 <p className="mt-1 text-[10px] font-bold text-slate-400 uppercase">Required: JPEG/PNG/WEBP/AVIF (Max: 5MB)</p>
                                             </div>
                                         )}
