@@ -134,6 +134,47 @@ class SiteSettingTest extends TestCase
     }
 
     /**
+     * Admin can successfully upload site favicon.
+     */
+    public function test_admin_can_upload_site_favicon(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create();
+        $favicon = UploadedFile::fake()->create('favicon.ico', 50, 'image/x-icon');
+
+        $payload = [
+            'site_name' => 'Brand New Store',
+            'shipping_cost' => '60',
+            'footer_description' => 'A custom description that is dynamic!',
+            'footer_facebook_url' => 'https://facebook.com/newbrandpage',
+            'footer_youtube_url' => 'https://youtube.com/newbrandchannel',
+            'footer_phone' => '0123456789',
+            'footer_email' => 'cc.brandnew@gmail.com',
+            'footer_address' => 'Floor 5, Elegant Mansion, Dhaka, Bangladesh',
+            'footer_copyright' => '© 2026 Brand New. All Rights Reserved',
+            'footer_account_links' => [
+                ['label' => 'Dynamic Link 1', 'url' => '/dynamic-1'],
+            ],
+            'footer_info_links' => [
+                ['label' => 'Dynamic Link 2', 'url' => '/dynamic-2'],
+            ],
+            'site_favicon' => $favicon,
+        ];
+
+        $response = $this->actingAs($user)
+            ->from(route('admin.settings.index'))
+            ->post(route('admin.settings.update'), $payload);
+
+        $response->assertRedirect(route('admin.settings.index'));
+        $response->assertSessionHasNoErrors();
+
+        $faviconPath = SiteSetting::getValue('site_favicon');
+        $this->assertNotEmpty($faviconPath);
+        Storage::disk('public')->assertExists($faviconPath);
+    }
+
+    /**
      * Invalid settings input throws validation exception.
      */
     public function test_update_settings_requires_valid_data(): void

@@ -35,8 +35,8 @@ class SiteSettingController extends Controller
             'footer_account_links' => SiteSetting::getValue('footer_account_links', []),
             'footer_info_links' => SiteSetting::getValue('footer_info_links', []),
             'site_theme' => SiteSetting::getValue('site_theme', 'classic'),
-            'site_logo_url' => SiteSetting::getValue('site_logo') ? Storage::disk('public')->url(SiteSetting::getValue('site_logo')) : '',
-            'site_favicon_url' => SiteSetting::getValue('site_favicon') ? Storage::disk('public')->url(SiteSetting::getValue('site_favicon')) : '',
+            'site_logo_url' => SiteSetting::getValue('site_logo') ? (str_starts_with(SiteSetting::getValue('site_logo'), 'http') ? SiteSetting::getValue('site_logo') : '/storage/'.SiteSetting::getValue('site_logo')) : '',
+            'site_favicon_url' => SiteSetting::getValue('site_favicon') ? (str_starts_with(SiteSetting::getValue('site_favicon'), 'http') ? SiteSetting::getValue('site_favicon') : '/storage/'.SiteSetting::getValue('site_favicon')) : '',
             'enable_ai_voice_confirmation' => filter_var(SiteSetting::getValue('enable_ai_voice_confirmation', false), FILTER_VALIDATE_BOOLEAN),
             'gtm_container_id' => SiteSetting::getValue('gtm_container_id', ''),
         ];
