@@ -151,6 +151,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('settings/fraud', [SiteSettingController::class, 'updateFraudSettings'])->name('settings.fraud.update');
         Route::post('settings/theme/activate', [SiteSettingController::class, 'activateTheme'])->name('settings.theme.activate');
         Route::post('settings/automation', [SiteSettingController::class, 'updateAutomationSettings'])->name('settings.automation.update');
+        Route::post('settings/gtm', [SiteSettingController::class, 'updateGtmSettings'])->name('settings.gtm.update');
 
         Route::get('courier-configure', [CourierController::class, 'index'])->name('courier.index');
         Route::post('courier-configure', [CourierController::class, 'updateSettings'])->name('courier.update');

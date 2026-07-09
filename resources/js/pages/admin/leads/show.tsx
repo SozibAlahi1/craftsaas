@@ -1,16 +1,26 @@
-import AppLayout from '@/layouts/app-layout';
-import { Head, Link, useForm, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { PhoneCall, FileText, RefreshCw, ArrowLeft, Send } from 'lucide-react';
+import AppLayout from '@/layouts/app-layout';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { ArrowLeft, FileText, PhoneCall, RefreshCw, Send } from 'lucide-react';
 
 export default function LeadShow({ lead, users }: any) {
-    const { data: statusData, setData: setStatusData, patch, processing: statusProcessing } = useForm({
+    const {
+        data: statusData,
+        setData: setStatusData,
+        patch,
+        processing: statusProcessing,
+    } = useForm({
         status: lead.status,
         assigned_to: lead.assigned_to || '',
     });
 
-    const { data: activityData, setData: setActivityData, post, processing: activityProcessing, reset } = useForm({
+    const {
+        data: activityData,
+        setData: setActivityData,
+        post,
+        processing: activityProcessing,
+        reset,
+    } = useForm({
         action: 'Note Added',
         note: '',
     });
@@ -36,46 +46,50 @@ export default function LeadShow({ lead, users }: any) {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Leads', href: '/admin/leads' }, { title: lead.name || lead.phone, href: `/admin/leads/${lead.id}` }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Leads', href: '/admin/leads' },
+                { title: lead.name || lead.phone, href: `/admin/leads/${lead.id}` },
+            ]}
+        >
             <Head title={`Lead - ${lead.name || lead.phone}`} />
 
             <div className="flex flex-col gap-6 p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-2">
+                <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center space-x-4">
                         <h1 className="text-2xl font-black tracking-tight text-slate-950 uppercase">{lead.name || 'Unnamed Lead'}</h1>
-                        <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${statusColors[lead.status]}`}>
+                        <span className={`rounded-full px-3 py-1 text-xs font-bold tracking-wider uppercase ${statusColors[lead.status]}`}>
                             {lead.status}
                         </span>
                     </div>
                     <Link href={route('admin.leads.index')}>
                         <Button variant="ghost" size="sm" className="text-slate-500 hover:text-slate-900">
-                            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Leads
+                            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Leads
                         </Button>
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                     {/* Left Column: Details & Edit */}
-                    <div className="lg:col-span-1 space-y-6">
+                    <div className="space-y-6 lg:col-span-1">
                         <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                             <h2 className="mb-4 text-sm font-black tracking-widest text-slate-900 uppercase">Lead Details</h2>
-                            
+
                             <div className="space-y-3 text-sm">
                                 <div className="flex justify-between border-b border-slate-100 pb-2">
-                                    <span className="text-slate-500 font-medium">Phone</span>
+                                    <span className="font-medium text-slate-500">Phone</span>
                                     <span className="font-bold text-slate-900">{lead.phone}</span>
                                 </div>
                                 <div className="flex justify-between border-b border-slate-100 pb-2">
-                                    <span className="text-slate-500 font-medium">Email</span>
+                                    <span className="font-medium text-slate-500">Email</span>
                                     <span className="font-medium text-slate-900">{lead.email || 'N/A'}</span>
                                 </div>
                                 <div className="flex justify-between border-b border-slate-100 pb-2">
-                                    <span className="text-slate-500 font-medium">Source</span>
+                                    <span className="font-medium text-slate-500">Source</span>
                                     <span className="font-medium text-slate-900">{lead.source || 'Direct'}</span>
                                 </div>
                                 <div className="flex justify-between border-b border-slate-100 pb-2">
-                                    <span className="text-slate-500 font-medium">Created</span>
+                                    <span className="font-medium text-slate-500">Created</span>
                                     <span className="font-medium text-slate-900">{new Date(lead.created_at).toLocaleString()}</span>
                                 </div>
                             </div>
@@ -83,10 +97,10 @@ export default function LeadShow({ lead, users }: any) {
                             <form onSubmit={handleStatusUpdate} className="mt-6 space-y-4">
                                 <div>
                                     <label className="mb-1.5 block text-xs font-bold text-slate-700 uppercase">Status</label>
-                                    <select 
-                                        value={statusData.status} 
-                                        onChange={e => setStatusData('status', e.target.value)}
-                                        className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2"
+                                    <select
+                                        value={statusData.status}
+                                        onChange={(e) => setStatusData('status', e.target.value)}
+                                        className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:outline-none"
                                     >
                                         <option value="new">New</option>
                                         <option value="contacted">Contacted</option>
@@ -98,23 +112,21 @@ export default function LeadShow({ lead, users }: any) {
 
                                 <div>
                                     <label className="mb-1.5 block text-xs font-bold text-slate-700 uppercase">Assigned To</label>
-                                    <select 
-                                        value={statusData.assigned_to} 
-                                        onChange={e => setStatusData('assigned_to', e.target.value)}
-                                        className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2"
+                                    <select
+                                        value={statusData.assigned_to}
+                                        onChange={(e) => setStatusData('assigned_to', e.target.value)}
+                                        className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:outline-none"
                                     >
                                         <option value="">Unassigned</option>
                                         {users.map((user: any) => (
-                                            <option key={user.id} value={user.id}>{user.name}</option>
+                                            <option key={user.id} value={user.id}>
+                                                {user.name}
+                                            </option>
                                         ))}
                                     </select>
                                 </div>
 
-                                <Button 
-                                    type="submit" 
-                                    disabled={statusProcessing}
-                                    className="w-full bg-slate-900 hover:bg-slate-800"
-                                >
+                                <Button type="submit" disabled={statusProcessing} className="w-full bg-slate-900 hover:bg-slate-800">
                                     Update Lead
                                 </Button>
                             </form>
@@ -126,20 +138,20 @@ export default function LeadShow({ lead, users }: any) {
                         <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
                             <h2 className="mb-6 text-sm font-black tracking-widest text-slate-900 uppercase">Activity Timeline</h2>
 
-                            <form onSubmit={handleActivitySubmit} className="mb-8 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                                <textarea 
+                            <form onSubmit={handleActivitySubmit} className="mb-8 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                                <textarea
                                     rows={3}
                                     placeholder="Write a note about this lead..."
                                     value={activityData.note}
-                                    onChange={e => setActivityData('note', e.target.value)}
-                                    className="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 mb-3"
+                                    onChange={(e) => setActivityData('note', e.target.value)}
+                                    className="mb-3 flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:outline-none"
                                     required
                                 />
-                                <div className="flex justify-between items-center">
-                                    <select 
-                                        value={activityData.action} 
-                                        onChange={e => setActivityData('action', e.target.value)}
-                                        className="h-9 rounded-md border border-slate-200 bg-white px-3 py-1 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                                <div className="flex items-center justify-between">
+                                    <select
+                                        value={activityData.action}
+                                        onChange={(e) => setActivityData('action', e.target.value)}
+                                        className="h-9 rounded-md border border-slate-200 bg-white px-3 py-1 text-sm ring-offset-white focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
                                     >
                                         <option value="Note Added">Note Added</option>
                                         <option value="Call Attempted">Call Attempted</option>
@@ -147,38 +159,44 @@ export default function LeadShow({ lead, users }: any) {
                                         <option value="Email Sent">Email Sent</option>
                                         <option value="Meeting Scheduled">Meeting Scheduled</option>
                                     </select>
-                                    <Button 
-                                        type="submit" 
-                                        disabled={activityProcessing || !activityData.note}
-                                    >
-                                        <Send className="w-4 h-4 mr-2" /> Log Activity
+                                    <Button type="submit" disabled={activityProcessing || !activityData.note}>
+                                        <Send className="mr-2 h-4 w-4" /> Log Activity
                                     </Button>
                                 </div>
                             </form>
 
-                            <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                            <div className="relative space-y-6 before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:-translate-x-px before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent md:before:mx-auto md:before:translate-x-0">
                                 {lead.activities.length === 0 ? (
-                                    <div className="text-center text-sm font-medium text-slate-500 py-8 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+                                    <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 py-8 text-center text-sm font-medium text-slate-500">
                                         No activities logged yet.
                                     </div>
                                 ) : (
                                     lead.activities.map((activity: any) => (
-                                        <div key={activity.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                                        <div
+                                            key={activity.id}
+                                            className="group is-active relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse"
+                                        >
                                             {/* Marker */}
-                                            <div className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white bg-slate-100 text-slate-500 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">
-                                                {activity.action.includes('Call') ? <PhoneCall className="w-4 h-4" /> : activity.action.includes('Status') ? <RefreshCw className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
+                                            <div className="z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-white bg-slate-100 text-slate-500 shadow-sm md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                                                {activity.action.includes('Call') ? (
+                                                    <PhoneCall className="h-4 w-4" />
+                                                ) : activity.action.includes('Status') ? (
+                                                    <RefreshCw className="h-4 w-4" />
+                                                ) : (
+                                                    <FileText className="h-4 w-4" />
+                                                )}
                                             </div>
                                             {/* Card */}
-                                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-lg border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <div className="font-bold text-slate-900 text-sm">{activity.action}</div>
-                                                    <div className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">{new Date(activity.created_at).toLocaleString()}</div>
+                                            <div className="w-[calc(100%-4rem)] rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md md:w-[calc(50%-2.5rem)]">
+                                                <div className="mb-2 flex items-start justify-between">
+                                                    <div className="text-sm font-bold text-slate-900">{activity.action}</div>
+                                                    <div className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                                                        {new Date(activity.created_at).toLocaleString()}
+                                                    </div>
                                                 </div>
-                                                <div className="text-sm text-slate-700 leading-relaxed font-medium">
-                                                    {activity.note}
-                                                </div>
+                                                <div className="text-sm leading-relaxed font-medium text-slate-700">{activity.note}</div>
                                                 {activity.user && (
-                                                    <div className="mt-3 text-[11px] text-slate-400 font-bold uppercase tracking-wider border-t border-slate-100 pt-2">
+                                                    <div className="mt-3 border-t border-slate-100 pt-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase">
                                                         Logged by {activity.user.name}
                                                     </div>
                                                 )}
@@ -187,10 +205,8 @@ export default function LeadShow({ lead, users }: any) {
                                     ))
                                 )}
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             </div>
         </AppLayout>

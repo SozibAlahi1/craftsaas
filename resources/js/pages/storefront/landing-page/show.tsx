@@ -1,6 +1,5 @@
-import React from 'react';
-import { Head } from '@inertiajs/react';
 import { SectionRenderer } from '@/components/landing-builder/SectionRenderer';
+import { Head } from '@inertiajs/react';
 
 interface Page {
     id: number;
@@ -14,7 +13,7 @@ interface Page {
 export default function Show({ page }: { page: Page }) {
     // If we had a custom theme or font in settings, we would apply it here
     // e.g. <div className={`theme-${page.settings?.theme} font-${page.settings?.font}`}>
-    
+
     return (
         <div className="min-h-screen bg-white">
             <Head>
@@ -26,13 +25,9 @@ export default function Show({ page }: { page: Page }) {
 
             <main>
                 {page.sections.length === 0 ? (
-                    <div className="py-32 text-center text-slate-500">
-                        This page has no sections yet.
-                    </div>
+                    <div className="py-32 text-center text-slate-500">This page has no sections yet.</div>
                 ) : (
-                    page.sections.map(section => (
-                        <SectionRenderer key={section.id} section={section} />
-                    ))
+                    page.sections.map((section) => <SectionRenderer key={section.id} section={section} />)
                 )}
             </main>
         </div>

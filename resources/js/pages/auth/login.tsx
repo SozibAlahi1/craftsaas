@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { Eye, EyeOff, LoaderCircle, Lock, Mail } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -22,6 +22,7 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
+    const [showPassword, setShowPassword] = useState(false);
     const { data, setData, post, processing, errors, reset } = useForm<LoginForm>({
         email: '',
         password: '',
@@ -43,17 +44,22 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 <div className="grid gap-6">
                     <div className="grid gap-2">
                         <Label htmlFor="email">Email address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            required
-                            autoFocus
-                            tabIndex={1}
-                            autoComplete="email"
-                            value={data.email}
-                            onChange={(e) => setData('email', e.target.value)}
-                            placeholder="email@example.com"
-                        />
+                        <div className="relative flex items-center">
+                            <Mail className="text-muted-foreground pointer-events-none absolute left-3.5 h-4 w-4" />
+                            <Input
+                                id="email"
+                                type="email"
+                                required
+                                autoFocus
+                                tabIndex={1}
+                                autoComplete="email"
+                                value={data.email}
+                                onChange={(e) => setData('email', e.target.value)}
+                                placeholder="email@example.com"
+                                className="focus-visible:ring-primary/20 focus-visible:border-primary pl-10 transition-all duration-200 focus-visible:ring-2"
+                                disabled={processing}
+                            />
+                        </div>
                         <InputError message={errors.email} />
                     </div>
 
@@ -66,26 +72,55 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 </TextLink>
                             )}
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            required
-                            tabIndex={2}
-                            autoComplete="current-password"
-                            value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                            placeholder="Password"
-                        />
+                        <div className="relative flex items-center">
+                            <Lock className="text-muted-foreground pointer-events-none absolute left-3.5 h-4 w-4" />
+                            <Input
+                                id="password"
+                                type={showPassword ? 'text' : 'password'}
+                                required
+                                tabIndex={2}
+                                autoComplete="current-password"
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                                placeholder="Password"
+                                className="focus-visible:ring-primary/20 focus-visible:border-primary pr-10 pl-10 transition-all duration-200 focus-visible:ring-2"
+                                disabled={processing}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="text-muted-foreground hover:text-foreground hover:bg-muted absolute right-3 rounded-md p-1 transition-colors focus:outline-hidden"
+                                tabIndex={6}
+                                disabled={processing}
+                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                            >
+                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                        </div>
                         <InputError message={errors.password} />
                     </div>
 
                     <div className="flex items-center space-x-3">
-                        <Checkbox id="remember" name="remember" tabIndex={3} />
-                        <Label htmlFor="remember">Remember me</Label>
+                        <Checkbox
+                            id="remember"
+                            name="remember"
+                            tabIndex={3}
+                            checked={data.remember}
+                            onCheckedChange={(checked) => setData('remember', checked === true)}
+                            disabled={processing}
+                        />
+                        <Label htmlFor="remember" className="cursor-pointer select-none">
+                            Remember me
+                        </Label>
                     </div>
 
-                    <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                    <Button
+                        type="submit"
+                        className="mt-4 w-full cursor-pointer font-semibold shadow-xs transition-all duration-200 select-none hover:shadow-md active:scale-[0.98]"
+                        tabIndex={4}
+                        disabled={processing}
+                    >
+                        {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                         Log in
                     </Button>
                 </div>

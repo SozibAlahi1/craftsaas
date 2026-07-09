@@ -1,11 +1,10 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useState } from 'react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AppLayout from '@/layouts/app-layout';
+import { Head, router, useForm } from '@inertiajs/react';
 
 const CATEGORIES = ['Salary', 'Office Rent', 'Packaging', 'Marketing', 'Software', 'Miscellaneous'];
 
@@ -33,7 +32,12 @@ export default function ExpensesIndex({ expenses, summary }: { expenses: any; su
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Finance', href: '/admin/finance' }, { title: 'Expenses', href: '/admin/expenses' }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Finance', href: '/admin/finance' },
+                { title: 'Expenses', href: '/admin/expenses' },
+            ]}
+        >
             <Head title="Expense Management" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
@@ -63,7 +67,9 @@ export default function ExpensesIndex({ expenses, summary }: { expenses: any; su
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {CATEGORIES.map((c) => (
-                                                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                                                    <SelectItem key={c} value={c}>
+                                                        {c}
+                                                    </SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
@@ -71,34 +77,26 @@ export default function ExpensesIndex({ expenses, summary }: { expenses: any; su
                                     </div>
 
                                     <div>
-                                        <Input 
-                                            placeholder="Expense Title" 
-                                            value={data.title} 
-                                            onChange={(e) => setData('title', e.target.value)} 
-                                        />
+                                        <Input placeholder="Expense Title" value={data.title} onChange={(e) => setData('title', e.target.value)} />
                                         {errors.title && <span className="text-xs text-red-500">{errors.title}</span>}
                                     </div>
-                                    
+
                                     <div>
-                                        <Input 
-                                            type="number" 
+                                        <Input
+                                            type="number"
                                             step="0.01"
-                                            placeholder="Amount (৳)" 
-                                            value={data.amount} 
-                                            onChange={(e) => setData('amount', e.target.value)} 
+                                            placeholder="Amount (৳)"
+                                            value={data.amount}
+                                            onChange={(e) => setData('amount', e.target.value)}
                                         />
                                         {errors.amount && <span className="text-xs text-red-500">{errors.amount}</span>}
                                     </div>
 
                                     <div>
-                                        <Input 
-                                            type="date" 
-                                            value={data.date} 
-                                            onChange={(e) => setData('date', e.target.value)} 
-                                        />
+                                        <Input type="date" value={data.date} onChange={(e) => setData('date', e.target.value)} />
                                         {errors.date && <span className="text-xs text-red-500">{errors.date}</span>}
                                     </div>
-                                    
+
                                     <div className="col-span-2 flex gap-2">
                                         <Select onValueChange={(val) => setData('type', val)} defaultValue="fixed">
                                             <SelectTrigger className="w-1/3">
@@ -109,16 +107,18 @@ export default function ExpensesIndex({ expenses, summary }: { expenses: any; su
                                                 <SelectItem value="variable">Variable</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        
-                                        <Input 
-                                            placeholder="Note (optional)" 
-                                            value={data.note} 
-                                            onChange={(e) => setData('note', e.target.value)} 
+
+                                        <Input
+                                            placeholder="Note (optional)"
+                                            value={data.note}
+                                            onChange={(e) => setData('note', e.target.value)}
                                             className="w-2/3"
                                         />
                                     </div>
                                 </div>
-                                <Button type="submit" disabled={processing}>Record Expense</Button>
+                                <Button type="submit" disabled={processing}>
+                                    Record Expense
+                                </Button>
                             </form>
                         </CardContent>
                     </Card>
@@ -147,7 +147,7 @@ export default function ExpensesIndex({ expenses, summary }: { expenses: any; su
                                         <TableCell>{expense.category}</TableCell>
                                         <TableCell>{expense.title}</TableCell>
                                         <TableCell className="capitalize">{expense.type}</TableCell>
-                                        <TableCell className="text-right text-red-600 font-medium">
+                                        <TableCell className="text-right font-medium text-red-600">
                                             {Number(expense.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                         </TableCell>
                                         <TableCell className="text-right">

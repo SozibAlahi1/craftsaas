@@ -31,13 +31,13 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
         <div className="space-y-4 py-4 sm:py-6 lg:py-8">
             {/* Category Banner (Clickable Heading) */}
             {category.banner_image && (
-                <Link 
+                <Link
                     href={route('products.index', { category: category.name })}
                     className="group block overflow-hidden rounded-md transition-transform duration-500 hover:scale-[1.01]"
                 >
-                    <img 
-                        src={category.banner_image} 
-                        alt={category.name} 
+                    <img
+                        src={category.banner_image}
+                        alt={category.name}
                         className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105"
                         loading="lazy"
                     />
@@ -62,16 +62,14 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                 />
                             </div>
 
-                            <div className="px-4 pb-4 pt-3">
-                                <h3 className="line-clamp-1 text-[1.05rem] font-bold leading-6 text-slate-950">{product.name}</h3>
-                                <div className="mt-2 text-[1.35rem] font-black leading-none text-orange-600">{product.price}</div>
+                            <div className="px-4 pt-3 pb-4">
+                                <h3 className="line-clamp-1 text-[1.05rem] leading-6 font-bold text-slate-950">{product.name}</h3>
+                                <div className="mt-2 text-[1.35rem] leading-none font-black text-orange-600">{product.price}</div>
 
                                 <div className="mt-3 flex items-center gap-3 text-xs font-semibold">
                                     {product.old_price && <span className="text-slate-400 line-through">{product.old_price}</span>}
                                     {product.discount_text && (
-                                        <span className="rounded-md bg-orange-50 px-2 py-1 text-orange-600">
-                                            {product.discount_text}
-                                        </span>
+                                        <span className="rounded-md bg-orange-50 px-2 py-1 text-orange-600">{product.discount_text}</span>
                                     )}
                                 </div>
                             </div>

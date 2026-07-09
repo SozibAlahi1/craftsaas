@@ -226,81 +226,90 @@ html[data-theme='minimal'] {
 /* ── Palette tokens (CSS custom props) ── */
 html[data-theme='shutki'] {
     /* Core sage green (button image color) */
-    --shutki-sage:        hsl(89, 32%, 54%);
-    --shutki-sage-dark:   hsl(89, 35%, 42%);
-    --shutki-sage-light:  hsl(89, 28%, 88%);
-    --shutki-sage-bg:     hsl(89, 22%, 95%);
+    --shutki-sage: hsl(89, 32%, 54%);
+    --shutki-sage-dark: hsl(89, 35%, 42%);
+    --shutki-sage-light: hsl(89, 28%, 88%);
+    --shutki-sage-bg: hsl(89, 22%, 95%);
 
     /* Honey amber */
-    --shutki-honey:       hsl(38, 72%, 52%);
+    --shutki-honey: hsl(38, 72%, 52%);
     --shutki-honey-light: hsl(38, 70%, 92%);
 
     /* Terracotta */
-    --shutki-terra:       hsl(18, 55%, 52%);
+    --shutki-terra: hsl(18, 55%, 52%);
     --shutki-terra-light: hsl(18, 55%, 94%);
 
     /* Neutrals — all light */
-    --shutki-cream:       hsl(48, 40%, 97%);
-    --shutki-white:       #ffffff;
-    --shutki-border:      hsl(89, 20%, 86%);
+    --shutki-cream: hsl(48, 40%, 97%);
+    --shutki-white: #ffffff;
+    --shutki-border: hsl(89, 20%, 86%);
     --shutki-border-soft: hsl(89, 15%, 92%);
 
     /* Text — warm earth, never pure black */
-    --shutki-earth:       hsl(35, 28%, 18%);
-    --shutki-earth-mid:   hsl(35, 22%, 36%);
+    --shutki-earth: hsl(35, 28%, 18%);
+    --shutki-earth-mid: hsl(35, 22%, 36%);
     --shutki-earth-light: hsl(35, 18%, 52%);
 
     /* ── Tailwind design tokens ── */
-    --background:           hsl(48, 40%, 97%);      /* warm cream page bg */
-    --foreground:           hsl(35, 28%, 18%);       /* earth text */
-    --card:                 #ffffff;
-    --card-foreground:      hsl(35, 28%, 18%);
-    --popover:              #ffffff;
-    --popover-foreground:   hsl(35, 28%, 18%);
-    --primary:              hsl(89, 32%, 54%);        /* sage green */
-    --primary-foreground:   #ffffff;
-    --secondary:            hsl(38, 72%, 52%);        /* honey */
+    --background: hsl(48, 40%, 97%); /* warm cream page bg */
+    --foreground: hsl(35, 28%, 18%); /* earth text */
+    --card: #ffffff;
+    --card-foreground: hsl(35, 28%, 18%);
+    --popover: #ffffff;
+    --popover-foreground: hsl(35, 28%, 18%);
+    --primary: hsl(89, 32%, 54%); /* sage green */
+    --primary-foreground: #ffffff;
+    --secondary: hsl(38, 72%, 52%); /* honey */
     --secondary-foreground: hsl(35, 28%, 18%);
-    --muted:                hsl(89, 22%, 93%);
-    --muted-foreground:     hsl(35, 18%, 48%);
-    --accent:               hsl(18, 55%, 52%);        /* terracotta */
-    --accent-foreground:    #ffffff;
-    --destructive:          hsl(0, 65%, 50%);
+    --muted: hsl(89, 22%, 93%);
+    --muted-foreground: hsl(35, 18%, 48%);
+    --accent: hsl(18, 55%, 52%); /* terracotta */
+    --accent-foreground: #ffffff;
+    --destructive: hsl(0, 65%, 50%);
     --destructive-foreground: #ffffff;
-    --border:               hsl(89, 20%, 86%);
-    --input:                hsl(89, 18%, 92%);
-    --ring:                 hsl(89, 32%, 54%);
-    --chart-1:              hsl(89, 32%, 54%);
-    --chart-2:              hsl(38, 72%, 52%);
-    --chart-3:              hsl(18, 55%, 52%);
-    --chart-4:              hsl(89, 28%, 70%);
-    --chart-5:              hsl(38, 55%, 70%);
+    --border: hsl(89, 20%, 86%);
+    --input: hsl(89, 18%, 92%);
+    --ring: hsl(89, 32%, 54%);
+    --chart-1: hsl(89, 32%, 54%);
+    --chart-2: hsl(38, 72%, 52%);
+    --chart-3: hsl(18, 55%, 52%);
+    --chart-4: hsl(89, 28%, 70%);
+    --chart-5: hsl(38, 55%, 70%);
     --radius: 0.625rem;
 
     /* Sidebar uses sage bg — still light */
-    --sidebar-background:   hsl(89, 25%, 94%);
-    --sidebar-foreground:   hsl(35, 28%, 18%);
-    --sidebar-primary:      hsl(89, 32%, 54%);
+    --sidebar-background: hsl(89, 25%, 94%);
+    --sidebar-foreground: hsl(35, 28%, 18%);
+    --sidebar-primary: hsl(89, 32%, 54%);
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent:       hsl(89, 22%, 88%);
+    --sidebar-accent: hsl(89, 22%, 88%);
     --sidebar-accent-foreground: hsl(35, 28%, 18%);
-    --sidebar-border:       hsl(89, 20%, 84%);
-    --sidebar-ring:         hsl(89, 32%, 54%);
+    --sidebar-border: hsl(89, 20%, 84%);
+    --sidebar-ring: hsl(89, 32%, 54%);
 }
 
 /* Body — warm cream bg, subtle sage glow */
 html[data-theme='shutki'] body {
     background: hsl(48, 40%, 97%);
     background-image:
-        radial-gradient(ellipse at 10% 0%, hsl(89, 32%, 85%, 0.30) 0%, transparent 50%),
-        radial-gradient(ellipse at 90% 100%, hsl(38, 72%, 88%, 0.20) 0%, transparent 50%);
+        radial-gradient(ellipse at 10% 0%, hsl(89, 32%, 85%, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 100%, hsl(38, 72%, 88%, 0.2) 0%, transparent 50%);
 }
 
 /* Scrollbar */
-html[data-theme='shutki'] ::-webkit-scrollbar { width: 6px; }
-html[data-theme='shutki'] ::-webkit-scrollbar-track { background: hsl(89, 20%, 93%); }
-html[data-theme='shutki'] ::-webkit-scrollbar-thumb { background: hsl(89, 32%, 65%); border-radius: 99px; }
-html[data-theme='shutki'] ::-webkit-scrollbar-thumb:hover { background: hsl(89, 32%, 54%); }
+html[data-theme='shutki'] ::-webkit-scrollbar {
+    width: 6px;
+}
+html[data-theme='shutki'] ::-webkit-scrollbar-track {
+    background: hsl(89, 20%, 93%);
+}
+html[data-theme='shutki'] ::-webkit-scrollbar-thumb {
+    background: hsl(89, 32%, 65%);
+    border-radius: 99px;
+}
+html[data-theme='shutki'] ::-webkit-scrollbar-thumb:hover {
+    background: hsl(89, 32%, 54%);
+}
 
 /* Selection */
 html[data-theme='shutki'] ::selection {
@@ -311,33 +320,33 @@ html[data-theme='shutki'] ::selection {
 /* Header styling is now handled by Tailwind classes in Header.tsx */
 
 /* Primary buttons (slate-950 → sage) */
-html[data-theme='shutki'] button[class*="bg-slate-950"],
-html[data-theme='shutki'] a[class*="bg-slate-950"] {
+html[data-theme='shutki'] button[class*='bg-slate-950'],
+html[data-theme='shutki'] a[class*='bg-slate-950'] {
     background: hsl(89, 32%, 54%) !important;
     border-color: hsl(89, 35%, 42%) !important;
     color: #fff !important;
 }
-html[data-theme='shutki'] button[class*="bg-slate-950"]:hover,
-html[data-theme='shutki'] a[class*="bg-slate-950"]:hover {
+html[data-theme='shutki'] button[class*='bg-slate-950']:hover,
+html[data-theme='shutki'] a[class*='bg-slate-950']:hover {
     background: hsl(89, 35%, 44%) !important;
 }
 
 /* Orange → terracotta */
-html[data-theme='shutki'] [class*="text-orange-"] {
+html[data-theme='shutki'] [class*='text-orange-'] {
     color: hsl(18, 55%, 48%) !important;
 }
-html[data-theme='shutki'] [class*="bg-orange-600"],
-html[data-theme='shutki'] [class*="bg-orange-5"] {
+html[data-theme='shutki'] [class*='bg-orange-600'],
+html[data-theme='shutki'] [class*='bg-orange-5'] {
     background-color: hsl(18, 55%, 94%) !important;
     color: hsl(18, 55%, 42%) !important;
 }
-html[data-theme='shutki'] [class*="border-orange-"] {
+html[data-theme='shutki'] [class*='border-orange-'] {
     border-color: hsl(18, 55%, 72%) !important;
 }
 
 /* Cards & product cards */
-html[data-theme='shutki'] [class*="border border-slate-2"],
-html[data-theme='shutki'] [class*="border-slate-200"] {
+html[data-theme='shutki'] [class*='border border-slate-2'],
+html[data-theme='shutki'] [class*='border-slate-200'] {
     border-color: hsl(89, 20%, 86%) !important;
 }
 
@@ -362,32 +371,32 @@ html[data-theme='shutki'] h3 {
 html[data-theme='wildtannery'] {
     --background: hsl(0, 0%, 0%); /* #000000 */
     --foreground: hsl(0, 0%, 100%); /* #ffffff */
-    
+
     --card: hsl(0, 0%, 5%); /* slightly off-black for cards */
     --card-foreground: hsl(0, 0%, 100%);
-    
+
     --popover: hsl(0, 0%, 5%);
     --popover-foreground: hsl(0, 0%, 100%);
-    
+
     --primary: hsl(35, 45%, 60%); /* Leather Gold/Bronze accent */
     --primary-foreground: hsl(0, 0%, 0%);
-    
+
     --secondary: hsl(0, 0%, 15%);
     --secondary-foreground: hsl(0, 0%, 100%);
-    
+
     --muted: hsl(0, 0%, 15%);
     --muted-foreground: hsl(0, 0%, 65%);
-    
+
     --accent: hsl(35, 45%, 60%);
     --accent-foreground: hsl(0, 0%, 0%);
-    
+
     --destructive: hsl(0, 65%, 50%);
     --destructive-foreground: hsl(0, 0%, 100%);
-    
+
     --border: hsl(0, 0%, 20%);
     --input: hsl(0, 0%, 15%);
     --ring: hsl(35, 45%, 60%);
-    
+
     --radius: 0.25rem; /* sharper corners for premium feel */
 }
 
@@ -403,8 +412,8 @@ html[data-theme='wildtannery'] a:hover {
     transition: color 0.3s ease;
 }
 
-html[data-theme='wildtannery'] button[class*="bg-slate-950"],
-html[data-theme='wildtannery'] a[class*="bg-slate-950"] {
+html[data-theme='wildtannery'] button[class*='bg-slate-950'],
+html[data-theme='wildtannery'] a[class*='bg-slate-950'] {
     background: transparent !important;
     border: 1px solid hsl(35, 45%, 60%) !important;
     color: hsl(35, 45%, 60%) !important;
@@ -414,8 +423,8 @@ html[data-theme='wildtannery'] a[class*="bg-slate-950"] {
     font-weight: 500;
 }
 
-html[data-theme='wildtannery'] button[class*="bg-slate-950"]:hover,
-html[data-theme='wildtannery'] a[class*="bg-slate-950"]:hover {
+html[data-theme='wildtannery'] button[class*='bg-slate-950']:hover,
+html[data-theme='wildtannery'] a[class*='bg-slate-950']:hover {
     background: hsl(35, 45%, 60%) !important;
     color: #000000 !important;
 }

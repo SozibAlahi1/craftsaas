@@ -1,8 +1,8 @@
-import { Link, usePage, router } from '@inertiajs/react';
-import { ShoppingBag, Search, Menu, User, X, Minus, Plus, Trash2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Link, router, usePage } from '@inertiajs/react';
+import { Menu, Minus, Plus, Search, ShoppingBag, Trash2, User, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export function Header() {
     const { menus, settings, cart, cartCount, auth } = usePage().props as any;
@@ -22,24 +22,25 @@ export function Header() {
     const [isLoading, setIsLoading] = useState(false);
 
     // Calculate cart total subtotal safely handling both arrays and objects
-    const cartItems = Array.isArray(cart) 
-        ? cart 
-        : (cart && typeof cart === 'object' ? Object.values(cart) : []);
+    const cartItems = Array.isArray(cart) ? cart : cart && typeof cart === 'object' ? Object.values(cart) : [];
 
     const cartTotal = cartItems.reduce((sum: number, item: any) => {
         const price = parseFloat(String(item.price).replace(/[^0-9.]/g, ''));
-        return sum + (price * (item.quantity || 1));
+        return sum + price * (item.quantity || 1);
     }, 0);
 
     // Fallback menus if admin panel hasn't configured them
-    const displayMenus = (menus && menus.length > 0) ? menus : [
-        { id: 'fb-home', title: 'Home', url: '/' },
-        { id: 'fb-shoes', title: 'Shoes', url: '/products?category=shoes' },
-        { id: 'fb-bags', title: 'Bags', url: '/products?category=bags' },
-        { id: 'fb-wallets', title: 'Wallets', url: '/products?category=wallets' },
-        { id: 'fb-belts', title: 'Belts', url: '/products?category=belts' },
-        { id: 'fb-accessories', title: 'Accessories', url: '/products?category=accessories' }
-    ];
+    const displayMenus =
+        menus && menus.length > 0
+            ? menus
+            : [
+                  { id: 'fb-home', title: 'Home', url: '/' },
+                  { id: 'fb-shoes', title: 'Shoes', url: '/products?category=shoes' },
+                  { id: 'fb-bags', title: 'Bags', url: '/products?category=bags' },
+                  { id: 'fb-wallets', title: 'Wallets', url: '/products?category=wallets' },
+                  { id: 'fb-belts', title: 'Belts', url: '/products?category=belts' },
+                  { id: 'fb-accessories', title: 'Accessories', url: '/products?category=accessories' },
+              ];
 
     // Ajax Search Autocomplete Suggestion Logic
     useEffect(() => {
@@ -87,74 +88,78 @@ export function Header() {
     return (
         <header className="sticky top-0 z-50 w-full border-b border-[#1c1c1c] bg-[#000000] text-white">
             {/* Main Header Row */}
-            <div className="container mx-auto px-4 lg:px-8 h-24 flex items-center justify-between">
-                
+            <div className="container mx-auto flex h-24 items-center justify-between px-4 lg:px-8">
                 {/* Left Column: Logo */}
                 <div className="flex items-center">
                     {/* Mobile Menu Trigger */}
-                    <button 
+                    <button
                         onClick={() => setIsMobileMenuOpen(true)}
-                        className="lg:hidden mr-4 text-white hover:text-[#cba876] transition-colors"
+                        className="mr-4 text-white transition-colors hover:text-[#cba876] lg:hidden"
                         aria-label="Open Menu"
                     >
-                        <Menu className="w-6 h-6" />
+                        <Menu className="h-6 w-6" />
                     </button>
 
                     <Link href="/" className="block">
                         {settings.site_logo_url ? (
-                            <img src={settings.site_logo_url} alt={settings.site_name} className="h-14 md:h-18 w-auto object-contain" />
+                            <img src={settings.site_logo_url} alt={settings.site_name} className="h-14 w-auto object-contain md:h-18" />
                         ) : (
-                            <span className="text-xl md:text-2xl font-bold tracking-[0.1em] font-serif-display uppercase">
-                                {settings.site_name}
-                            </span>
+                            <span className="font-serif-display text-xl font-bold tracking-[0.1em] uppercase md:text-2xl">{settings.site_name}</span>
                         )}
                     </Link>
                 </div>
 
                 {/* Center Column: Search Form */}
-                <div className="hidden lg:flex flex-grow justify-center max-w-lg mx-8 xl:mx-16 search-container-desktop relative">
+                <div className="search-container-desktop relative mx-8 hidden max-w-lg flex-grow justify-center lg:flex xl:mx-16">
                     {/* Search Form (Sleek design: no solid button block, icon trigger at the end) */}
-                    <form onSubmit={handleSearch} className="w-full flex items-center h-11 rounded-full border border-[#cba876] bg-[#050505] focus-within:ring-2 focus-within:ring-[#cba876]/20 transition-all pr-4">
+                    <form
+                        onSubmit={handleSearch}
+                        className="flex h-11 w-full items-center rounded-full border border-[#cba876] bg-[#050505] pr-4 transition-all focus-within:ring-2 focus-within:ring-[#cba876]/20"
+                    >
                         <input
                             type="text"
                             placeholder="Search for products"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                            className="w-full bg-transparent pl-6 pr-2 py-2 text-sm text-white placeholder-gray-400 focus:outline-none"
+                            className="w-full bg-transparent py-2 pr-2 pl-6 text-sm text-white placeholder-gray-400 focus:outline-none"
                         />
-                        <button 
-                            type="submit" 
-                            className="text-[#cba876] hover:text-white transition-colors flex items-center justify-center shrink-0"
+                        <button
+                            type="submit"
+                            className="flex shrink-0 items-center justify-center text-[#cba876] transition-colors hover:text-white"
                             aria-label="Search"
                         >
-                            <Search className="w-5 h-5" />
+                            <Search className="h-5 w-5" />
                         </button>
                     </form>
 
                     {/* Ajax Autocomplete Suggestions List */}
                     {showSuggestions && suggestions.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#0a0a0a] border border-[#1c1c1c] rounded-lg shadow-2xl overflow-hidden z-50 divide-y divide-[#1c1c1c]">
+                        <div className="absolute top-full right-0 left-0 z-50 mt-1.5 divide-y divide-[#1c1c1c] overflow-hidden rounded-lg border border-[#1c1c1c] bg-[#0a0a0a] shadow-2xl">
                             {suggestions.map((item: any) => {
-                                const imgUrl = item.image 
-                                    ? (item.image.startsWith('http') ? item.image : `/storage/${item.image}`) 
+                                const imgUrl = item.image
+                                    ? item.image.startsWith('http')
+                                        ? item.image
+                                        : `/storage/${item.image}`
                                     : '/images/placeholder.png';
-                                
+
                                 return (
                                     <Link
                                         key={item.id}
                                         href={`/products/${item.slug}`}
                                         onClick={() => setShowSuggestions(false)}
-                                        className="flex items-center px-4 py-3 hover:bg-[#cba876]/10 transition-colors group text-left"
+                                        className="group flex items-center px-4 py-3 text-left transition-colors hover:bg-[#cba876]/10"
                                     >
-                                        <img 
-                                            src={imgUrl} 
-                                            alt={item.name} 
-                                            className="w-10 h-10 object-cover rounded bg-[#0d0d0d] border border-white/5 mr-3"
+                                        <img
+                                            src={imgUrl}
+                                            alt={item.name}
+                                            className="mr-3 h-10 w-10 rounded border border-white/5 bg-[#0d0d0d] object-cover"
                                         />
-                                        <div className="flex-grow min-w-0">
-                                            <h5 className="text-xs font-bold text-white truncate group-hover:text-[#cba876] transition-colors">{item.name}</h5>
-                                            <span className="text-[11px] font-black text-[#cba876] block mt-0.5">{item.price}</span>
+                                        <div className="min-w-0 flex-grow">
+                                            <h5 className="truncate text-xs font-bold text-white transition-colors group-hover:text-[#cba876]">
+                                                {item.name}
+                                            </h5>
+                                            <span className="mt-0.5 block text-[11px] font-black text-[#cba876]">{item.price}</span>
                                         </div>
                                     </Link>
                                 );
@@ -164,37 +169,39 @@ export function Header() {
                 </div>
 
                 {/* Right Column: Tools (Cart & Account) */}
-                <div className="flex items-center space-x-3 md:space-x-4 shrink-0">
-                    
+                <div className="flex shrink-0 items-center space-x-3 md:space-x-4">
                     {/* User Account / Login (Icon-only, styled circularly to match cart) */}
-                    <Link 
-                        href={auth.user ? "/dashboard" : "/login"} 
-                        className="p-2.5 bg-[#ffffff0f] rounded-full border border-[#ffffff1a] hover:border-[#cba876]/40 transition-colors group flex items-center justify-center"
-                        title={auth.user ? "Dashboard" : "Login / Register"}
+                    <Link
+                        href={auth.user ? '/dashboard' : '/login'}
+                        className="group flex items-center justify-center rounded-full border border-[#ffffff1a] bg-[#ffffff0f] p-2.5 transition-colors hover:border-[#cba876]/40"
+                        title={auth.user ? 'Dashboard' : 'Login / Register'}
                     >
-                        <User className="w-6 h-6 text-white group-hover:text-[#cba876] transition-colors" />
+                        <User className="h-6 w-6 text-white transition-colors group-hover:text-[#cba876]" />
                     </Link>
 
                     {/* Cart Tool (Icon-only, styled circularly with badge and Sheet drawer) */}
                     <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
                         <SheetTrigger asChild>
-                            <button 
-                                type="button" 
-                                className="relative p-2.5 bg-[#ffffff0f] rounded-full border border-[#ffffff1a] hover:border-[#cba876]/40 transition-colors group flex items-center justify-center cursor-pointer"
+                            <button
+                                type="button"
+                                className="group relative flex cursor-pointer items-center justify-center rounded-full border border-[#ffffff1a] bg-[#ffffff0f] p-2.5 transition-colors hover:border-[#cba876]/40"
                                 title="Shopping Cart"
                             >
-                                <ShoppingBag className="w-6 h-6 text-white group-hover:text-[#cba876] transition-colors" />
+                                <ShoppingBag className="h-6 w-6 text-white transition-colors group-hover:text-[#cba876]" />
                                 {cartCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 w-4.5 h-4.5 bg-[#cba876] text-black text-[10px] font-black flex items-center justify-center rounded-full shadow-sm">
+                                    <span className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#cba876] text-[10px] font-black text-black shadow-sm">
                                         {cartCount}
                                     </span>
                                 )}
                             </button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="flex w-[min(28rem,100vw)] flex-col bg-[#0a0a0a] text-white p-0 border-l border-[#1c1c1c] focus:ring-0 focus-visible:outline-none">
-                            <SheetHeader className="border-b border-[#1c1c1c] p-6 text-left bg-[#050505]">
+                        <SheetContent
+                            side="right"
+                            className="flex w-[min(28rem,100vw)] flex-col border-l border-[#1c1c1c] bg-[#0a0a0a] p-0 text-white focus:ring-0 focus-visible:outline-none"
+                        >
+                            <SheetHeader className="border-b border-[#1c1c1c] bg-[#050505] p-6 text-left">
                                 <div className="flex items-center justify-between">
-                                    <SheetTitle className="flex items-center gap-2.5 text-xl font-black uppercase tracking-widest text-white">
+                                    <SheetTitle className="flex items-center gap-2.5 text-xl font-black tracking-widest text-white uppercase">
                                         <ShoppingBag className="h-6 w-6 text-[#cba876]" />
                                         Shopping Cart ({cartCount})
                                     </SheetTitle>
@@ -207,27 +214,29 @@ export function Header() {
                                         <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#111111] text-gray-700">
                                             <ShoppingBag className="h-10 w-10" />
                                         </div>
-                                        <h3 className="text-lg font-bold text-white uppercase tracking-wider">Your cart is empty</h3>
+                                        <h3 className="text-lg font-bold tracking-wider text-white uppercase">Your cart is empty</h3>
                                         <p className="mt-2 text-sm text-gray-400">It looks like you haven't added anything to your cart yet.</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
                                         {Object.entries(cart || {}).map(([id, item]: [string, any]) => {
-                                            const imgUrl = item.image 
-                                                ? (item.image.startsWith('http') ? item.image : `/storage/${item.image}`) 
+                                            const imgUrl = item.image
+                                                ? item.image.startsWith('http')
+                                                    ? item.image
+                                                    : `/storage/${item.image}`
                                                 : '/images/placeholder.png';
 
                                             return (
                                                 <div key={id} className="rounded-lg border border-[#1c1c1c] bg-[#0d0d0d] p-4">
                                                     <div className="flex gap-4">
-                                                        <div className="h-20 w-20 flex-none overflow-hidden rounded-md border border-[#1c1c1c] p-0.5 bg-[#050505]">
-                                                            <img src={imgUrl} alt={item.name} className="h-full w-full object-cover rounded-sm" />
+                                                        <div className="h-20 w-20 flex-none overflow-hidden rounded-md border border-[#1c1c1c] bg-[#050505] p-0.5">
+                                                            <img src={imgUrl} alt={item.name} className="h-full w-full rounded-sm object-cover" />
                                                         </div>
                                                         <div className="flex flex-1 flex-col justify-between">
                                                             <div className="space-y-0.5">
-                                                                <h4 className="text-[14px] font-bold text-white leading-snug">{item.name}</h4>
+                                                                <h4 className="text-[14px] leading-snug font-bold text-white">{item.name}</h4>
                                                                 {item.color && (
-                                                                    <span className="text-[11px] font-bold text-gray-500 uppercase block">
+                                                                    <span className="block text-[11px] font-bold text-gray-500 uppercase">
                                                                         {item.color} {item.size ? `/ ${item.size}` : ''}
                                                                     </span>
                                                                 )}
@@ -237,23 +246,31 @@ export function Header() {
                                                             </div>
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center gap-3">
-                                                                    <button 
-                                                                        onClick={() => router.patch(route('cart.update', id), { quantity: Math.max(1, item.quantity - 1) })}
-                                                                        className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#1c1c1c] bg-[#141414] text-gray-400 hover:text-white hover:bg-[#1f1f1f] transition-colors"
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            router.patch(route('cart.update', id), {
+                                                                                quantity: Math.max(1, item.quantity - 1),
+                                                                            })
+                                                                        }
+                                                                        className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#1c1c1c] bg-[#141414] text-gray-400 transition-colors hover:bg-[#1f1f1f] hover:text-white"
                                                                     >
                                                                         <Minus className="h-3 w-3" />
                                                                     </button>
-                                                                    <span className="text-[14px] font-bold text-white w-4 text-center">{item.quantity}</span>
-                                                                    <button 
-                                                                        onClick={() => router.patch(route('cart.update', id), { quantity: item.quantity + 1 })}
-                                                                        className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#1c1c1c] bg-[#141414] text-gray-400 hover:text-white hover:bg-[#1f1f1f] transition-colors"
+                                                                    <span className="w-4 text-center text-[14px] font-bold text-white">
+                                                                        {item.quantity}
+                                                                    </span>
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            router.patch(route('cart.update', id), { quantity: item.quantity + 1 })
+                                                                        }
+                                                                        className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#1c1c1c] bg-[#141414] text-gray-400 transition-colors hover:bg-[#1f1f1f] hover:text-white"
                                                                     >
                                                                         <Plus className="h-3 w-3" />
                                                                     </button>
                                                                 </div>
-                                                                <button 
+                                                                <button
                                                                     onClick={() => router.delete(route('cart.remove', id))}
-                                                                    className="text-gray-500 hover:text-red-500 transition-colors"
+                                                                    className="text-gray-500 transition-colors hover:text-red-500"
                                                                 >
                                                                     <Trash2 className="h-5 w-5" />
                                                                 </button>
@@ -268,16 +285,14 @@ export function Header() {
                             </div>
 
                             {cartCount > 0 && (
-                                <div className="border-t border-[#1c1c1c] p-6 space-y-4 bg-[#050505]">
+                                <div className="space-y-4 border-t border-[#1c1c1c] bg-[#050505] p-6">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[15px] font-black uppercase tracking-widest text-gray-400">Total:</span>
-                                        <span className="text-[22px] font-black text-[#cba876]">
-                                            ৳ {cartTotal.toLocaleString()}
-                                        </span>
+                                        <span className="text-[15px] font-black tracking-widest text-gray-400 uppercase">Total:</span>
+                                        <span className="text-[22px] font-black text-[#cba876]">৳ {cartTotal.toLocaleString()}</span>
                                     </div>
                                     <div className="space-y-3">
-                                        <Link href={route('checkout.index')} onClick={() => setIsCartOpen(false)} className="w-full block">
-                                            <Button className="w-full rounded-md h-12 text-sm font-black bg-[#cba876] text-black hover:bg-[#b89563] uppercase tracking-widest transition-colors cursor-pointer">
+                                        <Link href={route('checkout.index')} onClick={() => setIsCartOpen(false)} className="block w-full">
+                                            <Button className="h-12 w-full cursor-pointer rounded-md bg-[#cba876] text-sm font-black tracking-widest text-black uppercase transition-colors hover:bg-[#b89563]">
                                                 Checkout Now
                                             </Button>
                                         </Link>
@@ -290,27 +305,27 @@ export function Header() {
             </div>
 
             {/* Dedicated Desktop Menu Bar Row (Below main header row) */}
-            <div className="hidden lg:block border-t border-[#1c1c1c] bg-[#000000]">
+            <div className="hidden border-t border-[#1c1c1c] bg-[#000000] lg:block">
                 <div className="container mx-auto px-8">
-                    <nav className="flex items-center justify-center space-x-8 h-12">
+                    <nav className="flex h-12 items-center justify-center space-x-8">
                         {displayMenus.map((menu: any) => (
-                            <div key={menu.id} className="relative group h-full flex items-center">
+                            <div key={menu.id} className="group relative flex h-full items-center">
                                 <Link
                                     href={menu.url || (menu.category ? `/products?category=${menu.category.slug}` : '#')}
-                                    className="text-[13px] font-bold tracking-wider text-gray-300 hover:text-[#cba876] uppercase transition-colors h-full flex items-center relative"
+                                    className="relative flex h-full items-center text-[13px] font-bold tracking-wider text-gray-300 uppercase transition-colors hover:text-[#cba876]"
                                 >
                                     {menu.title}
-                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#cba876] group-hover:w-full transition-all duration-300" />
+                                    <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-[#cba876] transition-all duration-300 group-hover:w-full" />
                                 </Link>
 
                                 {/* Dropdown Menu (If children exist) */}
                                 {menu.children && menu.children.length > 0 && (
-                                    <div className="absolute top-full left-0 mt-0 w-56 bg-[#0a0a0a] border border-[#1c1c1c] rounded-b-md shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                    <div className="invisible absolute top-full left-0 z-50 mt-0 w-56 rounded-b-md border border-[#1c1c1c] bg-[#0a0a0a] py-2 opacity-0 shadow-2xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
                                         {menu.children.map((child: any) => (
                                             <Link
                                                 key={child.id}
                                                 href={child.url || (child.category ? `/products?category=${child.category.slug}` : '#')}
-                                                className="block px-4 py-2 text-[12px] font-semibold text-gray-400 hover:text-white hover:bg-[#cba876]/10 transition-colors"
+                                                className="block px-4 py-2 text-[12px] font-semibold text-gray-400 transition-colors hover:bg-[#cba876]/10 hover:text-white"
                                             >
                                                 {child.title}
                                             </Link>
@@ -324,47 +339,51 @@ export function Header() {
             </div>
 
             {/* Mobile Search Bar Row (Show on small screens below header) */}
-            <div className="lg:hidden px-4 pb-4 search-container-mobile relative">
-                <form onSubmit={handleSearch} className="w-full flex items-center h-10 rounded-full border border-[#cba876] bg-[#050505] transition-all pr-4">
+            <div className="search-container-mobile relative px-4 pb-4 lg:hidden">
+                <form
+                    onSubmit={handleSearch}
+                    className="flex h-10 w-full items-center rounded-full border border-[#cba876] bg-[#050505] pr-4 transition-all"
+                >
                     <input
                         type="text"
                         placeholder="Search for products"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                        className="w-full bg-transparent pl-5 pr-2 py-2 text-sm text-white placeholder-gray-400 focus:outline-none"
+                        className="w-full bg-transparent py-2 pr-2 pl-5 text-sm text-white placeholder-gray-400 focus:outline-none"
                     />
-                    <button 
-                        type="submit" 
-                        className="text-[#cba876] hover:text-white transition-colors flex items-center justify-center shrink-0"
-                    >
-                        <Search className="w-4 h-4" />
+                    <button type="submit" className="flex shrink-0 items-center justify-center text-[#cba876] transition-colors hover:text-white">
+                        <Search className="h-4 w-4" />
                     </button>
                 </form>
 
                 {/* Mobile Autocomplete Suggestions List */}
                 {showSuggestions && suggestions.length > 0 && (
-                    <div className="absolute top-full left-4 right-4 mt-1 bg-[#0a0a0a] border border-[#1c1c1c] rounded-lg shadow-2xl overflow-hidden z-50 divide-y divide-[#1c1c1c]">
+                    <div className="absolute top-full right-4 left-4 z-50 mt-1 divide-y divide-[#1c1c1c] overflow-hidden rounded-lg border border-[#1c1c1c] bg-[#0a0a0a] shadow-2xl">
                         {suggestions.map((item: any) => {
-                            const imgUrl = item.image 
-                                ? (item.image.startsWith('http') ? item.image : `/storage/${item.image}`) 
+                            const imgUrl = item.image
+                                ? item.image.startsWith('http')
+                                    ? item.image
+                                    : `/storage/${item.image}`
                                 : '/images/placeholder.png';
-                            
+
                             return (
                                 <Link
                                     key={item.id}
                                     href={`/products/${item.slug}`}
                                     onClick={() => setShowSuggestions(false)}
-                                    className="flex items-center px-3 py-2.5 hover:bg-[#cba876]/10 transition-colors group text-left"
+                                    className="group flex items-center px-3 py-2.5 text-left transition-colors hover:bg-[#cba876]/10"
                                 >
-                                    <img 
-                                        src={imgUrl} 
-                                        alt={item.name} 
-                                        className="w-8 h-8 object-cover rounded bg-[#0d0d0d] border border-white/5 mr-3"
+                                    <img
+                                        src={imgUrl}
+                                        alt={item.name}
+                                        className="mr-3 h-8 w-8 rounded border border-white/5 bg-[#0d0d0d] object-cover"
                                     />
-                                    <div className="flex-grow min-w-0">
-                                        <h5 className="text-[11px] font-bold text-white truncate group-hover:text-[#cba876] transition-colors">{item.name}</h5>
-                                        <span className="text-[10px] font-black text-[#cba876] block mt-0.5">{item.price}</span>
+                                    <div className="min-w-0 flex-grow">
+                                        <h5 className="truncate text-[11px] font-bold text-white transition-colors group-hover:text-[#cba876]">
+                                            {item.name}
+                                        </h5>
+                                        <span className="mt-0.5 block text-[10px] font-black text-[#cba876]">{item.price}</span>
                                     </div>
                                 </Link>
                             );
@@ -377,45 +396,38 @@ export function Header() {
             {isMobileMenuOpen && (
                 <div className="fixed inset-0 z-50 flex lg:hidden">
                     {/* Backdrop */}
-                    <div 
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-                    />
-                    
+                    <div onClick={() => setIsMobileMenuOpen(false)} className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+
                     {/* Drawer Content */}
-                    <div className="relative w-80 max-w-[80vw] bg-[#0a0a0a] border-r border-[#1c1c1c] h-full flex flex-col p-6 z-10 text-white">
-                        <div className="flex items-center justify-between mb-8">
-                            <span className="text-lg font-bold uppercase tracking-wider">{settings.site_name}</span>
-                            <button 
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-gray-400 hover:text-white"
-                                aria-label="Close menu"
-                            >
-                                <X className="w-6 h-6" />
+                    <div className="relative z-10 flex h-full w-80 max-w-[80vw] flex-col border-r border-[#1c1c1c] bg-[#0a0a0a] p-6 text-white">
+                        <div className="mb-8 flex items-center justify-between">
+                            <span className="text-lg font-bold tracking-wider uppercase">{settings.site_name}</span>
+                            <button onClick={() => setIsMobileMenuOpen(false)} className="text-gray-400 hover:text-white" aria-label="Close menu">
+                                <X className="h-6 w-6" />
                             </button>
                         </div>
 
                         {/* Navigation Links */}
-                        <nav className="flex flex-col space-y-4 overflow-y-auto mb-8">
+                        <nav className="mb-8 flex flex-col space-y-4 overflow-y-auto">
                             {displayMenus.map((menu: any) => (
                                 <div key={menu.id} className="flex flex-col space-y-2">
                                     <Link
                                         href={menu.url || (menu.category ? `/products?category=${menu.category.slug}` : '#')}
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="text-sm font-bold uppercase tracking-wider hover:text-[#cba876] transition-colors"
+                                        className="text-sm font-bold tracking-wider uppercase transition-colors hover:text-[#cba876]"
                                     >
                                         {menu.title}
                                     </Link>
-                                    
+
                                     {/* Children Links */}
                                     {menu.children && menu.children.length > 0 && (
-                                        <div className="pl-4 flex flex-col space-y-2 border-l border-[#1c1c1c]">
+                                        <div className="flex flex-col space-y-2 border-l border-[#1c1c1c] pl-4">
                                             {menu.children.map((child: any) => (
                                                 <Link
                                                     key={child.id}
                                                     href={child.url || (child.category ? `/products?category=${child.category.slug}` : '#')}
                                                     onClick={() => setIsMobileMenuOpen(false)}
-                                                    className="text-xs text-gray-400 hover:text-white transition-colors"
+                                                    className="text-xs text-gray-400 transition-colors hover:text-white"
                                                 >
                                                     {child.title}
                                                 </Link>
@@ -432,7 +444,7 @@ export function Header() {
                                 <Link
                                     href="/dashboard"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="block text-sm font-bold uppercase text-gray-300 hover:text-[#cba876] transition-colors"
+                                    className="block text-sm font-bold text-gray-300 uppercase transition-colors hover:text-[#cba876]"
                                 >
                                     Dashboard ({auth.user.name})
                                 </Link>
@@ -440,7 +452,7 @@ export function Header() {
                                 <Link
                                     href="/login"
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="block text-sm font-bold uppercase text-gray-300 hover:text-[#cba876] transition-colors"
+                                    className="block text-sm font-bold text-gray-300 uppercase transition-colors hover:text-[#cba876]"
                                 >
                                     Login / Register
                                 </Link>

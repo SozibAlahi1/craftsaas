@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useId, useRef } from 'react';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from '@inertiajs/react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useId, useRef } from 'react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -66,10 +66,7 @@ export function YouTubeReelsSection({ reels = [] }: { reels?: any[] }) {
                 return;
             }
 
-            const allReels = [
-                ...reels.map(r => ({ ...r, suffix: 'mobile' })),
-                ...reels.map(r => ({ ...r, suffix: 'desktop' }))
-            ];
+            const allReels = [...reels.map((r) => ({ ...r, suffix: 'mobile' })), ...reels.map((r) => ({ ...r, suffix: 'desktop' }))];
 
             allReels.forEach((reel) => {
                 const elementId = reelElementId(reel.id, reel.suffix);
@@ -102,7 +99,7 @@ export function YouTubeReelsSection({ reels = [] }: { reels?: any[] }) {
                             if (event.data === window.YT.PlayerState.ENDED) {
                                 event.target.playVideo();
                             }
-                        }
+                        },
                     },
                 });
 
@@ -176,7 +173,9 @@ export function YouTubeReelsSection({ reels = [] }: { reels?: any[] }) {
                                                 )}
 
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="truncate text-sm font-bold uppercase tracking-wide text-slate-950">{reel.product ? reel.product.name : reel.title}</p>
+                                                    <p className="truncate text-sm font-bold tracking-wide text-slate-950 uppercase">
+                                                        {reel.product ? reel.product.name : reel.title}
+                                                    </p>
                                                     {reel.product && <p className="text-sm font-semibold text-emerald-700">{reel.product.price}</p>}
                                                 </div>
 
@@ -200,7 +199,7 @@ export function YouTubeReelsSection({ reels = [] }: { reels?: any[] }) {
                     <button
                         type="button"
                         onClick={() => swiperRef.current?.slidePrev()}
-                        className="absolute left-2 top-1/2 z-10 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-[0_12px_28px_rgba(15,23,42,0.18)] backdrop-blur-md transition-transform hover:-translate-y-1/2 hover:scale-105"
+                        className="absolute top-1/2 left-2 z-10 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-[0_12px_28px_rgba(15,23,42,0.18)] backdrop-blur-md transition-transform hover:-translate-y-1/2 hover:scale-105"
                         aria-label="Previous reel"
                     >
                         <ChevronLeft className="h-5 w-5" />
@@ -209,14 +208,14 @@ export function YouTubeReelsSection({ reels = [] }: { reels?: any[] }) {
                     <button
                         type="button"
                         onClick={() => swiperRef.current?.slideNext()}
-                        className="absolute right-2 top-1/2 z-10 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-[0_12px_28px_rgba(15,23,42,0.18)] backdrop-blur-md transition-transform hover:-translate-y-1/2 hover:scale-105"
+                        className="absolute top-1/2 right-2 z-10 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-[0_12px_28px_rgba(15,23,42,0.18)] backdrop-blur-md transition-transform hover:-translate-y-1/2 hover:scale-105"
                         aria-label="Next reel"
                     >
                         <ChevronRight className="h-5 w-5" />
                     </button>
                 </div>
 
-                <div className="hidden sm:grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                <div className="hidden gap-4 sm:grid sm:grid-cols-2 xl:grid-cols-4">
                     {reels.map((reel) => (
                         <div
                             key={reel.id}
@@ -241,7 +240,9 @@ export function YouTubeReelsSection({ reels = [] }: { reels?: any[] }) {
                                         )}
 
                                         <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-bold uppercase tracking-wide text-slate-950">{reel.product ? reel.product.name : reel.title}</p>
+                                            <p className="truncate text-sm font-bold tracking-wide text-slate-950 uppercase">
+                                                {reel.product ? reel.product.name : reel.title}
+                                            </p>
                                             {reel.product && <p className="text-sm font-semibold text-emerald-700">{reel.product.price}</p>}
                                         </div>
 

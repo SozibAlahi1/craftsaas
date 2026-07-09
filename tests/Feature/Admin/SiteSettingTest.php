@@ -167,4 +167,37 @@ class SiteSettingTest extends TestCase
             'footer_email',
         ]);
     }
+
+    /**
+     * Admin can successfully update GTM settings.
+     */
+    public function test_admin_can_update_gtm_settings(): void
+    {
+        $user = User::factory()->create();
+
+        $payload = [
+            'gtm_container_id' => 'GTM-N8X9ZJ9',
+        ];
+
+        $response = $this->actingAs($user)
+            ->from(route('admin.settings.index'))
+            ->post(route('admin.settings.gtm.update'), $payload);
+
+        $response->assertRedirect(route('admin.settings.index'));
+        $response->assertSessionHasNoErrors();
+
+        // Assert database holds the new values
+        $this->assertEquals('GTM-N8X9ZJ9', SiteSetting::getValue('gtm_container_id'));
+
+        // Assert validation fails with invalid format
+        $invalidPayload = [
+            'gtm_container_id' => 'invalid-format',
+        ];
+
+        $response = $this->actingAs($user)
+            ->from(route('admin.settings.index'))
+            ->post(route('admin.settings.gtm.update'), $invalidPayload);
+
+        $response->assertSessionHasErrors(['gtm_container_id']);
+    }
 }

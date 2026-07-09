@@ -74,6 +74,7 @@ class HandleInertiaRequests extends Middleware
                 'site_theme' => SiteSetting::getValue('site_theme', 'classic'),
                 'site_logo_url' => SiteSetting::getValue('site_logo') ? Storage::disk('public')->url(SiteSetting::getValue('site_logo')) : '',
                 'site_favicon_url' => SiteSetting::getValue('site_favicon') ? Storage::disk('public')->url(SiteSetting::getValue('site_favicon')) : '',
+                'gtm_container_id' => SiteSetting::getValue('gtm_container_id', ''),
             ],
         ]);
     }

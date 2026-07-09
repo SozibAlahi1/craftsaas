@@ -4,7 +4,25 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Tags, Package, Menu, Settings, Boxes, ShoppingCart, Ban, User, UserX, Activity, Target, DollarSign, Receipt, MessageCircle, MessageSquare, Bot, HardDrive } from 'lucide-react';
+import {
+    Activity,
+    BookOpen,
+    Bot,
+    Boxes,
+    DollarSign,
+    HardDrive,
+    LayoutGrid,
+    Menu,
+    MessageCircle,
+    MessageSquare,
+    Package,
+    Receipt,
+    Settings,
+    ShoppingCart,
+    Tags,
+    User,
+    UserX,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [

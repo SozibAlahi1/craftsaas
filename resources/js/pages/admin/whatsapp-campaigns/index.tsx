@@ -1,9 +1,9 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AppLayout from '@/layouts/app-layout';
+import { Head, useForm } from '@inertiajs/react';
 
 export default function WhatsAppCampaignsIndex({ campaigns }: { campaigns: any }) {
     const { data, setData, post, processing, reset, errors } = useForm({
@@ -20,7 +20,12 @@ export default function WhatsAppCampaignsIndex({ campaigns }: { campaigns: any }
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Automation', href: '/admin/whatsapp-campaigns' }, { title: 'WhatsApp Campaigns', href: '/admin/whatsapp-campaigns' }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Automation', href: '/admin/whatsapp-campaigns' },
+                { title: 'WhatsApp Campaigns', href: '/admin/whatsapp-campaigns' },
+            ]}
+        >
             <Head title="WhatsApp Campaigns" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
@@ -33,33 +38,31 @@ export default function WhatsAppCampaignsIndex({ campaigns }: { campaigns: any }
                         <CardContent>
                             <form onSubmit={submit} className="flex flex-col gap-4">
                                 <div>
-                                    <Input 
-                                        placeholder="Campaign Name" 
-                                        value={data.name} 
-                                        onChange={(e) => setData('name', e.target.value)} 
-                                    />
+                                    <Input placeholder="Campaign Name" value={data.name} onChange={(e) => setData('name', e.target.value)} />
                                     {errors.name && <span className="text-xs text-red-500">{errors.name}</span>}
                                 </div>
-                                
+
                                 <div>
-                                    <Input 
-                                        placeholder="Exact Template Name (from Meta Business Manager)" 
-                                        value={data.template_name} 
-                                        onChange={(e) => setData('template_name', e.target.value)} 
+                                    <Input
+                                        placeholder="Exact Template Name (from Meta Business Manager)"
+                                        value={data.template_name}
+                                        onChange={(e) => setData('template_name', e.target.value)}
                                     />
                                     {errors.template_name && <span className="text-xs text-red-500">{errors.template_name}</span>}
                                 </div>
 
                                 <div>
-                                    <Input 
-                                        type="datetime-local" 
-                                        value={data.scheduled_at} 
-                                        onChange={(e) => setData('scheduled_at', e.target.value)} 
+                                    <Input
+                                        type="datetime-local"
+                                        value={data.scheduled_at}
+                                        onChange={(e) => setData('scheduled_at', e.target.value)}
                                     />
-                                    <p className="text-xs text-muted-foreground mt-1">Leave empty to send now</p>
+                                    <p className="text-muted-foreground mt-1 text-xs">Leave empty to send now</p>
                                 </div>
 
-                                <Button type="submit" disabled={processing}>Launch WhatsApp Campaign</Button>
+                                <Button type="submit" disabled={processing}>
+                                    Launch WhatsApp Campaign
+                                </Button>
                             </form>
                         </CardContent>
                     </Card>
@@ -84,16 +87,22 @@ export default function WhatsAppCampaignsIndex({ campaigns }: { campaigns: any }
                                             <TableCell className="font-medium">{camp.name}</TableCell>
                                             <TableCell>{camp.template_name}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded text-xs ${camp.status === 'sent' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                                <span
+                                                    className={`rounded px-2 py-1 text-xs ${camp.status === 'sent' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                                                >
                                                     {camp.status}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="text-right text-green-600">{camp.sent_count} / {camp.total_recipients}</TableCell>
+                                            <TableCell className="text-right text-green-600">
+                                                {camp.sent_count} / {camp.total_recipients}
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                     {campaigns.data.length === 0 && (
                                         <TableRow>
-                                            <TableCell colSpan={4} className="text-center text-muted-foreground py-4">No campaigns found.</TableCell>
+                                            <TableCell colSpan={4} className="text-muted-foreground py-4 text-center">
+                                                No campaigns found.
+                                            </TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>

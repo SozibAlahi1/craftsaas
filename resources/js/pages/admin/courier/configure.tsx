@@ -1,11 +1,11 @@
-import { Head, useForm } from '@inertiajs/react';
-import { Truck, Key, RefreshCw, AlertCircle, Wallet, CheckCircle2, XCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
+import { AlertCircle, CheckCircle2, Key, RefreshCw, Truck, Wallet, XCircle } from 'lucide-react';
+import { FormEventHandler } from 'react';
 
 interface CourierConfigureProps {
     apiKey: string;
@@ -40,25 +40,21 @@ export default function CourierConfigure({ apiKey, secretKey, bdCourierApiKey, b
 
             <div className="mx-auto max-w-5xl p-6">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-black tracking-tight text-slate-950 uppercase">
-                        Courier Configuration
-                    </h1>
+                    <h1 className="text-3xl font-black tracking-tight text-slate-950 uppercase">Courier Configuration</h1>
                     <p className="mt-1 text-sm font-medium text-slate-500">
                         Configure Steadfast for dispatching orders and store your BD Courier bearer token for the Ford Checker.
                     </p>
                 </div>
 
                 <div className="grid gap-8 md:grid-cols-3">
-                    <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:col-span-2">
+                        <div className="mb-6 flex items-center gap-3 border-b border-slate-100 pb-4">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 text-white">
                                 <Key className="h-5 w-5" />
                             </div>
                             <div>
                                 <h2 className="text-lg font-bold text-slate-900">API Credentials</h2>
-                                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                                    Secure Connection Keys
-                                </p>
+                                <p className="text-xs font-semibold tracking-wider text-slate-400 uppercase">Secure Connection Keys</p>
                             </div>
                         </div>
 
@@ -74,12 +70,12 @@ export default function CourierConfigure({ apiKey, secretKey, bdCourierApiKey, b
                                         required
                                         value={data.courier_api_key}
                                         onChange={(e) => setData('courier_api_key', e.target.value)}
-                                        className="h-11 rounded-xl border border-slate-200 pl-4 pr-10 focus:border-slate-400 focus:ring-0 focus:outline-none"
+                                        className="h-11 rounded-xl border border-slate-200 pr-10 pl-4 focus:border-slate-400 focus:ring-0 focus:outline-none"
                                         placeholder="Enter your Steadfast API Key"
                                     />
                                 </div>
                                 {errors.courier_api_key && (
-                                    <p className="text-xs font-bold text-red-600 mt-1 flex items-center gap-1">
+                                    <p className="mt-1 flex items-center gap-1 text-xs font-bold text-red-600">
                                         <AlertCircle className="h-3.5 w-3.5" />
                                         {errors.courier_api_key}
                                     </p>
@@ -97,12 +93,12 @@ export default function CourierConfigure({ apiKey, secretKey, bdCourierApiKey, b
                                         required
                                         value={data.courier_secret_key}
                                         onChange={(e) => setData('courier_secret_key', e.target.value)}
-                                        className="h-11 rounded-xl border border-slate-200 pl-4 pr-10 focus:border-slate-400 focus:ring-0 focus:outline-none"
+                                        className="h-11 rounded-xl border border-slate-200 pr-10 pl-4 focus:border-slate-400 focus:ring-0 focus:outline-none"
                                         placeholder="Enter your Steadfast Secret Key"
                                     />
                                 </div>
                                 {errors.courier_secret_key && (
-                                    <p className="text-xs font-bold text-red-600 mt-1 flex items-center gap-1">
+                                    <p className="mt-1 flex items-center gap-1 text-xs font-bold text-red-600">
                                         <AlertCircle className="h-3.5 w-3.5" />
                                         {errors.courier_secret_key}
                                     </p>
@@ -119,12 +115,12 @@ export default function CourierConfigure({ apiKey, secretKey, bdCourierApiKey, b
                                         type="password"
                                         value={data.bd_courier_api_key}
                                         onChange={(e) => setData('bd_courier_api_key', e.target.value)}
-                                        className="h-11 rounded-xl border border-slate-200 pl-4 pr-10 focus:border-slate-400 focus:ring-0 focus:outline-none"
+                                        className="h-11 rounded-xl border border-slate-200 pr-10 pl-4 focus:border-slate-400 focus:ring-0 focus:outline-none"
                                         placeholder="Enter your BD Courier bearer token"
                                     />
                                 </div>
                                 {errors.bd_courier_api_key && (
-                                    <p className="text-xs font-bold text-red-600 mt-1 flex items-center gap-1">
+                                    <p className="mt-1 flex items-center gap-1 text-xs font-bold text-red-600">
                                         <AlertCircle className="h-3.5 w-3.5" />
                                         {errors.bd_courier_api_key}
                                     </p>
@@ -135,13 +131,11 @@ export default function CourierConfigure({ apiKey, secretKey, bdCourierApiKey, b
                             </div>
 
                             <div className="flex items-center justify-between border-t border-slate-100 pt-6">
-                                <p className="text-xs font-medium text-slate-400">
-                                    Keys are securely stored in your local application database.
-                                </p>
+                                <p className="text-xs font-medium text-slate-400">Keys are securely stored in your local application database.</p>
                                 <Button
                                     type="submit"
                                     disabled={processing}
-                                    className="rounded-xl h-11 px-6 font-bold bg-slate-950 text-white hover:bg-slate-800 transition-all active:scale-[0.98]"
+                                    className="h-11 rounded-xl bg-slate-950 px-6 font-bold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
                                 >
                                     {processing && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
                                     Save Configuration
@@ -151,28 +145,26 @@ export default function CourierConfigure({ apiKey, secretKey, bdCourierApiKey, b
                     </div>
 
                     <div className="space-y-6">
-                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden relative group">
-                            <div className="absolute top-0 right-0 p-3 text-slate-100 group-hover:text-slate-200 transition-colors pointer-events-none">
-                                <Truck className="h-24 w-24 -rotate-12 transform translate-x-6 translate-y-2 opacity-10" />
+                        <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <div className="pointer-events-none absolute top-0 right-0 p-3 text-slate-100 transition-colors group-hover:text-slate-200">
+                                <Truck className="h-24 w-24 translate-x-6 translate-y-2 -rotate-12 transform opacity-10" />
                             </div>
 
-                            <div className="flex items-center justify-between mb-6">
-                                <span className="text-xs font-black uppercase tracking-widest text-slate-400">
-                                    Steadfast Status
-                                </span>
+                            <div className="mb-6 flex items-center justify-between">
+                                <span className="text-xs font-black tracking-widest text-slate-400 uppercase">Steadfast Status</span>
 
                                 {isConfigured ? (
                                     balanceError ? (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-black text-red-600 uppercase tracking-tighter">
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-black tracking-tighter text-red-600 uppercase">
                                             <XCircle className="h-3 w-3" /> Error
                                         </span>
                                     ) : (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-black text-emerald-600 uppercase tracking-tighter animate-pulse">
+                                        <span className="inline-flex animate-pulse items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-black tracking-tighter text-emerald-600 uppercase">
                                             <CheckCircle2 className="h-3 w-3" /> Connected
                                         </span>
                                     )
                                 ) : (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-black text-amber-600 uppercase tracking-tighter">
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-black tracking-tighter text-amber-600 uppercase">
                                         <AlertCircle className="h-3 w-3" /> Unconfigured
                                     </span>
                                 )}
@@ -185,46 +177,45 @@ export default function CourierConfigure({ apiKey, secretKey, bdCourierApiKey, b
                                             <AlertCircle className="h-5 w-5 flex-shrink-0" />
                                             <span className="text-sm font-bold">Failed to connect</span>
                                         </div>
-                                        <p className="text-xs text-slate-500 font-semibold max-w-[200px]">
-                                            {balanceError}
-                                        </p>
+                                        <p className="max-w-[200px] text-xs font-semibold text-slate-500">{balanceError}</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-4">
                                         <div>
-                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1 mb-1">
+                                            <p className="mb-1 flex items-center gap-1 text-[10px] font-black tracking-widest text-slate-400 uppercase">
                                                 <Wallet className="h-3.5 w-3.5 text-slate-400" />
                                                 Available Balance
                                             </p>
                                             <div className="flex items-baseline font-black tracking-tight">
-                                                <span className="text-lg text-slate-900 mr-1">৳</span>
-                                                <span className="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">
+                                                <span className="mr-1 text-lg text-slate-900">৳</span>
+                                                <span className="bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-4xl text-transparent">
                                                     {balance?.toLocaleString()}
                                                 </span>
                                             </div>
                                         </div>
-                                        <p className="text-xs text-slate-500 font-semibold leading-relaxed">
+                                        <p className="text-xs leading-relaxed font-semibold text-slate-500">
                                             Integration is active. You can now dispatch orders directly from the management console.
                                         </p>
                                     </div>
                                 )
                             ) : (
-                                <div className="py-4 space-y-3">
-                                    <div className="h-8 bg-slate-100 rounded-lg animate-pulse w-3/4"></div>
-                                    <p className="text-xs text-slate-400 font-semibold">
+                                <div className="space-y-3 py-4">
+                                    <div className="h-8 w-3/4 animate-pulse rounded-lg bg-slate-100"></div>
+                                    <p className="text-xs font-semibold text-slate-400">
                                         Please enter your credentials to test connection and view your active courier account balance.
                                     </p>
                                 </div>
                             )}
                         </div>
 
-                        <div className="rounded-2xl border border-amber-200/60 bg-amber-50/50 p-5 shadow-sm space-y-3">
-                            <h3 className="text-sm font-bold text-amber-900 flex items-center gap-2">
+                        <div className="space-y-3 rounded-2xl border border-amber-200/60 bg-amber-50/50 p-5 shadow-sm">
+                            <h3 className="flex items-center gap-2 text-sm font-bold text-amber-900">
                                 <AlertCircle className="h-4.5 w-4.5 text-amber-700" />
                                 Where do I get my API keys?
                             </h3>
-                            <p className="text-xs font-semibold text-amber-800 leading-relaxed">
-                                Log in to your <strong>Steadfast Courier Portal</strong> account for your dispatch credentials, and paste your <strong>BD Courier bearer token</strong> here for the Ford Checker.
+                            <p className="text-xs leading-relaxed font-semibold text-amber-800">
+                                Log in to your <strong>Steadfast Courier Portal</strong> account for your dispatch credentials, and paste your{' '}
+                                <strong>BD Courier bearer token</strong> here for the Ford Checker.
                             </p>
                         </div>
                     </div>

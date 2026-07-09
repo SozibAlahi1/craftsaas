@@ -1,9 +1,9 @@
-import React from 'react';
-import AppLayout from '@/layouts/app-layout';
-import { Head, useForm, router, Link } from '@inertiajs/react';
-import { LayoutGrid, Plus, Trash2, Edit3, Globe, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import AppLayout from '@/layouts/app-layout';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { Clock, Edit3, Globe, LayoutGrid, Plus, Trash2 } from 'lucide-react';
+import React from 'react';
 
 interface LandingPage {
     id: number;
@@ -37,12 +37,17 @@ export default function LandingPageIndex({ pages }: LandingPageIndexProps) {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Dashboard', href: '/dashboard' }, { title: 'Landing Pages', href: '/admin/landing-pages' }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Dashboard', href: '/dashboard' },
+                { title: 'Landing Pages', href: '/admin/landing-pages' },
+            ]}
+        >
             <Head title="Landing Pages" />
 
-            <div className="p-6 w-full space-y-6">
+            <div className="w-full space-y-6 p-6">
                 <div>
-                    <h1 className="flex items-center gap-2 text-2xl font-black uppercase tracking-tight text-slate-950">
+                    <h1 className="flex items-center gap-2 text-2xl font-black tracking-tight text-slate-950 uppercase">
                         <LayoutGrid className="h-6 w-6 text-indigo-600" />
                         Landing Pages
                     </h1>
@@ -51,19 +56,23 @@ export default function LandingPageIndex({ pages }: LandingPageIndexProps) {
 
                 <div className="space-y-6">
                     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-end gap-4">
-                            <div className="flex-1 w-full">
-                                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500">Create New Page</label>
+                        <form onSubmit={handleSubmit} className="flex flex-col items-end gap-4 sm:flex-row">
+                            <div className="w-full flex-1">
+                                <label className="mb-1 block text-xs font-bold tracking-wider text-slate-500 uppercase">Create New Page</label>
                                 <Input
                                     value={data.title}
                                     onChange={(e) => setData('title', e.target.value)}
                                     placeholder="Enter page title (e.g. Summer Sale 2026)"
                                     required
                                 />
-                                {errors.title && <p className="mt-1 text-xs text-red-600 absolute">{errors.title}</p>}
+                                {errors.title && <p className="absolute mt-1 text-xs text-red-600">{errors.title}</p>}
                             </div>
 
-                            <Button type="submit" disabled={processing} className="w-full sm:w-auto gap-2 font-bold bg-indigo-600 hover:bg-indigo-700 text-white h-10">
+                            <Button
+                                type="submit"
+                                disabled={processing}
+                                className="h-10 w-full gap-2 bg-indigo-600 font-bold text-white hover:bg-indigo-700 sm:w-auto"
+                            >
                                 <Plus className="h-4 w-4" />
                                 {processing ? 'Creating...' : 'Create & Open Builder'}
                             </Button>
@@ -79,35 +88,38 @@ export default function LandingPageIndex({ pages }: LandingPageIndexProps) {
                             )}
 
                             {pages.data.map((page) => (
-                                <div key={page.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between rounded-xl border border-slate-200 bg-white p-5 shadow-sm gap-4 hover:shadow-md transition-shadow">
+                                <div
+                                    key={page.id}
+                                    className="flex flex-col items-start justify-between gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:flex-row sm:items-center"
+                                >
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2">
-                                            <h4 className="font-bold text-slate-900 text-lg">{page.title}</h4>
+                                            <h4 className="text-lg font-bold text-slate-900">{page.title}</h4>
                                             {page.status === 'published' ? (
-                                                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-[10px] font-bold uppercase text-emerald-700 flex items-center gap-1">
+                                                <span className="flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase">
                                                     <Globe className="h-3 w-3" /> Published
                                                 </span>
                                             ) : (
-                                                <span className="px-2 py-0.5 rounded-full bg-amber-100 text-[10px] font-bold uppercase text-amber-700 flex items-center gap-1">
+                                                <span className="flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700 uppercase">
                                                     <Clock className="h-3 w-3" /> Draft
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="text-sm text-slate-500 mt-1 flex items-center gap-3">
+                                        <div className="mt-1 flex items-center gap-3 text-sm text-slate-500">
                                             <span>/lp/{page.slug}</span>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                                    <div className="flex w-full items-center gap-2 sm:w-auto">
                                         {page.status === 'published' && (
                                             <Button variant="outline" size="sm" asChild className="flex-1 sm:flex-none">
                                                 <a href={`/lp/${page.slug}`} target="_blank" rel="noopener noreferrer">
-                                                    <Globe className="h-4 w-4 mr-1" /> View
+                                                    <Globe className="mr-1 h-4 w-4" /> View
                                                 </a>
                                             </Button>
                                         )}
-                                        <Button size="sm" asChild className="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white">
+                                        <Button size="sm" asChild className="flex-1 bg-indigo-600 text-white hover:bg-indigo-700 sm:flex-none">
                                             <Link href={route('admin.landing-pages.builder', page.id)}>
-                                                <Edit3 className="h-4 w-4 mr-1" /> Edit Builder
+                                                <Edit3 className="mr-1 h-4 w-4" /> Edit Builder
                                             </Link>
                                         </Button>
                                         <Button variant="ghost" size="icon" onClick={() => handleDelete(page.id)}>

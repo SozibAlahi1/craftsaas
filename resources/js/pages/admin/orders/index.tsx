@@ -1,12 +1,12 @@
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
-import { AlertTriangle, CheckCircle2, Clock, Copy, Eye, MoreVertical, Package, RefreshCw, Search, Trash2, Truck, XCircle, Filter } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
+import { AlertTriangle, CheckCircle2, Clock, Copy, Eye, Filter, MoreVertical, Package, RefreshCw, Search, Truck, XCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Order {
     id: number;
@@ -108,17 +108,22 @@ const FraudCheckCell = ({ order, isLoading, onCheckCourier }: { order: Order; is
     return (
         <div className="flex min-w-[120px] items-center gap-2">
             {order.risk_score ? (
-                <div className={`text-sm font-black tracking-wider ${
-                    order.risk_score.status === 'high' ? 'text-red-600' : 
-                    order.risk_score.status === 'medium' ? 'text-amber-600' : 'text-emerald-600'
-                }`}>
+                <div
+                    className={`text-sm font-black tracking-wider ${
+                        order.risk_score.status === 'high'
+                            ? 'text-red-600'
+                            : order.risk_score.status === 'medium'
+                              ? 'text-amber-600'
+                              : 'text-emerald-600'
+                    }`}
+                >
                     Risk: {order.risk_score.score}% ({order.risk_score.status})
                 </div>
             ) : (
                 <div className="text-xs font-black tracking-wider text-slate-400 uppercase">Pending</div>
             )}
             {typeof order.fraud_success_ratio === 'number' && (
-                <div className="text-xs font-black tracking-wider text-emerald-700 mt-1">Steadfast: {order.fraud_success_ratio.toFixed(2)}%</div>
+                <div className="mt-1 text-xs font-black tracking-wider text-emerald-700">Steadfast: {order.fraud_success_ratio.toFixed(2)}%</div>
             )}
             <button
                 onClick={() => onCheckCourier(order.id)}
@@ -161,62 +166,82 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
 
     const handleSendToCourier = (orderId: number) => {
         setActiveAction({ orderId, action: 'send' });
-        router.post(route('admin.orders.send-courier', orderId), {}, {
-            onFinish: () => setActiveAction(null),
-        });
+        router.post(
+            route('admin.orders.send-courier', orderId),
+            {},
+            {
+                onFinish: () => setActiveAction(null),
+            },
+        );
     };
 
     const handleSyncStatus = (orderId: number) => {
         setActiveAction({ orderId, action: 'sync' });
-        router.post(route('admin.orders.sync-courier', orderId), {}, {
-            onFinish: () => setActiveAction(null),
-        });
+        router.post(
+            route('admin.orders.sync-courier', orderId),
+            {},
+            {
+                onFinish: () => setActiveAction(null),
+            },
+        );
     };
 
     const handleCheckCourier = (orderId: number) => {
         setActiveAction({ orderId, action: 'fraud' });
-        router.post(route('admin.orders.fraud-check', orderId), {}, {
-            preserveScroll: true,
-            onFinish: () => setActiveAction(null),
-        });
+        router.post(
+            route('admin.orders.fraud-check', orderId),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setActiveAction(null),
+            },
+        );
     };
 
     const applyFilters = () => {
-        router.get(route('admin.orders.index'), {
-            search: search || undefined,
-            status: status !== 'all' ? status : undefined,
-            date_from: dateFrom || undefined,
-            date_to: dateTo || undefined,
-            payment_method: paymentMethod !== 'all' ? paymentMethod : undefined,
-        }, { preserveState: true });
+        router.get(
+            route('admin.orders.index'),
+            {
+                search: search || undefined,
+                status: status !== 'all' ? status : undefined,
+                date_from: dateFrom || undefined,
+                date_to: dateTo || undefined,
+                payment_method: paymentMethod !== 'all' ? paymentMethod : undefined,
+            },
+            { preserveState: true },
+        );
     };
 
     const handleBulkUpdate = () => {
         if (!bulkStatus || selectedIds.length === 0) return;
         setIsBulkUpdating(true);
-        router.patch(route('admin.orders.bulk-update'), {
-            order_ids: selectedIds,
-            status: bulkStatus
-        }, {
-            onSuccess: () => {
-                setSelectedIds([]);
-                setBulkStatus('');
+        router.patch(
+            route('admin.orders.bulk-update'),
+            {
+                order_ids: selectedIds,
+                status: bulkStatus,
             },
-            onFinish: () => setIsBulkUpdating(false)
-        });
+            {
+                onSuccess: () => {
+                    setSelectedIds([]);
+                    setBulkStatus('');
+                },
+                onFinish: () => setIsBulkUpdating(false),
+            },
+        );
     };
 
     const toggleSelectAll = () => {
         if (selectedIds.length === orders.data.length) {
             setSelectedIds([]);
         } else {
-            setSelectedIds(orders.data.map(o => o.id));
+            setSelectedIds(orders.data.map((o) => o.id));
         }
     };
 
     const toggleSelect = (id: number) => {
         if (selectedIds.includes(id)) {
-            setSelectedIds(selectedIds.filter(i => i !== id));
+            setSelectedIds(selectedIds.filter((i) => i !== id));
         } else {
             setSelectedIds([...selectedIds, id]);
         }
@@ -236,8 +261,8 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
 
                 <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                     {/* Filters Section */}
-                    <div className="border-b border-slate-100 bg-slate-50/50 p-4 space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="space-y-4 border-b border-slate-100 bg-slate-50/50 p-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
                             <div className="relative col-span-1 md:col-span-2">
                                 <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                 <Input
@@ -275,23 +300,21 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                             </Select>
                             <div className="flex gap-2">
                                 <Button variant="outline" onClick={applyFilters} className="w-full">
-                                    <Filter className="h-4 w-4 mr-2" /> Filter
+                                    <Filter className="mr-2 h-4 w-4" /> Filter
                                 </Button>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} className="w-auto" />
+                            <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-auto" />
                             <span className="text-sm text-slate-500">to</span>
-                            <Input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} className="w-auto" />
+                            <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-auto" />
                         </div>
                     </div>
 
                     {/* Bulk Actions */}
                     {selectedIds.length > 0 && (
-                        <div className="bg-indigo-50 border-b border-indigo-100 p-3 flex items-center justify-between">
-                            <span className="text-sm font-medium text-indigo-700">
-                                {selectedIds.length} orders selected
-                            </span>
+                        <div className="flex items-center justify-between border-b border-indigo-100 bg-indigo-50 p-3">
+                            <span className="text-sm font-medium text-indigo-700">{selectedIds.length} orders selected</span>
                             <div className="flex items-center gap-3">
                                 <Select value={bulkStatus} onValueChange={setBulkStatus}>
                                     <SelectTrigger className="w-40 bg-white">
@@ -306,7 +329,7 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                     </SelectContent>
                                 </Select>
                                 <Button onClick={handleBulkUpdate} disabled={isBulkUpdating || !bulkStatus} size="sm">
-                                    {isBulkUpdating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : null}
+                                    {isBulkUpdating ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : null}
                                     Update
                                 </Button>
                             </div>
@@ -317,7 +340,7 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                         <table className="w-full border-collapse text-left">
                             <thead>
                                 <tr className="border-b border-slate-100 bg-slate-50/50">
-                                    <th className="px-6 py-4 w-10">
+                                    <th className="w-10 px-6 py-4">
                                         <Checkbox
                                             checked={selectedIds.length > 0 && selectedIds.length === orders.data.length}
                                             onCheckedChange={toggleSelectAll}
@@ -343,10 +366,7 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                     return (
                                         <tr key={order.id} className="group transition-colors hover:bg-slate-50/30">
                                             <td className="px-6 py-4">
-                                                <Checkbox
-                                                    checked={selectedIds.includes(order.id)}
-                                                    onCheckedChange={() => toggleSelect(order.id)}
-                                                />
+                                                <Checkbox checked={selectedIds.includes(order.id)} onCheckedChange={() => toggleSelect(order.id)} />
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="font-mono font-black text-slate-900 transition-colors group-hover:text-orange-600">
@@ -434,7 +454,7 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                                             <MoreVertical className="h-4 w-4" />
                                                         </button>
                                                         {openMenuId === order.id && (
-                                                            <div className="absolute right-0 top-full z-50 mt-1 w-40 rounded-lg border border-slate-200 bg-white shadow-lg">
+                                                            <div className="absolute top-full right-0 z-50 mt-1 w-40 rounded-lg border border-slate-200 bg-white shadow-lg">
                                                                 <div className="overflow-hidden rounded-lg">
                                                                     <button
                                                                         onClick={() => {
@@ -477,24 +497,24 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                     </div>
                     {/* Pagination */}
                     {orders.links.length > 3 && (
-                        <div className="flex items-center justify-center p-4 border-t border-slate-100">
+                        <div className="flex items-center justify-center border-t border-slate-100 p-4">
                             <div className="flex flex-wrap gap-1">
-                                {orders.links.map((link, i) => (
+                                {orders.links.map((link, i) =>
                                     link.url ? (
                                         <Link
                                             key={i}
                                             href={link.url}
-                                            className={`px-3 py-1 text-sm rounded-md transition-colors ${link.active ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+                                            className={`rounded-md px-3 py-1 text-sm transition-colors ${link.active ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
                                             dangerouslySetInnerHTML={{ __html: link.label }}
                                         />
                                     ) : (
                                         <span
                                             key={i}
-                                            className="px-3 py-1 text-sm text-slate-400 rounded-md"
+                                            className="rounded-md px-3 py-1 text-sm text-slate-400"
                                             dangerouslySetInnerHTML={{ __html: link.label }}
                                         />
-                                    )
-                                ))}
+                                    ),
+                                )}
                             </div>
                         </div>
                     )}

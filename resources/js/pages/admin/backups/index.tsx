@@ -1,9 +1,9 @@
-import { Head, useForm } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { HardDrive, Download } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AppLayout from '@/layouts/app-layout';
+import { Head, useForm } from '@inertiajs/react';
+import { Download, HardDrive } from 'lucide-react';
 
 export default function BackupsIndex({ backups }: { backups: any }) {
     const { post, processing } = useForm();
@@ -22,11 +22,16 @@ export default function BackupsIndex({ backups }: { backups: any }) {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Automation', href: '/admin/backups' }, { title: 'Database Backups', href: '/admin/backups' }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Automation', href: '/admin/backups' },
+                { title: 'Database Backups', href: '/admin/backups' },
+            ]}
+        >
             <Head title="Database Backups" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-2xl font-bold tracking-tight">Database Backups</h2>
                         <p className="text-muted-foreground">Manage your Google Drive automated database backups.</p>
@@ -61,16 +66,22 @@ export default function BackupsIndex({ backups }: { backups: any }) {
                                         <TableCell className="capitalize">{backup.type}</TableCell>
                                         <TableCell>{backup.size_bytes ? formatBytes(backup.size_bytes) : '-'}</TableCell>
                                         <TableCell>
-                                            <span className={`px-2 py-1 rounded text-xs ${backup.status === 'success' ? 'bg-green-100 text-green-800' : (backup.status === 'pending' || backup.status === 'running' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')}`}>
+                                            <span
+                                                className={`rounded px-2 py-1 text-xs ${backup.status === 'success' ? 'bg-green-100 text-green-800' : backup.status === 'pending' || backup.status === 'running' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}
+                                            >
                                                 {backup.status}
                                             </span>
-                                            {backup.error && <p className="text-xs text-red-500 mt-1 max-w-xs truncate" title={backup.error}>{backup.error}</p>}
+                                            {backup.error && (
+                                                <p className="mt-1 max-w-xs truncate text-xs text-red-500" title={backup.error}>
+                                                    {backup.error}
+                                                </p>
+                                            )}
                                         </TableCell>
                                         <TableCell className="text-right">
                                             {backup.status === 'success' && (
                                                 <a href={`/admin/backups/${backup.id}/download`}>
                                                     <Button variant="outline" size="sm">
-                                                        <Download className="h-4 w-4 mr-2" /> Download
+                                                        <Download className="mr-2 h-4 w-4" /> Download
                                                     </Button>
                                                 </a>
                                             )}
@@ -79,7 +90,7 @@ export default function BackupsIndex({ backups }: { backups: any }) {
                                 ))}
                                 {backups.data.length === 0 && (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                                        <TableCell colSpan={6} className="text-muted-foreground py-8 text-center">
                                             No backups found yet.
                                         </TableCell>
                                     </TableRow>

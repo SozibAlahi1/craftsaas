@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { Ban, Search, Trash2, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { Ban, Search } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -44,11 +44,7 @@ export default function BlockedCustomersIndex({ customers, filters }: { customer
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        router.get(
-            route('admin.blocked-customers.index'),
-            { search },
-            { preserveState: true }
-        );
+        router.get(route('admin.blocked-customers.index'), { search }, { preserveState: true });
     };
 
     const handleBlock = (e: React.FormEvent) => {
@@ -83,12 +79,12 @@ export default function BlockedCustomersIndex({ customers, filters }: { customer
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="md:col-span-2 space-y-4">
-                        <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                    <div className="space-y-4 md:col-span-2">
+                        <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
                             <form onSubmit={handleSearch} className="flex w-full max-w-md items-center gap-2">
                                 <div className="relative flex-1">
-                                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                     <Input
                                         type="search"
                                         placeholder="Search phone number..."
@@ -97,7 +93,9 @@ export default function BlockedCustomersIndex({ customers, filters }: { customer
                                         onChange={(e) => setSearch(e.target.value)}
                                     />
                                 </div>
-                                <Button type="submit" variant="secondary">Search</Button>
+                                <Button type="submit" variant="secondary">
+                                    Search
+                                </Button>
                             </form>
                         </div>
 
@@ -133,7 +131,7 @@ export default function BlockedCustomersIndex({ customers, filters }: { customer
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() => setUnblockId(customer.id)}
-                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        className="text-red-600 hover:bg-red-50 hover:text-red-700"
                                                     >
                                                         Unblock
                                                     </Button>
@@ -152,20 +150,12 @@ export default function BlockedCustomersIndex({ customers, filters }: { customer
                             <form onSubmit={handleBlock} className="space-y-4">
                                 <div>
                                     <label className="mb-1.5 block text-xs font-bold text-slate-700">Phone Number</label>
-                                    <Input
-                                        placeholder="01XXXXXXXXX"
-                                        value={data.phone}
-                                        onChange={(e) => setData('phone', e.target.value)}
-                                    />
+                                    <Input placeholder="01XXXXXXXXX" value={data.phone} onChange={(e) => setData('phone', e.target.value)} />
                                     {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
                                 </div>
                                 <div>
                                     <label className="mb-1.5 block text-xs font-bold text-slate-700">Reason (Optional)</label>
-                                    <Input
-                                        placeholder="Fake order history"
-                                        value={data.reason}
-                                        onChange={(e) => setData('reason', e.target.value)}
-                                    />
+                                    <Input placeholder="Fake order history" value={data.reason} onChange={(e) => setData('reason', e.target.value)} />
                                     {errors.reason && <p className="mt-1 text-xs text-red-600">{errors.reason}</p>}
                                 </div>
                                 <Button type="submit" disabled={processing} className="w-full bg-red-600 hover:bg-red-700">

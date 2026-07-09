@@ -1,9 +1,9 @@
-import AppLayout from '@/layouts/app-layout';
-import { Head, Link, router } from '@inertiajs/react';
-import { useState, useEffect } from 'react';
-import { Search, Upload, Users, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import AppLayout from '@/layouts/app-layout';
+import { Head, Link, router } from '@inertiajs/react';
+import { Search, Upload, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function LeadsIndex({ leads, filters }: any) {
     const [search, setSearch] = useState(filters.search || '');
@@ -13,11 +13,7 @@ export default function LeadsIndex({ leads, filters }: any) {
     useEffect(() => {
         const timeout = setTimeout(() => {
             if (search !== (filters.search || '') || status !== (filters.status || 'all')) {
-                router.get(
-                    route('admin.leads.index'),
-                    { search, status },
-                    { preserveState: true, preserveScroll: true, replace: true }
-                );
+                router.get(route('admin.leads.index'), { search, status }, { preserveState: true, preserveScroll: true, replace: true });
             }
         }, 300);
         return () => clearTimeout(timeout);
@@ -32,7 +28,12 @@ export default function LeadsIndex({ leads, filters }: any) {
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Dashboard', href: '/admin/dashboard' }, { title: 'Leads', href: '/admin/leads' }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Dashboard', href: '/admin/dashboard' },
+                { title: 'Leads', href: '/admin/leads' },
+            ]}
+        >
             <Head title="Leads Management" />
 
             <div className="flex flex-col gap-6 p-6">
@@ -44,10 +45,10 @@ export default function LeadsIndex({ leads, filters }: any) {
                 </div>
 
                 <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-lg border border-slate-200 shadow-sm gap-4">
+                    <div className="flex flex-col items-center justify-between gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:flex-row">
                         <div className="flex w-full max-w-md items-center gap-2">
                             <div className="relative flex-1">
-                                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                 <Input
                                     type="search"
                                     placeholder="Search name, phone, email..."
@@ -57,7 +58,7 @@ export default function LeadsIndex({ leads, filters }: any) {
                                 />
                             </div>
                             <select
-                                className="h-10 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="h-10 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                             >
@@ -69,7 +70,7 @@ export default function LeadsIndex({ leads, filters }: any) {
                                 <option value="lost">Lost</option>
                             </select>
                         </div>
-                        <div className="flex items-center space-x-2 w-full sm:w-auto">
+                        <div className="flex w-full items-center space-x-2 sm:w-auto">
                             <input
                                 type="file"
                                 id="csv_upload"
@@ -86,10 +87,7 @@ export default function LeadsIndex({ leads, filters }: any) {
                                     }
                                 }}
                             />
-                            <Button 
-                                onClick={() => document.getElementById('csv_upload')?.click()}
-                                variant="outline"
-                            >
+                            <Button onClick={() => document.getElementById('csv_upload')?.click()} variant="outline">
                                 <Upload className="mr-2 h-4 w-4" />
                                 Import CSV
                             </Button>
@@ -128,12 +126,14 @@ export default function LeadsIndex({ leads, filters }: any) {
                                                 {lead.email && <div className="text-xs text-slate-500">{lead.email}</div>}
                                             </td>
                                             <td className="px-4 py-3">
-                                                <span className="text-slate-600 bg-slate-100 px-2 py-1 rounded text-xs font-medium">
+                                                <span className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
                                                     {lead.source || 'Direct'}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3">
-                                                <span className={`px-2.5 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${statusColors[lead.status] || 'bg-slate-100 text-slate-800'}`}>
+                                                <span
+                                                    className={`rounded-full px-2.5 py-1 text-xs font-bold tracking-wider uppercase ${statusColors[lead.status] || 'bg-slate-100 text-slate-800'}`}
+                                                >
                                                     {lead.status}
                                                 </span>
                                             </td>
@@ -150,8 +150,8 @@ export default function LeadsIndex({ leads, filters }: any) {
                             </table>
                         )}
                     </div>
-                    
-                    <div className="flex justify-between items-center text-sm text-slate-600">
+
+                    <div className="flex items-center justify-between text-sm text-slate-600">
                         <div>
                             Showing {leads.from || 0} to {leads.to || 0} of {leads.total} entries
                         </div>
@@ -160,7 +160,7 @@ export default function LeadsIndex({ leads, filters }: any) {
                                 <Link
                                     key={idx}
                                     href={link.url || '#'}
-                                    className={`px-3 py-1 rounded-md ${link.active ? 'bg-slate-900 text-white' : 'bg-white border border-slate-200 hover:bg-slate-50'} ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`rounded-md px-3 py-1 ${link.active ? 'bg-slate-900 text-white' : 'border border-slate-200 bg-white hover:bg-slate-50'} ${!link.url ? 'cursor-not-allowed opacity-50' : ''}`}
                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                 />
                             ))}

@@ -1,36 +1,33 @@
-import React from 'react';
-import { 
-    PremiumHero, 
-    PremiumShowcase, 
-    PremiumSpiceGrid, 
-    PremiumFeatures, 
-    PremiumComparison, 
-    PremiumReviews, 
-    PremiumCheckout 
+import {
+    PremiumCheckout,
+    PremiumComparison,
+    PremiumFeatures,
+    PremiumHero,
+    PremiumReviews,
+    PremiumShowcase,
+    PremiumSpiceGrid,
 } from './PremiumSections';
 
 // Extremely basic placeholders for the builder.
 // In a real application, these would be rich components rendering dynamic content and styles.
 
 const HeroSection = ({ content, styles }: any) => (
-    <div className={`p-24 text-center bg-slate-900 text-white ${styles?.className || ''}`}>
-        <h1 className="text-5xl font-black mb-4">{content?.headline || 'Hero Headline'}</h1>
-        <p className="text-xl text-slate-300 mb-8">{content?.subheadline || 'Subheadline goes here.'}</p>
-        <button className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold">
-            {content?.cta || 'Shop Now'}
-        </button>
+    <div className={`bg-slate-900 p-24 text-center text-white ${styles?.className || ''}`}>
+        <h1 className="mb-4 text-5xl font-black">{content?.headline || 'Hero Headline'}</h1>
+        <p className="mb-8 text-xl text-slate-300">{content?.subheadline || 'Subheadline goes here.'}</p>
+        <button className="rounded-full bg-indigo-600 px-8 py-4 font-bold hover:bg-indigo-700">{content?.cta || 'Shop Now'}</button>
     </div>
 );
 
 const ProductShowcase = ({ content, styles }: any) => (
-    <div className={`p-12 max-w-7xl mx-auto ${styles?.className || ''}`}>
-        <h2 className="text-3xl font-black text-center mb-8">{content?.headline || 'Featured Products'}</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[1,2,3,4].map(i => (
-                <div key={i} className="border border-slate-200 rounded-xl p-4 text-center">
-                    <div className="bg-slate-100 aspect-square rounded-lg mb-4"></div>
+    <div className={`mx-auto max-w-7xl p-12 ${styles?.className || ''}`}>
+        <h2 className="mb-8 text-center text-3xl font-black">{content?.headline || 'Featured Products'}</h2>
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="rounded-xl border border-slate-200 p-4 text-center">
+                    <div className="mb-4 aspect-square rounded-lg bg-slate-100"></div>
                     <h3 className="font-bold">Product Name</h3>
-                    <p className="text-indigo-600 font-bold">$99.00</p>
+                    <p className="font-bold text-indigo-600">$99.00</p>
                 </div>
             ))}
         </div>
@@ -38,7 +35,7 @@ const ProductShowcase = ({ content, styles }: any) => (
 );
 
 const GenericPlaceholder = ({ type }: { type: string }) => (
-    <div className="p-16 text-center bg-slate-50 border-y border-slate-200">
+    <div className="border-y border-slate-200 bg-slate-50 p-16 text-center">
         <h2 className="text-2xl font-black text-slate-400 capitalize">{type.replace('_', ' ')} Section</h2>
     </div>
 );

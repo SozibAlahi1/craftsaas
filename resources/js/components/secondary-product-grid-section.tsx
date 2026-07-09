@@ -56,23 +56,16 @@ export function SecondaryProductGridSection() {
                         >
                             <div className="flex h-full min-h-[340px] flex-col">
                                 <div className="flex-1">
-                                    <img
-                                        src={product.image}
-                                        alt={product.title}
-                                        className="h-[220px] w-full object-cover"
-                                        loading="lazy"
-                                    />
+                                    <img src={product.image} alt={product.title} className="h-[220px] w-full object-cover" loading="lazy" />
                                 </div>
 
-                                <div className="px-4 pb-4 pt-3">
-                                    <h3 className="text-[1.05rem] font-semibold leading-6 text-slate-950">{product.title}</h3>
-                                    <div className="mt-1 text-[1.35rem] font-bold leading-none text-orange-600">{product.salePrice}</div>
+                                <div className="px-4 pt-3 pb-4">
+                                    <h3 className="text-[1.05rem] leading-6 font-semibold text-slate-950">{product.title}</h3>
+                                    <div className="mt-1 text-[1.35rem] leading-none font-bold text-orange-600">{product.salePrice}</div>
 
                                     <div className="mt-3 flex items-center gap-3 text-sm">
                                         <span className="text-slate-500 line-through">{product.oldPrice}</span>
-                                        <span className="rounded-md bg-orange-50 px-3 py-1 font-medium text-orange-600">
-                                            {product.offBadge}
-                                        </span>
+                                        <span className="rounded-md bg-orange-50 px-3 py-1 font-medium text-orange-600">{product.offBadge}</span>
                                     </div>
                                 </div>
                             </div>

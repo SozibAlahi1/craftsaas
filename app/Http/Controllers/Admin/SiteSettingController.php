@@ -38,6 +38,7 @@ class SiteSettingController extends Controller
             'site_logo_url' => SiteSetting::getValue('site_logo') ? Storage::disk('public')->url(SiteSetting::getValue('site_logo')) : '',
             'site_favicon_url' => SiteSetting::getValue('site_favicon') ? Storage::disk('public')->url(SiteSetting::getValue('site_favicon')) : '',
             'enable_ai_voice_confirmation' => filter_var(SiteSetting::getValue('enable_ai_voice_confirmation', false), FILTER_VALIDATE_BOOLEAN),
+            'gtm_container_id' => SiteSetting::getValue('gtm_container_id', ''),
         ];
 
         // Courier configuration data
@@ -226,5 +227,21 @@ class SiteSettingController extends Controller
         Artisan::call('config:clear');
 
         return redirect()->back()->with('success', 'Automation settings updated successfully.');
+    }
+
+    /**
+     * Update Google Tag Manager settings.
+     */
+    public function updateGtmSettings(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'gtm_container_id' => 'nullable|string|max:50|regex:/^GTM-[A-Z0-9]+$/i',
+        ], [
+            'gtm_container_id.regex' => 'The GTM Container ID must be in the format GTM-XXXXXXX.',
+        ]);
+
+        SiteSetting::setValue('gtm_container_id', $validated['gtm_container_id'] ?? '');
+
+        return redirect()->back()->with('success', 'Google Tag Manager settings updated successfully.');
     }
 }

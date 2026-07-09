@@ -1,9 +1,9 @@
 import { StorefrontFooter } from '@/components/storefront-footer';
-import { Header as StorefrontHeader } from '../../themes/wildtannery/components/Header';
-import { Head, Link, useForm, usePage, router } from '@inertiajs/react';
-import { ChevronRight, CreditCard, Lock, Phone, MapPin, Truck, ShieldCheck, ShoppingBag, Contact, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { AlertCircle, ChevronRight, Contact, CreditCard, Lock, ShieldCheck, ShoppingBag, Truck } from 'lucide-react';
+import { Header as StorefrontHeader } from '../../themes/wildtannery/components/Header';
 
 interface CartItem {
     slug: string;
@@ -33,7 +33,7 @@ export default function Checkout({ cart }: CheckoutProps) {
     const cartItems = Object.entries(cart);
     const subtotal = cartItems.reduce((sum, [_, item]) => {
         const price = parseInt(item.price.replace(/[^\d]/g, ''));
-        return sum + (price * item.quantity);
+        return sum + price * item.quantity;
     }, 0);
     const shipping = settings?.shipping_cost ? parseInt(settings.shipping_cost) : 60;
     const total = subtotal + shipping;
@@ -53,20 +53,24 @@ export default function Checkout({ cart }: CheckoutProps) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     element.focus();
                 }
-            }
+            },
         });
     };
 
     const handleSaveContact = () => {
         if (data.full_name || data.phone || data.address) {
-            router.post(route('checkout.save-contact'), {
-                full_name: data.full_name,
-                phone: data.phone,
-                address: data.address,
-            }, {
-                preserveState: true,
-                preserveScroll: true,
-            });
+            router.post(
+                route('checkout.save-contact'),
+                {
+                    full_name: data.full_name,
+                    phone: data.phone,
+                    address: data.address,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                },
+            );
         }
     };
 
@@ -77,40 +81,44 @@ export default function Checkout({ cart }: CheckoutProps) {
                 <StorefrontHeader />
 
                 {/* Header Section */}
-                <div className="bg-card border-b border-border">
+                <div className="bg-card border-border border-b">
                     <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
-                        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-4">
-                            <Link href={route('home')} className="hover:text-foreground transition-colors">Home</Link>
+                        <div className="text-muted-foreground mb-4 flex items-center gap-2 text-sm font-medium">
+                            <Link href={route('home')} className="hover:text-foreground transition-colors">
+                                Home
+                            </Link>
                             <ChevronRight className="h-4 w-4" />
-                            <Link href={route('products.index')} className="hover:text-foreground transition-colors">Shop</Link>
+                            <Link href={route('products.index')} className="hover:text-foreground transition-colors">
+                                Shop
+                            </Link>
                             <ChevronRight className="h-4 w-4" />
                             <span className="text-foreground font-bold">Checkout</span>
                         </div>
-                        <h1 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">Complete Your Order</h1>
-                        <p className="mt-2 text-muted-foreground">Please provide your delivery details and choose a payment method.</p>
+                        <h1 className="text-foreground text-3xl font-black tracking-tight sm:text-4xl">Complete Your Order</h1>
+                        <p className="text-muted-foreground mt-2">Please provide your delivery details and choose a payment method.</p>
                     </div>
                 </div>
 
                 <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
                     <form onSubmit={handleSubmit} noValidate className="lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12">
-                        
                         {/* Left Column: Form Sections */}
-                        <div className="lg:col-span-7 space-y-6">
-                            
+                        <div className="space-y-6 lg:col-span-7">
                             {/* Contact & Shipping Information */}
-                            <section className="rounded-xl border border-border bg-card p-5 shadow-sm sm:p-6">
-                                <div className="flex items-center gap-3 mb-5 border-b border-border pb-4">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md">
+                            <section className="border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6">
+                                <div className="border-border mb-5 flex items-center gap-3 border-b pb-4">
+                                    <div className="bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full shadow-md">
                                         <Contact className="h-5 w-5" />
                                     </div>
-                                    <h2 className="text-xl font-bold tracking-tight text-foreground">Delivery Information</h2>
+                                    <h2 className="text-foreground text-xl font-bold tracking-tight">Delivery Information</h2>
                                 </div>
-                                
+
                                 <div className="space-y-4">
                                     {/* Personal Details */}
                                     <div className="space-y-4">
                                         <div className="w-full">
-                                            <label htmlFor="full_name" className="block text-sm font-bold text-muted-foreground mb-1">Full Name</label>
+                                            <label htmlFor="full_name" className="text-muted-foreground mb-1 block text-sm font-bold">
+                                                Full Name
+                                            </label>
                                             <Input
                                                 type="text"
                                                 id="full_name"
@@ -118,18 +126,20 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                 onChange={(e) => setData('full_name', e.target.value)}
                                                 onBlur={handleSaveContact}
                                                 placeholder="e.g. John Doe"
-                                                className={`h-12 border-border bg-muted/50 transition-all focus:bg-card focus:border-primary ${errors.full_name ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
+                                                className={`border-border bg-muted/50 focus:bg-card focus:border-primary h-12 transition-all ${errors.full_name ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
                                             />
                                             {errors.full_name && (
-                                                <p className="mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600 animate-in fade-in slide-in-from-top-1">
+                                                <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600">
                                                     <AlertCircle className="h-3 w-3" />
                                                     {errors.full_name}
                                                 </p>
                                             )}
                                         </div>
-                                        
+
                                         <div className="w-full">
-                                            <label htmlFor="phone" className="block text-sm font-bold text-muted-foreground mb-1">Phone Number</label>
+                                            <label htmlFor="phone" className="text-muted-foreground mb-1 block text-sm font-bold">
+                                                Phone Number
+                                            </label>
                                             <Input
                                                 type="tel"
                                                 id="phone"
@@ -137,10 +147,10 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                 onChange={(e) => setData('phone', e.target.value)}
                                                 onBlur={handleSaveContact}
                                                 placeholder="e.g. 01XXXXXXXXX"
-                                                className={`h-12 border-border bg-muted/50 transition-all focus:bg-card focus:border-primary ${errors.phone ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
+                                                className={`border-border bg-muted/50 focus:bg-card focus:border-primary h-12 transition-all ${errors.phone ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
                                             />
                                             {errors.phone && (
-                                                <p className="mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600 animate-in fade-in slide-in-from-top-1">
+                                                <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600">
                                                     <AlertCircle className="h-3 w-3" />
                                                     {errors.phone}
                                                 </p>
@@ -151,7 +161,9 @@ export default function Checkout({ cart }: CheckoutProps) {
                                     {/* Address Details */}
                                     <div className="pt-1">
                                         <div>
-                                            <label htmlFor="address" className="block text-sm font-bold text-muted-foreground mb-1">Full Address</label>
+                                            <label htmlFor="address" className="text-muted-foreground mb-1 block text-sm font-bold">
+                                                Full Address
+                                            </label>
                                             <Textarea
                                                 id="address"
                                                 rows={3}
@@ -159,10 +171,10 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                 onChange={(e) => setData('address', e.target.value)}
                                                 onBlur={handleSaveContact}
                                                 placeholder="House no, Street name, Area..."
-                                                className={`border-border bg-muted/50 transition-all focus:bg-card focus:border-primary ${errors.address ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
+                                                className={`border-border bg-muted/50 focus:bg-card focus:border-primary transition-all ${errors.address ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
                                             />
                                             {errors.address && (
-                                                <p className="mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600 animate-in fade-in slide-in-from-top-1">
+                                                <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600">
                                                     <AlertCircle className="h-3 w-3" />
                                                     {errors.address}
                                                 </p>
@@ -173,61 +185,94 @@ export default function Checkout({ cart }: CheckoutProps) {
                             </section>
 
                             {/* Payment Method */}
-                            <section className="rounded-xl border border-border bg-card p-5 shadow-sm sm:p-6">
-                                <div className="flex items-center gap-3 mb-5">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md">
+                            <section className="border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6">
+                                <div className="mb-5 flex items-center gap-3">
+                                    <div className="bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full shadow-md">
                                         <CreditCard className="h-5 w-5" />
                                     </div>
-                                    <h2 className="text-xl font-bold tracking-tight text-foreground">Payment Method</h2>
+                                    <h2 className="text-foreground text-xl font-bold tracking-tight">Payment Method</h2>
                                 </div>
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                                    <label className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'cod' ? 'border-primary bg-muted ring-2 ring-primary' : 'border-border hover:border-border/80 bg-card'}`}>
-                                        <input type="radio" name="payment_method" value="cod" checked={data.payment_method === 'cod'} onChange={() => setData('payment_method', 'cod')} className="sr-only" />
+                                    <label
+                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'cod' ? 'border-primary bg-muted ring-primary ring-2' : 'border-border hover:border-border/80 bg-card'}`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="payment_method"
+                                            value="cod"
+                                            checked={data.payment_method === 'cod'}
+                                            onChange={() => setData('payment_method', 'cod')}
+                                            className="sr-only"
+                                        />
                                         <span className="flex flex-1">
                                             <span className="flex flex-col">
-                                                <span className="block text-[15px] font-black text-foreground">Cash on Delivery</span>
-                                                <span className="mt-1 flex items-center text-xs font-medium text-muted-foreground italic leading-tight">Pay when you receive the product</span>
+                                                <span className="text-foreground block text-[15px] font-black">Cash on Delivery</span>
+                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium italic">
+                                                    Pay when you receive the product
+                                                </span>
                                             </span>
                                         </span>
                                         {data.payment_method === 'cod' && (
-                                            <div className="absolute right-3 top-3 rounded-full bg-primary p-1 text-primary-foreground">
-                                                <ShieldCheck className="h-4 w-4" />
-                                            </div>
-                                        )}
-                                    </label>
-                                    
-                                    <label className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'bkash' ? 'border-[#E2136E] bg-pink-50/30 ring-2 ring-[#E2136E]' : 'border-border hover:border-border/80 bg-card'}`}>
-                                        <input type="radio" name="payment_method" value="bkash" checked={data.payment_method === 'bkash'} onChange={() => setData('payment_method', 'bkash')} className="sr-only" />
-                                        <span className="flex flex-1">
-                                            <span className="flex flex-col">
-                                                <span className="block text-[15px] font-black text-[#E2136E]">bKash</span>
-                                                <span className="mt-1 flex items-center text-xs font-medium text-muted-foreground italic leading-tight">Pay securely with your bKash wallet</span>
-                                            </span>
-                                        </span>
-                                        {data.payment_method === 'bkash' && (
-                                            <div className="absolute right-3 top-3 rounded-full bg-[#E2136E] p-1 text-white">
+                                            <div className="bg-primary text-primary-foreground absolute top-3 right-3 rounded-full p-1">
                                                 <ShieldCheck className="h-4 w-4" />
                                             </div>
                                         )}
                                     </label>
 
-                                    <label className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'nagad' ? 'border-[#F15922] bg-orange-50/30 ring-2 ring-[#F15922]' : 'border-border hover:border-border/80 bg-card'}`}>
-                                        <input type="radio" name="payment_method" value="nagad" checked={data.payment_method === 'nagad'} onChange={() => setData('payment_method', 'nagad')} className="sr-only" />
+                                    <label
+                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'bkash' ? 'border-[#E2136E] bg-pink-50/30 ring-2 ring-[#E2136E]' : 'border-border hover:border-border/80 bg-card'}`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="payment_method"
+                                            value="bkash"
+                                            checked={data.payment_method === 'bkash'}
+                                            onChange={() => setData('payment_method', 'bkash')}
+                                            className="sr-only"
+                                        />
+                                        <span className="flex flex-1">
+                                            <span className="flex flex-col">
+                                                <span className="block text-[15px] font-black text-[#E2136E]">bKash</span>
+                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium italic">
+                                                    Pay securely with your bKash wallet
+                                                </span>
+                                            </span>
+                                        </span>
+                                        {data.payment_method === 'bkash' && (
+                                            <div className="absolute top-3 right-3 rounded-full bg-[#E2136E] p-1 text-white">
+                                                <ShieldCheck className="h-4 w-4" />
+                                            </div>
+                                        )}
+                                    </label>
+
+                                    <label
+                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'nagad' ? 'border-[#F15922] bg-orange-50/30 ring-2 ring-[#F15922]' : 'border-border hover:border-border/80 bg-card'}`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="payment_method"
+                                            value="nagad"
+                                            checked={data.payment_method === 'nagad'}
+                                            onChange={() => setData('payment_method', 'nagad')}
+                                            className="sr-only"
+                                        />
                                         <span className="flex flex-1">
                                             <span className="flex flex-col">
                                                 <span className="block text-[15px] font-black text-[#F15922]">Nagad</span>
-                                                <span className="mt-1 flex items-center text-xs font-medium text-muted-foreground italic leading-tight">Fast and easy checkout with Nagad</span>
+                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium italic">
+                                                    Fast and easy checkout with Nagad
+                                                </span>
                                             </span>
                                         </span>
                                         {data.payment_method === 'nagad' && (
-                                            <div className="absolute right-3 top-3 rounded-full bg-[#F15922] p-1 text-white">
+                                            <div className="absolute top-3 right-3 rounded-full bg-[#F15922] p-1 text-white">
                                                 <ShieldCheck className="h-4 w-4" />
                                             </div>
                                         )}
                                     </label>
                                 </div>
                                 {errors.payment_method && (
-                                    <p className="mt-4 flex items-center gap-1 text-sm font-bold text-rose-600 animate-in fade-in slide-in-from-top-1">
+                                    <p className="animate-in fade-in slide-in-from-top-1 mt-4 flex items-center gap-1 text-sm font-bold text-rose-600">
                                         <AlertCircle className="h-4 w-4" />
                                         {errors.payment_method}
                                     </p>
@@ -238,29 +283,31 @@ export default function Checkout({ cart }: CheckoutProps) {
                         {/* Right Column: Order Summary */}
                         <div className="mt-6 lg:col-span-5 lg:mt-0">
                             <div className="sticky top-28 space-y-6">
-                                <section className="rounded-xl border border-border bg-card p-5 shadow-sm sm:p-6">
-                                    <h2 className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-foreground mb-4">
+                                <section className="border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6">
+                                    <h2 className="text-foreground mb-4 flex items-center gap-2.5 text-xl font-bold tracking-tight">
                                         <ShoppingBag className="h-6 w-6 text-orange-600" />
                                         Order Summary
                                     </h2>
 
                                     <div className="flow-root">
-                                        <ul className="-my-6 divide-y divide-border/50">
+                                        <ul className="divide-border/50 -my-6 divide-y">
                                             {cartItems.map(([id, item]) => (
                                                 <li key={id} className="flex py-6">
-                                                    <div className="h-20 w-20 flex-none overflow-hidden rounded-md border border-border p-0.5 bg-muted">
-                                                        <img src={item.image} alt={item.name} className="h-full w-full object-cover rounded-sm" />
+                                                    <div className="border-border bg-muted h-20 w-20 flex-none overflow-hidden rounded-md border p-0.5">
+                                                        <img src={item.image} alt={item.name} className="h-full w-full rounded-sm object-cover" />
                                                     </div>
                                                     <div className="ml-4 flex flex-1 flex-col justify-between">
                                                         <div>
-                                                            <h4 className="text-sm font-bold text-foreground leading-tight">{item.name}</h4>
-                                                            <p className="mt-1 text-xs font-bold text-muted-foreground uppercase tracking-tight">
+                                                            <h4 className="text-foreground text-sm leading-tight font-bold">{item.name}</h4>
+                                                            <p className="text-muted-foreground mt-1 text-xs font-bold tracking-tight uppercase">
                                                                 {item.color} {item.size ? `/ ${item.size}` : ''}
                                                             </p>
                                                         </div>
                                                         <div className="flex items-center justify-between">
-                                                            <p className="text-sm font-bold text-muted-foreground">Qty: {item.quantity}</p>
-                                                            <p className="text-sm font-black text-foreground">৳{parseInt(item.price.replace(/[^\d]/g, '')).toLocaleString()}</p>
+                                                            <p className="text-muted-foreground text-sm font-bold">Qty: {item.quantity}</p>
+                                                            <p className="text-foreground text-sm font-black">
+                                                                ৳{parseInt(item.price.replace(/[^\d]/g, '')).toLocaleString()}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -268,20 +315,20 @@ export default function Checkout({ cart }: CheckoutProps) {
                                         </ul>
                                     </div>
 
-                                    <div className="mt-8 border-t border-border pt-8 space-y-4">
+                                    <div className="border-border mt-8 space-y-4 border-t pt-8">
                                         <div className="flex items-center justify-between text-sm">
-                                            <span className="text-muted-foreground font-bold uppercase tracking-tight">Subtotal</span>
+                                            <span className="text-muted-foreground font-bold tracking-tight uppercase">Subtotal</span>
                                             <span className="text-foreground font-black">৳{subtotal.toLocaleString()}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <div className="flex items-center gap-2">
-                                                <Truck className="h-4 w-4 text-muted-foreground" />
-                                                <span className="text-muted-foreground font-bold uppercase tracking-tight">Shipping</span>
+                                                <Truck className="text-muted-foreground h-4 w-4" />
+                                                <span className="text-muted-foreground font-bold tracking-tight uppercase">Shipping</span>
                                             </div>
                                             <span className="text-foreground font-black">৳{shipping}</span>
                                         </div>
-                                        <div className="flex items-center justify-between border-t-2 border-border border-dashed pt-4">
-                                            <span className="text-lg font-black text-foreground uppercase tracking-tight">Total Payable</span>
+                                        <div className="border-border flex items-center justify-between border-t-2 border-dashed pt-4">
+                                            <span className="text-foreground text-lg font-black tracking-tight uppercase">Total Payable</span>
                                             <span className="text-2xl font-black text-orange-600">৳{total.toLocaleString()}</span>
                                         </div>
                                     </div>
@@ -289,12 +336,12 @@ export default function Checkout({ cart }: CheckoutProps) {
                                     <button
                                         type="submit"
                                         disabled={processing}
-                                        className="mt-8 w-full rounded-md bg-primary px-6 py-4 text-sm font-black text-primary-foreground shadow-xl transition-all hover:bg-primary/95 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-50 uppercase tracking-widest"
+                                        className="bg-primary text-primary-foreground hover:bg-primary/95 mt-8 w-full rounded-md px-6 py-4 text-sm font-black tracking-widest uppercase shadow-xl transition-all hover:scale-[1.02] focus:ring-0 focus:ring-offset-0 focus:outline-none active:scale-[0.98] disabled:opacity-50"
                                     >
                                         {processing ? 'Processing...' : 'Place Order Now'}
                                     </button>
 
-                                    <div className="mt-6 flex items-center justify-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                                    <div className="text-muted-foreground mt-6 flex items-center justify-center gap-2 text-[10px] font-black tracking-widest uppercase">
                                         <Lock className="h-3 w-3" />
                                         <span>SSL SECURE CHECKOUT</span>
                                     </div>

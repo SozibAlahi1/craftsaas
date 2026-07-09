@@ -1,9 +1,9 @@
+import { ConfirmModal } from '@/components/ui/confirm-modal';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { Plus, Search, Edit2, Trash2, Eye, EyeOff, Image as ImageIcon } from 'lucide-react';
+import { Edit2, Eye, EyeOff, Image as ImageIcon, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { ConfirmModal } from '@/components/ui/confirm-modal';
 
 interface Category {
     id: number;
@@ -38,48 +38,48 @@ export default function CategoryIndex({ categories }: CategoryIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manage Categories" />
-            
+
             <div className="flex flex-col gap-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-black text-slate-950 uppercase tracking-tight">Categories</h1>
-                        <p className="text-sm text-slate-500 font-medium">Manage product groupings</p>
+                        <h1 className="text-2xl font-black tracking-tight text-slate-950 uppercase">Categories</h1>
+                        <p className="text-sm font-medium text-slate-500">Manage product groupings</p>
                     </div>
-                    <Link 
+                    <Link
                         href={route('admin.categories.create')}
-                        className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-black text-white transition-all hover:bg-slate-800 active:scale-95 uppercase tracking-widest shadow-lg"
+                        className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-black tracking-widest text-white uppercase shadow-lg transition-all hover:bg-slate-800 active:scale-95"
                     >
                         <Plus className="h-4 w-4" />
                         Add Category
                     </Link>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                     <div className="border-b border-slate-100 bg-slate-50/50 p-4">
                         <div className="relative max-w-sm">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                            <input 
-                                type="text" 
-                                placeholder="Search categories..." 
-                                className="w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 py-2 text-sm focus:border-slate-400 focus:ring-0 focus:outline-none placeholder:font-medium"
+                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <input
+                                type="text"
+                                placeholder="Search categories..."
+                                className="w-full rounded-lg border border-slate-200 bg-white py-2 pr-4 pl-10 text-sm placeholder:font-medium focus:border-slate-400 focus:ring-0 focus:outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                        <table className="w-full border-collapse text-left">
                             <thead>
-                                <tr className="bg-slate-50/50 border-b border-slate-100">
-                                    <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Banner</th>
-                                    <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Name</th>
-                                    <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Slug</th>
-                                    <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest">Home Visibility</th>
-                                    <th className="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                                <tr className="border-b border-slate-100 bg-slate-50/50">
+                                    <th className="px-6 py-4 text-xs font-black tracking-widest text-slate-400 uppercase">Banner</th>
+                                    <th className="px-6 py-4 text-xs font-black tracking-widest text-slate-400 uppercase">Name</th>
+                                    <th className="px-6 py-4 text-xs font-black tracking-widest text-slate-400 uppercase">Slug</th>
+                                    <th className="px-6 py-4 text-xs font-black tracking-widest text-slate-400 uppercase">Home Visibility</th>
+                                    <th className="px-6 py-4 text-right text-xs font-black tracking-widest text-slate-400 uppercase">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {categories.map((category) => (
-                                    <tr key={category.id} className="hover:bg-slate-50/30 transition-colors group">
+                                    <tr key={category.id} className="group transition-colors hover:bg-slate-50/30">
                                         <td className="px-6 py-4">
                                             {category.banner_image ? (
                                                 <div className="h-10 w-24 overflow-hidden rounded-md border border-slate-200">
@@ -92,22 +92,24 @@ export default function CategoryIndex({ categories }: CategoryIndexProps) {
                                             )}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="font-black text-slate-900 leading-tight">{category.name}</div>
-                                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{category.products_count} items</div>
+                                            <div className="leading-tight font-black text-slate-900">{category.name}</div>
+                                            <div className="text-[10px] font-bold tracking-tighter text-slate-400 uppercase">
+                                                {category.products_count} items
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="text-xs font-bold text-slate-400 font-mono bg-slate-50 px-2 py-1 rounded">
+                                            <span className="rounded bg-slate-50 px-2 py-1 font-mono text-xs font-bold text-slate-400">
                                                 {category.slug}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
                                             {category.show_on_home ? (
-                                                <span className="inline-flex items-center gap-1.5 rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-black text-orange-600 uppercase tracking-widest">
+                                                <span className="inline-flex items-center gap-1.5 rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-black tracking-widest text-orange-600 uppercase">
                                                     <Eye className="h-3 w-3" />
                                                     Visible
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black tracking-widest text-slate-400 uppercase">
                                                     <EyeOff className="h-3 w-3" />
                                                     Hidden
                                                 </span>
@@ -115,16 +117,16 @@ export default function CategoryIndex({ categories }: CategoryIndexProps) {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-1">
-                                                <Link 
+                                                <Link
                                                     href={route('admin.categories.edit', category.id)}
-                                                    className="p-2 text-slate-400 hover:text-blue-600 transition-colors" 
+                                                    className="p-2 text-slate-400 transition-colors hover:text-blue-600"
                                                     title="Edit"
                                                 >
                                                     <Edit2 className="h-4 w-4" />
                                                 </Link>
-                                                <button 
+                                                <button
                                                     onClick={() => setDeleteId(category.id)}
-                                                    className="p-2 text-slate-400 hover:text-red-600 transition-colors" 
+                                                    className="p-2 text-slate-400 transition-colors hover:text-red-600"
                                                     title="Delete"
                                                 >
                                                     <Trash2 className="h-4 w-4" />

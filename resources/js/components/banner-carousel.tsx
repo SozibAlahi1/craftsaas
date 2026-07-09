@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface BannerSlide {
     id: number;
@@ -82,7 +82,7 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
                         <button
                             type="button"
                             onClick={goToPrev}
-                            className="absolute left-3 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-md transition hover:bg-white"
+                            className="absolute top-1/2 left-3 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-md transition hover:bg-white"
                             aria-label="Previous banner"
                         >
                             <ChevronLeft className="h-5 w-5" />
@@ -94,7 +94,7 @@ export function BannerCarousel({ banners }: BannerCarouselProps) {
                         <button
                             type="button"
                             onClick={goToNext}
-                            className="absolute right-3 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-md transition hover:bg-white"
+                            className="absolute top-1/2 right-3 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-md transition hover:bg-white"
                             aria-label="Next banner"
                         >
                             <ChevronRight className="h-5 w-5" />

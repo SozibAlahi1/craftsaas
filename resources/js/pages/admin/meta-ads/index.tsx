@@ -1,9 +1,9 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import AppLayout from '@/layouts/app-layout';
+import { Head, router, useForm } from '@inertiajs/react';
 
 export default function MetaAdsIndex({ accounts, campaigns }: { accounts: any; campaigns: any }) {
     const { data, setData, post, processing, reset, errors } = useForm({
@@ -24,13 +24,20 @@ export default function MetaAdsIndex({ accounts, campaigns }: { accounts: any; c
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Finance', href: '/admin/finance' }, { title: 'Meta Ads', href: '/admin/meta-ads' }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Finance', href: '/admin/finance' },
+                { title: 'Meta Ads', href: '/admin/meta-ads' },
+            ]}
+        >
             <Head title="Meta Ads Management" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold tracking-tight">Meta Ads Integration</h2>
-                    <Button onClick={syncData} variant="outline">Sync Spend Data Now</Button>
+                    <Button onClick={syncData} variant="outline">
+                        Sync Spend Data Now
+                    </Button>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
@@ -53,7 +60,9 @@ export default function MetaAdsIndex({ accounts, campaigns }: { accounts: any; c
                                             <TableCell>{acc.name}</TableCell>
                                             <TableCell>{acc.account_id}</TableCell>
                                             <TableCell>
-                                                <span className={`px-2 py-1 rounded text-xs ${acc.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                <span
+                                                    className={`rounded px-2 py-1 text-xs ${acc.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                                                >
                                                     {acc.is_active ? 'Active' : 'Inactive'}
                                                 </span>
                                             </TableCell>
@@ -61,7 +70,7 @@ export default function MetaAdsIndex({ accounts, campaigns }: { accounts: any; c
                                     ))}
                                     {accounts.length === 0 && (
                                         <TableRow>
-                                            <TableCell colSpan={3} className="text-center text-muted-foreground py-4">
+                                            <TableCell colSpan={3} className="text-muted-foreground py-4 text-center">
                                                 No accounts connected.
                                             </TableCell>
                                         </TableRow>
@@ -79,34 +88,36 @@ export default function MetaAdsIndex({ accounts, campaigns }: { accounts: any; c
                         <CardContent>
                             <form onSubmit={submit} className="flex flex-col gap-4">
                                 <div>
-                                    <Input 
-                                        placeholder="Internal Name (e.g. Primary BM)" 
-                                        value={data.name} 
-                                        onChange={(e) => setData('name', e.target.value)} 
+                                    <Input
+                                        placeholder="Internal Name (e.g. Primary BM)"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
                                     />
                                     {errors.name && <span className="text-xs text-red-500">{errors.name}</span>}
                                 </div>
-                                
+
                                 <div>
-                                    <Input 
-                                        placeholder="Facebook Profile / BM ID" 
-                                        value={data.account_id} 
-                                        onChange={(e) => setData('account_id', e.target.value)} 
+                                    <Input
+                                        placeholder="Facebook Profile / BM ID"
+                                        value={data.account_id}
+                                        onChange={(e) => setData('account_id', e.target.value)}
                                     />
                                     {errors.account_id && <span className="text-xs text-red-500">{errors.account_id}</span>}
                                 </div>
 
                                 <div>
-                                    <Input 
+                                    <Input
                                         type="password"
-                                        placeholder="Access Token" 
-                                        value={data.access_token} 
-                                        onChange={(e) => setData('access_token', e.target.value)} 
+                                        placeholder="Access Token"
+                                        value={data.access_token}
+                                        onChange={(e) => setData('access_token', e.target.value)}
                                     />
                                     {errors.access_token && <span className="text-xs text-red-500">{errors.access_token}</span>}
                                 </div>
 
-                                <Button type="submit" disabled={processing}>Connect Account</Button>
+                                <Button type="submit" disabled={processing}>
+                                    Connect Account
+                                </Button>
                             </form>
                         </CardContent>
                     </Card>
@@ -132,14 +143,14 @@ export default function MetaAdsIndex({ accounts, campaigns }: { accounts: any; c
                                     <TableRow key={camp.id}>
                                         <TableCell className="font-medium">{camp.name}</TableCell>
                                         <TableCell>{camp.account}</TableCell>
-                                        <TableCell className="text-right text-red-600 font-bold">৳{camp.total_spend}</TableCell>
+                                        <TableCell className="text-right font-bold text-red-600">৳{camp.total_spend}</TableCell>
                                         <TableCell className="text-right">{camp.clicks}</TableCell>
                                         <TableCell className="text-right">৳{camp.cpc}</TableCell>
                                     </TableRow>
                                 ))}
                                 {campaigns.length === 0 && (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                                        <TableCell colSpan={5} className="text-muted-foreground py-8 text-center">
                                             No active campaigns found. Try syncing spend data.
                                         </TableCell>
                                     </TableRow>

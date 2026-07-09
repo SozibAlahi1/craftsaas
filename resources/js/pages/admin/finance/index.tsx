@@ -1,9 +1,9 @@
-import { Head, Link } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import AppLayout from '@/layouts/app-layout';
+import { Head, Link } from '@inertiajs/react';
+import { CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#ffc658'];
 
@@ -11,24 +11,37 @@ export default function FinanceIndex({ data, days }: { data: any; days: number }
     const { summary, trend, expenses, snapshots } = data;
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Dashboard', href: '/dashboard' }, { title: 'Finance', href: '/admin/finance' }]}>
+        <AppLayout
+            breadcrumbs={[
+                { title: 'Dashboard', href: '/dashboard' },
+                { title: 'Finance', href: '/admin/finance' },
+            ]}
+        >
             <Head title="Finance Dashboard" />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4 flex items-center justify-between">
                     <h2 className="text-2xl font-bold tracking-tight">Finance Overview</h2>
                     <div className="flex gap-2">
                         <Link href={`/admin/finance?days=7`}>
-                            <Button variant={days === 7 ? 'default' : 'outline'} size="sm">Last 7 Days</Button>
+                            <Button variant={days === 7 ? 'default' : 'outline'} size="sm">
+                                Last 7 Days
+                            </Button>
                         </Link>
                         <Link href={`/admin/finance?days=30`}>
-                            <Button variant={days === 30 ? 'default' : 'outline'} size="sm">Last 30 Days</Button>
+                            <Button variant={days === 30 ? 'default' : 'outline'} size="sm">
+                                Last 30 Days
+                            </Button>
                         </Link>
                         <Link href={`/admin/finance?days=90`}>
-                            <Button variant={days === 90 ? 'default' : 'outline'} size="sm">Last 90 Days</Button>
+                            <Button variant={days === 90 ? 'default' : 'outline'} size="sm">
+                                Last 90 Days
+                            </Button>
                         </Link>
                         <a href={`/admin/finance/export?days=${days}`}>
-                            <Button variant="secondary" size="sm">Export CSV</Button>
+                            <Button variant="secondary" size="sm">
+                                Export CSV
+                            </Button>
                         </a>
                     </div>
                 </div>
@@ -90,9 +103,19 @@ export default function FinanceIndex({ data, days }: { data: any; days: number }
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={trend}>
                                         <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                        <XAxis dataKey="date" tickLine={false} axisLine={false} tickFormatter={(value) => new Date(value).toLocaleDateString(undefined, {month: 'short', day: 'numeric'})} />
+                                        <XAxis
+                                            dataKey="date"
+                                            tickLine={false}
+                                            axisLine={false}
+                                            tickFormatter={(value) =>
+                                                new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+                                            }
+                                        />
                                         <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `৳${value}`} />
-                                        <Tooltip formatter={(value) => [`৳${value}`, 'Net Profit']} labelFormatter={(label) => new Date(label).toLocaleDateString()} />
+                                        <Tooltip
+                                            formatter={(value) => [`৳${value}`, 'Net Profit']}
+                                            labelFormatter={(label) => new Date(label).toLocaleDateString()}
+                                        />
                                         <Line type="monotone" dataKey="daily_profit" stroke="#10b981" strokeWidth={2} dot={false} />
                                     </LineChart>
                                 </ResponsiveContainer>
@@ -129,7 +152,7 @@ export default function FinanceIndex({ data, days }: { data: any; days: number }
                                         </PieChart>
                                     </ResponsiveContainer>
                                 ) : (
-                                    <div className="flex h-full items-center justify-center text-muted-foreground">
+                                    <div className="text-muted-foreground flex h-full items-center justify-center">
                                         No expense data for this period
                                     </div>
                                 )}

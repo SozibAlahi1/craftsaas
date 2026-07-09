@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { Target, Activity, CheckCircle, XCircle, Trash2, Edit2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { Activity, CheckCircle, Edit2, Target, Trash2, XCircle } from 'lucide-react';
+import { useState } from 'react';
 
 interface Pixel {
     id: number;
@@ -89,27 +89,27 @@ export default function PixelIndex({ pixels }: PixelIndexProps) {
 
             <div className="flex flex-col gap-6 p-6">
                 <div>
-                    <h1 className="flex items-center gap-2 text-2xl font-black uppercase tracking-tight text-slate-950">
+                    <h1 className="flex items-center gap-2 text-2xl font-black tracking-tight text-slate-950 uppercase">
                         <Target className="h-6 w-6 text-blue-600" />
                         Facebook Pixels & CAPI
                     </h1>
                     <p className="text-sm font-medium text-slate-500">Manage Facebook Pixels and Conversions API configurations.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="md:col-span-2 space-y-4">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                    <div className="space-y-4 md:col-span-2">
                         {pixels.map((pixel) => (
                             <div key={pixel.id} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                                     <div>
                                         <div className="flex items-center gap-2">
                                             <h3 className="text-lg font-black text-slate-900">{pixel.name}</h3>
                                             {pixel.is_active ? (
-                                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-700">
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-black tracking-wider text-emerald-700 uppercase">
                                                     <CheckCircle className="h-3 w-3" /> Active
                                                 </span>
                                             ) : (
-                                                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-black tracking-wider text-slate-500 uppercase">
                                                     <XCircle className="h-3 w-3" /> Inactive
                                                 </span>
                                             )}
@@ -123,9 +123,7 @@ export default function PixelIndex({ pixels }: PixelIndexProps) {
                                             </div>
                                         )}
                                         {pixel.test_event_code && (
-                                            <div className="mt-1 text-xs font-bold text-amber-600">
-                                                Test Mode: {pixel.test_event_code}
-                                            </div>
+                                            <div className="mt-1 text-xs font-bold text-amber-600">Test Mode: {pixel.test_event_code}</div>
                                         )}
                                     </div>
                                     <div className="flex flex-wrap items-center gap-2">
@@ -133,7 +131,11 @@ export default function PixelIndex({ pixels }: PixelIndexProps) {
                                             variant="outline"
                                             size="sm"
                                             onClick={() => handleToggleStatus(pixel.id)}
-                                            className={pixel.is_active ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50' : 'text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50'}
+                                            className={
+                                                pixel.is_active
+                                                    ? 'text-amber-600 hover:bg-amber-50 hover:text-amber-700'
+                                                    : 'text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700'
+                                            }
                                         >
                                             {pixel.is_active ? 'Disable' : 'Enable'}
                                         </Button>
@@ -149,19 +151,19 @@ export default function PixelIndex({ pixels }: PixelIndexProps) {
                         ))}
 
                         {pixels.length === 0 && (
-                            <div className="rounded-xl border border-dashed border-slate-300 p-12 text-center text-slate-500 font-medium">
+                            <div className="rounded-xl border border-dashed border-slate-300 p-12 text-center font-medium text-slate-500">
                                 No pixels configured yet. Add your first pixel to start tracking.
                             </div>
                         )}
                     </div>
 
-                    <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-5 h-fit">
-                        <h3 className="mb-4 text-sm font-black uppercase tracking-wider text-slate-900">
+                    <div className="h-fit rounded-xl border border-slate-200 bg-slate-50/50 p-5">
+                        <h3 className="mb-4 text-sm font-black tracking-wider text-slate-900 uppercase">
                             {isEditing ? 'Edit Pixel' : 'Add New Pixel'}
                         </h3>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500">Name</label>
+                                <label className="mb-1 block text-xs font-bold tracking-wider text-slate-500 uppercase">Name</label>
                                 <Input
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
@@ -172,7 +174,7 @@ export default function PixelIndex({ pixels }: PixelIndexProps) {
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500">Pixel ID</label>
+                                <label className="mb-1 block text-xs font-bold tracking-wider text-slate-500 uppercase">Pixel ID</label>
                                 <Input
                                     value={data.pixel_id}
                                     onChange={(e) => setData('pixel_id', e.target.value)}
@@ -183,7 +185,9 @@ export default function PixelIndex({ pixels }: PixelIndexProps) {
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500">CAPI Access Token (Optional)</label>
+                                <label className="mb-1 block text-xs font-bold tracking-wider text-slate-500 uppercase">
+                                    CAPI Access Token (Optional)
+                                </label>
                                 <Input
                                     value={data.access_token}
                                     onChange={(e) => setData('access_token', e.target.value)}
@@ -195,7 +199,9 @@ export default function PixelIndex({ pixels }: PixelIndexProps) {
                             </div>
 
                             <div>
-                                <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-500">Test Event Code (Optional)</label>
+                                <label className="mb-1 block text-xs font-bold tracking-wider text-slate-500 uppercase">
+                                    Test Event Code (Optional)
+                                </label>
                                 <Input
                                     value={data.test_event_code}
                                     onChange={(e) => setData('test_event_code', e.target.value)}
@@ -205,7 +211,7 @@ export default function PixelIndex({ pixels }: PixelIndexProps) {
                             </div>
 
                             <div className="flex gap-2 pt-2">
-                                <Button type="submit" disabled={processing} className="flex-1 font-black uppercase tracking-widest">
+                                <Button type="submit" disabled={processing} className="flex-1 font-black tracking-widest uppercase">
                                     {isEditing ? 'Update' : 'Save'} Pixel
                                 </Button>
                                 {isEditing && (

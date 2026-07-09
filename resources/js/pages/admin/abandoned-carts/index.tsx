@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
-import { CheckCircle, Clock, MapPin, Phone, ShoppingCart, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Head, router } from '@inertiajs/react';
+import { CheckCircle, Clock, MapPin, Phone, ShoppingCart, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -49,14 +49,10 @@ export default function AbandonedCartsIndex({ carts, filters }: { carts: Paginat
 
     const handleFilterChange = (newStatus: string) => {
         setStatusFilter(newStatus);
-        router.get(
-            route('admin.abandoned-carts.index'),
-            { status: newStatus },
-            { preserveState: true, preserveScroll: true }
-        );
+        router.get(route('admin.abandoned-carts.index'), { status: newStatus }, { preserveState: true, preserveScroll: true });
     };
 
-    const [confirmAction, setConfirmAction] = useState<{ id: number, type: 'recover' | 'delete' } | null>(null);
+    const [confirmAction, setConfirmAction] = useState<{ id: number; type: 'recover' | 'delete' } | null>(null);
 
     const executeConfirmAction = () => {
         if (!confirmAction) return;
@@ -118,22 +114,26 @@ export default function AbandonedCartsIndex({ carts, filters }: { carts: Paginat
                                                     <ShoppingCart className="h-4 w-4 text-slate-500" />
                                                 </span>
                                                 <div>
-                                                    <p className="text-sm font-bold text-slate-900">
-                                                        {cart.customer_name || 'Guest User'}
-                                                    </p>
+                                                    <p className="text-sm font-bold text-slate-900">{cart.customer_name || 'Guest User'}</p>
                                                     <div className="flex items-center gap-2 text-xs text-slate-500">
                                                         <Clock className="h-3 w-3" />
                                                         Last active: {new Date(cart.last_active_at).toLocaleString()}
                                                     </div>
                                                 </div>
-                                                <span className={`ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-black tracking-tighter uppercase ${
-                                                    cart.status === 'recovered' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                                                }`}>
+                                                <span
+                                                    className={`ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-black tracking-tighter uppercase ${
+                                                        cart.status === 'recovered'
+                                                            ? 'bg-emerald-100 text-emerald-700'
+                                                            : 'bg-amber-100 text-amber-700'
+                                                    }`}
+                                                >
                                                     {cart.status}
                                                 </span>
                                             </div>
 
-                                            <div className={`ml-11 grid grid-cols-1 gap-4 ${(cart.customer_phone || cart.customer_address) ? 'sm:grid-cols-2' : ''}`}>
+                                            <div
+                                                className={`ml-11 grid grid-cols-1 gap-4 ${cart.customer_phone || cart.customer_address ? 'sm:grid-cols-2' : ''}`}
+                                            >
                                                 {(cart.customer_phone || cart.customer_address) && (
                                                     <div className="space-y-1">
                                                         {cart.customer_phone && (
@@ -151,23 +151,26 @@ export default function AbandonedCartsIndex({ carts, filters }: { carts: Paginat
                                                     </div>
                                                 )}
 
-                                                <div className="rounded-md border border-slate-100 bg-slate-50 p-3 max-w-lg">
-                                                    <p className="mb-2 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                                <div className="max-w-lg rounded-md border border-slate-100 bg-slate-50 p-3">
+                                                    <p className="mb-2 text-xs font-bold tracking-widest text-slate-500 uppercase">
                                                         Cart Items ({cart.cart_data ? Object.keys(cart.cart_data).length : 0})
                                                     </p>
                                                     <ul className="space-y-1">
-                                                        {cart.cart_data && Object.values(cart.cart_data).map((item: any, idx) => (
-                                                            <li key={idx} className="flex justify-between text-sm">
-                                                                <span className="truncate text-slate-700">{item.name} x{item.quantity}</span>
-                                                                <span className="font-medium text-slate-900 ml-4">{item.price}</span>
-                                                            </li>
-                                                        ))}
+                                                        {cart.cart_data &&
+                                                            Object.values(cart.cart_data).map((item: any, idx) => (
+                                                                <li key={idx} className="flex justify-between text-sm">
+                                                                    <span className="truncate text-slate-700">
+                                                                        {item.name} x{item.quantity}
+                                                                    </span>
+                                                                    <span className="ml-4 font-medium text-slate-900">{item.price}</span>
+                                                                </li>
+                                                            ))}
                                                     </ul>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-2 shrink-0">
+                                        <div className="flex shrink-0 items-center gap-2">
                                             {cart.status === 'pending' && (
                                                 <Button
                                                     variant="outline"
@@ -202,7 +205,11 @@ export default function AbandonedCartsIndex({ carts, filters }: { carts: Paginat
                 onClose={() => setConfirmAction(null)}
                 onConfirm={executeConfirmAction}
                 title={confirmAction?.type === 'recover' ? 'Mark Cart Recovered' : 'Delete Abandoned Cart'}
-                description={confirmAction?.type === 'recover' ? 'Are you sure you want to mark this cart as recovered?' : 'Are you sure you want to delete this cart?'}
+                description={
+                    confirmAction?.type === 'recover'
+                        ? 'Are you sure you want to mark this cart as recovered?'
+                        : 'Are you sure you want to delete this cart?'
+                }
                 confirmText={confirmAction?.type === 'recover' ? 'Mark Recovered' : 'Delete'}
                 variant={confirmAction?.type === 'recover' ? 'default' : 'destructive'}
             />

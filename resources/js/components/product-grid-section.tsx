@@ -56,24 +56,17 @@ export function ProductGridSection() {
                         >
                             <div className="flex h-full min-h-[340px] flex-col">
                                 <div className="flex-1">
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="h-[220px] w-full object-cover"
-                                        loading="lazy"
-                                    />
+                                    <img src={product.image} alt={product.name} className="h-[220px] w-full object-cover" loading="lazy" />
                                 </div>
 
-                                <div className="px-4 pb-4 pt-3">
-                                    <h3 className="text-[1.05rem] font-semibold leading-6 text-slate-950">{product.name}</h3>
-                                    <div className="mt-2 text-[1.35rem] font-bold leading-none text-orange-600">{product.price}</div>
+                                <div className="px-4 pt-3 pb-4">
+                                    <h3 className="text-[1.05rem] leading-6 font-semibold text-slate-950">{product.name}</h3>
+                                    <div className="mt-2 text-[1.35rem] leading-none font-bold text-orange-600">{product.price}</div>
 
                                     <div className="mt-3 flex items-center gap-3 text-sm">
                                         {product.oldPrice && <span className="text-slate-500 line-through">{product.oldPrice}</span>}
                                         {product.discount && (
-                                            <span className="rounded-md bg-orange-50 px-3 py-1 font-medium text-orange-600">
-                                                {product.discount}
-                                            </span>
+                                            <span className="rounded-md bg-orange-50 px-3 py-1 font-medium text-orange-600">{product.discount}</span>
                                         )}
                                     </div>
                                 </div>

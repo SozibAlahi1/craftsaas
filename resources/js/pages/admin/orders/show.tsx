@@ -1,8 +1,8 @@
+import { OrderTimeline } from '@/components/order-timeline';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, CheckCircle2, Clock, CreditCard, MapPin, Package, Phone, Truck, User, XCircle, Printer, ShieldAlert } from 'lucide-react';
-import { OrderTimeline } from '@/components/order-timeline';
+import { ArrowLeft, CheckCircle2, Clock, CreditCard, MapPin, Package, Phone, Printer, ShieldAlert, Truck, User, XCircle } from 'lucide-react';
 
 interface OrderItem {
     id: number;
@@ -92,7 +92,7 @@ export default function OrderShow({ order, activities, statusLogs, notes }: Orde
             <Head title={`Order #${order.order_number}`} />
 
             <div className="flex flex-col gap-6 p-6">
-                <div className="flex items-start sm:items-center justify-between flex-col sm:flex-row gap-4">
+                <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                     <div className="flex items-center gap-4">
                         <Link
                             href={route('admin.orders.index')}
@@ -148,72 +148,78 @@ export default function OrderShow({ order, activities, statusLogs, notes }: Orde
                 <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
                     <div className="flex flex-col gap-6 xl:col-span-2">
                         <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
-                        <div className="border-b border-slate-100 p-5">
-                            <h2 className="text-sm font-black tracking-widest text-slate-900 uppercase">Order Items</h2>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full border-collapse text-left">
-                                <thead>
-                                    <tr className="border-b border-slate-100 bg-slate-50/50">
-                                        <th className="px-5 py-3 text-xs font-black tracking-widest text-slate-400 uppercase">Item</th>
-                                        <th className="px-5 py-3 text-xs font-black tracking-widest text-slate-400 uppercase">Qty</th>
-                                        <th className="px-5 py-3 text-xs font-black tracking-widest text-slate-400 uppercase">Price</th>
-                                        <th className="px-5 py-3 text-right text-xs font-black tracking-widest text-slate-400 uppercase">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50">
-                                    {order.items.map((item) => (
-                                        <tr key={item.id}>
-                                            <td className="px-5 py-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="flex h-14 w-14 flex-none items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-slate-50">
-                                                        {item.options?.image ? (
-                                                            <img src={item.options.image} alt={item.name} className="h-full w-full object-cover" />
-                                                        ) : (
-                                                            <Package className="h-5 w-5 text-slate-300" />
-                                                        )}
-                                                    </div>
-                                                    <div className="min-w-0">
-                                                        <div className="font-black text-slate-900">{item.name}</div>
-                                                        {displayOptions(item.options).length > 0 && (
-                                                            <div className="mt-1 text-xs font-bold text-slate-400">
-                                                                {displayOptions(item.options)
-                                                                    .map(([key, value]) => `${key}: ${value}`)
-                                                                    .join(', ')}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-5 py-4 text-sm font-bold text-slate-600">{item.quantity}</td>
-                                            <td className="px-5 py-4 text-sm font-bold text-slate-600">{formatCurrency(item.price)}</td>
-                                            <td className="px-5 py-4 text-right font-black text-slate-900">
-                                                {formatCurrency(item.price * item.quantity)}
-                                            </td>
+                            <div className="border-b border-slate-100 p-5">
+                                <h2 className="text-sm font-black tracking-widest text-slate-900 uppercase">Order Items</h2>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full border-collapse text-left">
+                                    <thead>
+                                        <tr className="border-b border-slate-100 bg-slate-50/50">
+                                            <th className="px-5 py-3 text-xs font-black tracking-widest text-slate-400 uppercase">Item</th>
+                                            <th className="px-5 py-3 text-xs font-black tracking-widest text-slate-400 uppercase">Qty</th>
+                                            <th className="px-5 py-3 text-xs font-black tracking-widest text-slate-400 uppercase">Price</th>
+                                            <th className="px-5 py-3 text-right text-xs font-black tracking-widest text-slate-400 uppercase">
+                                                Total
+                                            </th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="border-t border-slate-100 bg-slate-50/40 p-5">
-                            <div className="ml-auto flex max-w-xs flex-col gap-2">
-                                <div className="flex items-center justify-between text-sm font-bold text-slate-500">
-                                    <span>Subtotal</span>
-                                    <span>{formatCurrency(order.subtotal)}</span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm font-bold text-slate-500">
-                                    <span>Shipping</span>
-                                    <span>{formatCurrency(order.shipping)}</span>
-                                </div>
-                                <div className="flex items-center justify-between border-t border-slate-200 pt-2 text-lg font-black text-slate-950">
-                                    <span>Total</span>
-                                    <span>{formatCurrency(order.total)}</span>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-50">
+                                        {order.items.map((item) => (
+                                            <tr key={item.id}>
+                                                <td className="px-5 py-4">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="flex h-14 w-14 flex-none items-center justify-center overflow-hidden rounded-lg border border-slate-100 bg-slate-50">
+                                                            {item.options?.image ? (
+                                                                <img
+                                                                    src={item.options.image}
+                                                                    alt={item.name}
+                                                                    className="h-full w-full object-cover"
+                                                                />
+                                                            ) : (
+                                                                <Package className="h-5 w-5 text-slate-300" />
+                                                            )}
+                                                        </div>
+                                                        <div className="min-w-0">
+                                                            <div className="font-black text-slate-900">{item.name}</div>
+                                                            {displayOptions(item.options).length > 0 && (
+                                                                <div className="mt-1 text-xs font-bold text-slate-400">
+                                                                    {displayOptions(item.options)
+                                                                        .map(([key, value]) => `${key}: ${value}`)
+                                                                        .join(', ')}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-5 py-4 text-sm font-bold text-slate-600">{item.quantity}</td>
+                                                <td className="px-5 py-4 text-sm font-bold text-slate-600">{formatCurrency(item.price)}</td>
+                                                <td className="px-5 py-4 text-right font-black text-slate-900">
+                                                    {formatCurrency(item.price * item.quantity)}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="border-t border-slate-100 bg-slate-50/40 p-5">
+                                <div className="ml-auto flex max-w-xs flex-col gap-2">
+                                    <div className="flex items-center justify-between text-sm font-bold text-slate-500">
+                                        <span>Subtotal</span>
+                                        <span>{formatCurrency(order.subtotal)}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-sm font-bold text-slate-500">
+                                        <span>Shipping</span>
+                                        <span>{formatCurrency(order.shipping)}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between border-t border-slate-200 pt-2 text-lg font-black text-slate-950">
+                                        <span>Total</span>
+                                        <span>{formatCurrency(order.total)}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
 
-                    <OrderTimeline activities={activities} statusLogs={statusLogs} notes={notes} />
+                        <OrderTimeline activities={activities} statusLogs={statusLogs} notes={notes} />
                     </div>
 
                     <div className="flex flex-col gap-6">
@@ -274,22 +280,22 @@ export default function OrderShow({ order, activities, statusLogs, notes }: Orde
                                         {typeof order.fraud_success_ratio === 'number' ? `${order.fraud_success_ratio.toFixed(2)}%` : 'Pending'}
                                     </p>
                                 </div>
-                                
+
                                 <div className="mt-4 flex gap-2 border-t border-slate-100 pt-4">
                                     {!order.courier_consignment_id ? (
-                                        <Link 
-                                            href={route('admin.orders.send-courier', order.id)} 
-                                            method="post" 
-                                            as="button" 
+                                        <Link
+                                            href={route('admin.orders.send-courier', order.id)}
+                                            method="post"
+                                            as="button"
                                             className="flex w-full justify-center rounded-lg bg-blue-600 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-blue-700"
                                         >
                                             Send to Steadfast
                                         </Link>
                                     ) : (
-                                        <Link 
-                                            href={route('admin.orders.sync-courier', order.id)} 
-                                            method="post" 
-                                            as="button" 
+                                        <Link
+                                            href={route('admin.orders.sync-courier', order.id)}
+                                            method="post"
+                                            as="button"
                                             className="flex w-full justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 transition-colors hover:bg-slate-200"
                                         >
                                             Sync Status
@@ -309,17 +315,22 @@ export default function OrderShow({ order, activities, statusLogs, notes }: Orde
                                     <>
                                         <div>
                                             <p className="text-xs font-black tracking-widest text-slate-400 uppercase">Risk Score</p>
-                                            <p className={`font-black ${
-                                                order.risk_score.status === 'high' ? 'text-red-600' : 
-                                                order.risk_score.status === 'medium' ? 'text-amber-600' : 'text-emerald-600'
-                                            }`}>
+                                            <p
+                                                className={`font-black ${
+                                                    order.risk_score.status === 'high'
+                                                        ? 'text-red-600'
+                                                        : order.risk_score.status === 'medium'
+                                                          ? 'text-amber-600'
+                                                          : 'text-emerald-600'
+                                                }`}
+                                            >
                                                 {order.risk_score.score}% ({order.risk_score.status})
                                             </p>
                                         </div>
                                         {order.risk_score.factors && order.risk_score.factors.length > 0 && (
                                             <div>
-                                                <p className="text-xs font-black tracking-widest text-slate-400 uppercase mb-1">Risk Factors</p>
-                                                <ul className="list-disc pl-4 text-slate-600 text-xs font-medium space-y-1">
+                                                <p className="mb-1 text-xs font-black tracking-widest text-slate-400 uppercase">Risk Factors</p>
+                                                <ul className="list-disc space-y-1 pl-4 text-xs font-medium text-slate-600">
                                                     {order.risk_score.factors.map((factor: string, idx: number) => (
                                                         <li key={idx}>{factor}</li>
                                                     ))}
@@ -328,7 +339,7 @@ export default function OrderShow({ order, activities, statusLogs, notes }: Orde
                                         )}
                                     </>
                                 ) : (
-                                    <p className="text-slate-500 font-medium">Pending evaluation.</p>
+                                    <p className="font-medium text-slate-500">Pending evaluation.</p>
                                 )}
                             </div>
                         </section>

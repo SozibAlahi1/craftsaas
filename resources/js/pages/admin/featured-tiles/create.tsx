@@ -1,8 +1,8 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Loader2, Upload, X, Link as LinkIcon } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { ArrowLeft, Loader2, Upload, X } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
@@ -62,21 +62,21 @@ export default function CreateFeaturedTile({ categories }: CreateFeaturedTilePro
                         <div className="absolute inset-0 animate-spin rounded-full border-4 border-slate-100 border-t-orange-600"></div>
                         <Loader2 className="h-10 w-10 animate-pulse text-orange-600" />
                     </div>
-                    <p className="mt-4 text-sm font-black uppercase tracking-widest text-slate-900">Uploading Tile...</p>
+                    <p className="mt-4 text-sm font-black tracking-widest text-slate-900 uppercase">Uploading Tile...</p>
                 </div>
             )}
 
             <div className="w-full p-6">
                 <div className="mb-8 flex items-center justify-between">
                     <div className="space-y-1">
-                        <Link 
-                            href={route('admin.featured-tiles.index')} 
-                            className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 transition-colors hover:text-slate-950"
+                        <Link
+                            href={route('admin.featured-tiles.index')}
+                            className="inline-flex items-center gap-2 text-xs font-black tracking-widest text-slate-400 uppercase transition-colors hover:text-slate-950"
                         >
                             <ArrowLeft className="h-3 w-3" />
                             Back to tiles
                         </Link>
-                        <h1 className="text-3xl font-black uppercase tracking-tight text-slate-950">New Featured Tile</h1>
+                        <h1 className="text-3xl font-black tracking-tight text-slate-950 uppercase">New Featured Tile</h1>
                     </div>
                 </div>
 
@@ -84,27 +84,27 @@ export default function CreateFeaturedTile({ categories }: CreateFeaturedTilePro
                     <div className="grid gap-8 lg:grid-cols-[1fr_350px]">
                         <div className="space-y-8">
                             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                                <h3 className="mb-6 text-sm font-black uppercase tracking-widest text-slate-400">Basic Information</h3>
+                                <h3 className="mb-6 text-sm font-black tracking-widest text-slate-400 uppercase">Basic Information</h3>
                                 <div className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-600">Tile Title (Internal)</label>
+                                        <label className="text-xs font-black tracking-widest text-slate-600 uppercase">Tile Title (Internal)</label>
                                         <input
                                             type="text"
                                             value={data.title}
                                             onChange={(e) => setData('title', e.target.value)}
-                                            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold focus:border-slate-400 focus:bg-white focus:ring-0 outline-none"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold outline-none focus:border-slate-400 focus:bg-white focus:ring-0"
                                             placeholder="e.g. Men's Shoes Collection"
                                         />
-                                        {errors.title && <p className="text-xs font-bold uppercase text-red-500">{errors.title}</p>}
+                                        {errors.title && <p className="text-xs font-bold text-red-500 uppercase">{errors.title}</p>}
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-600">Link to Category</label>
+                                        <label className="text-xs font-black tracking-widest text-slate-600 uppercase">Link to Category</label>
                                         <div className="relative">
                                             <select
                                                 value={data.link.split('category=')[1] || ''}
                                                 onChange={(e) => setData('link', `/products?category=${e.target.value}`)}
-                                                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold focus:border-slate-400 focus:bg-white focus:ring-0 outline-none"
+                                                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold outline-none focus:border-slate-400 focus:bg-white focus:ring-0"
                                             >
                                                 <option value="">Select a Category</option>
                                                 {categories.map((category) => (
@@ -113,28 +113,28 @@ export default function CreateFeaturedTile({ categories }: CreateFeaturedTilePro
                                                     </option>
                                                 ))}
                                             </select>
-                                            <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
+                                            <div className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2">
                                                 <svg className="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                                                 </svg>
                                             </div>
                                         </div>
-                                        {errors.link && <p className="text-xs font-bold uppercase text-red-500">{errors.link}</p>}
+                                        {errors.link && <p className="text-xs font-bold text-red-500 uppercase">{errors.link}</p>}
                                     </div>
                                 </div>
                             </div>
 
                             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                                <h3 className="mb-6 text-sm font-black uppercase tracking-widest text-slate-400">Tile Image</h3>
+                                <h3 className="mb-6 text-sm font-black tracking-widest text-slate-400 uppercase">Tile Image</h3>
                                 <div className="space-y-4">
                                     <div className="relative">
                                         {preview ? (
-                                            <div className="relative aspect-square w-full max-w-[250px] mx-auto overflow-hidden rounded-xl border border-slate-200">
+                                            <div className="relative mx-auto aspect-square w-full max-w-[250px] overflow-hidden rounded-xl border border-slate-200">
                                                 <img src={preview} alt="Tile Preview" className="h-full w-full object-cover" />
                                                 <button
                                                     type="button"
                                                     onClick={removeImage}
-                                                    className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-slate-950/50 text-white backdrop-blur transition-colors hover:bg-red-500"
+                                                    className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-slate-950/50 text-white backdrop-blur transition-colors hover:bg-red-500"
                                                 >
                                                     <X className="h-4 w-4" />
                                                 </button>
@@ -142,44 +142,38 @@ export default function CreateFeaturedTile({ categories }: CreateFeaturedTilePro
                                         ) : (
                                             <div
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className="flex aspect-square w-full max-w-[250px] mx-auto cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 transition-colors hover:border-slate-400 hover:bg-slate-100"
+                                                className="mx-auto flex aspect-square w-full max-w-[250px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 transition-colors hover:border-slate-400 hover:bg-slate-100"
                                             >
                                                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-400 shadow-sm">
                                                     <Upload className="h-6 w-6" />
                                                 </div>
-                                                <p className="mt-4 text-[10px] font-black uppercase tracking-widest text-slate-500">Upload Image</p>
+                                                <p className="mt-4 text-[10px] font-black tracking-widest text-slate-500 uppercase">Upload Image</p>
                                             </div>
                                         )}
-                                        <input
-                                            type="file"
-                                            ref={fileInputRef}
-                                            onChange={handleImageChange}
-                                            className="hidden"
-                                            accept="image/*"
-                                        />
+                                        <input type="file" ref={fileInputRef} onChange={handleImageChange} className="hidden" accept="image/*" />
                                     </div>
-                                    {errors.image && <p className="text-xs font-bold uppercase text-red-500 text-center">{errors.image}</p>}
+                                    {errors.image && <p className="text-center text-xs font-bold text-red-500 uppercase">{errors.image}</p>}
                                 </div>
                             </div>
                         </div>
 
                         <div className="space-y-8">
                             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                                <h3 className="mb-6 text-sm font-black uppercase tracking-widest text-slate-400">Settings</h3>
+                                <h3 className="mb-6 text-sm font-black tracking-widest text-slate-400 uppercase">Settings</h3>
                                 <div className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-600">Display Order</label>
+                                        <label className="text-xs font-black tracking-widest text-slate-600 uppercase">Display Order</label>
                                         <input
                                             type="number"
                                             value={data.order}
                                             onChange={(e) => setData('order', parseInt(e.target.value))}
-                                            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold focus:border-slate-400 focus:bg-white focus:ring-0 outline-none"
+                                            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold outline-none focus:border-slate-400 focus:bg-white focus:ring-0"
                                         />
-                                        {errors.order && <p className="text-xs font-bold uppercase text-red-500">{errors.order}</p>}
+                                        {errors.order && <p className="text-xs font-bold text-red-500 uppercase">{errors.order}</p>}
                                     </div>
 
                                     <div className="flex items-center justify-between">
-                                        <label className="text-xs font-black uppercase tracking-widest text-slate-600">Status</label>
+                                        <label className="text-xs font-black tracking-widest text-slate-600 uppercase">Status</label>
                                         <button
                                             type="button"
                                             onClick={() => setData('is_active', !data.is_active)}
@@ -188,7 +182,7 @@ export default function CreateFeaturedTile({ categories }: CreateFeaturedTilePro
                                             }`}
                                         >
                                             <span
-                                                className={`absolute left-1 top-1 h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
+                                                className={`absolute top-1 left-1 h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
                                                     data.is_active ? 'translate-x-5' : 'translate-x-0'
                                                 }`}
                                             />
@@ -200,7 +194,7 @@ export default function CreateFeaturedTile({ categories }: CreateFeaturedTilePro
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="w-full rounded-2xl bg-slate-950 py-4 text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-slate-950/20 transition-all hover:-translate-y-1 hover:bg-slate-800 disabled:opacity-50 active:translate-y-0"
+                                className="w-full rounded-2xl bg-slate-950 py-4 text-sm font-black tracking-[0.2em] text-white uppercase shadow-xl shadow-slate-950/20 transition-all hover:-translate-y-1 hover:bg-slate-800 active:translate-y-0 disabled:opacity-50"
                             >
                                 Save Tile
                             </button>

@@ -30,12 +30,7 @@ export function FeaturedCollections() {
                             className="group relative overflow-hidden rounded-[7px] bg-white transition-transform duration-300 hover:-translate-y-1"
                         >
                             <div className="relative aspect-square overflow-hidden rounded-[7px] bg-white">
-                                <img
-                                    src={collection.image}
-                                    alt=""
-                                    className="absolute inset-0 h-full w-full object-cover"
-                                    loading="lazy"
-                                />
+                                <img src={collection.image} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
                             </div>
                         </Link>
                     ))}
