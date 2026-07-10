@@ -28,10 +28,10 @@
                     default => 'image/png'
                 };
             @endphp
-            <link rel="icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}">
-            <link rel="shortcut icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}">
+            <link rel="icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}?v=2">
+            <link rel="shortcut icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}?v=2">
         @else
-            <link rel="icon" type="image/x-icon" href="/favicon.ico">
+            <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
         @endif
 
         <link rel="preconnect" href="https://fonts.bunny.net">
