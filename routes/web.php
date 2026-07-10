@@ -34,6 +34,7 @@ use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\OrderTrackingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -159,6 +160,34 @@ Route::middleware(['auth'])->group(function () {
         Route::post('settings/automation', [SiteSettingController::class, 'updateAutomationSettings'])->name('settings.automation.update');
         Route::post('settings/gtm', [SiteSettingController::class, 'updateGtmSettings'])->name('settings.gtm.update');
         Route::post('settings/marketing', [SiteSettingController::class, 'updateMarketingSettings'])->name('settings.marketing.update');
+
+        // Dynamic Storage Link Repair Helper Route
+        Route::get('/linkstorage', function () {
+            $target = storage_path('app/public');
+            $shortcut = public_path('storage');
+
+            if (file_exists($shortcut) || is_link($shortcut)) {
+                if (is_link($shortcut)) {
+                    unlink($shortcut);
+                } else {
+                    @rename($shortcut, $shortcut.'_old_'.time());
+                }
+            }
+
+            try {
+                symlink($target, $shortcut);
+
+                return 'Storage link created successfully!';
+            } catch (Exception $e) {
+                try {
+                    Artisan::call('storage:link');
+
+                    return 'Artisan storage:link command run successfully!';
+                } catch (Exception $ex) {
+                    return 'Failed to link: '.$ex->getMessage();
+                }
+            }
+        });
 
         Route::get('courier-configure', [CourierController::class, 'index'])->name('courier.index');
         Route::post('courier-configure', [CourierController::class, 'updateSettings'])->name('courier.update');
