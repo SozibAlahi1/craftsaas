@@ -28,7 +28,7 @@ const P = {
 export default function Home({ homeCategories, featuredTiles, banners = [] }: { homeCategories: any[]; featuredTiles: any[]; banners?: any[] }) {
     return (
         <>
-            <Head title="হোম — শুকটি বাজার" />
+            <Head title="হোম" />
             <main style={{ background: P.cream, color: P.earth }}>
                 <StorefrontHeader />
 

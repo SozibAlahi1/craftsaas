@@ -33,7 +33,7 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
 
     return (
         <>
-            <Head title={`${selectedCategory === 'All' ? 'সকল পণ্য' : selectedCategory} - শুটকি ওয়ালা`} />
+            <Head title={selectedCategory === 'All' ? 'সকল পণ্য' : selectedCategory} />
             <main className="bg-background text-foreground min-h-screen">
                 <StorefrontHeader />
 

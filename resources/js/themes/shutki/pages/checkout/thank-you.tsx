@@ -47,7 +47,7 @@ export default function ThankYou({ order }: { order: OrderDetails }) {
 
     return (
         <>
-            <Head title={`অর্ডার নিশ্চিত #${order.order_id} — শুকটি বাজার`} />
+            <Head title={`অর্ডার নিশ্চিত #${order.order_id}`} />
             <main className="min-h-screen" style={{ background: P.cream, color: P.earth }}>
                 <StorefrontHeader />
 

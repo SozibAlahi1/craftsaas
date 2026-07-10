@@ -1800,7 +1800,6 @@ export default function SiteSettings({
                                             </button>
                                         </form>
                                     </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>

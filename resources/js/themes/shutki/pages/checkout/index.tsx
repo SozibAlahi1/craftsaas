@@ -77,7 +77,7 @@ export default function Checkout({ cart }: CheckoutProps) {
 
     return (
         <>
-            <Head title="অর্ডার করুন — শুকটি বাজার" />
+            <Head title="অর্ডার করুন" />
             <main className="min-h-screen" style={{ background: P.cream, color: P.earth }}>
                 <StorefrontHeader />
 
