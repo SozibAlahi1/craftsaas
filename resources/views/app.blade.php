@@ -17,7 +17,19 @@
         <title inertia>{{ \App\Models\SiteSetting::getValue('site_name', 'Believers') }}</title>
 
         @if($favicon = \App\Models\SiteSetting::getValue('site_favicon'))
-            <link rel="icon" href="{{ str_starts_with($favicon, 'http') ? $favicon : '/storage/' . $favicon }}">
+            @php
+                $faviconUrl = str_starts_with($favicon, 'http') ? $favicon : '/storage/' . $favicon;
+                $extension = pathinfo($favicon, PATHINFO_EXTENSION);
+                $mimeType = match($extension) {
+                    'png' => 'image/png',
+                    'gif' => 'image/gif',
+                    'ico' => 'image/x-icon',
+                    'svg' => 'image/svg+xml',
+                    default => 'image/png'
+                };
+            @endphp
+            <link rel="icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}">
+            <link rel="shortcut icon" type="{{ $mimeType }}" href="{{ $faviconUrl }}">
         @else
             <link rel="icon" type="image/x-icon" href="/favicon.ico">
         @endif
