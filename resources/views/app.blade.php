@@ -17,11 +17,7 @@
         <title inertia>{{ \App\Models\SiteSetting::getValue('site_name', 'Believers') }}</title>
 
         @if($favicon = \App\Models\SiteSetting::getValue('site_favicon'))
-            @if(str_starts_with($favicon, 'http') || \Illuminate\Support\Facades\Storage::disk('public')->exists($favicon))
-                <link rel="icon" href="{{ str_starts_with($favicon, 'http') ? $favicon : '/storage/' . $favicon }}">
-            @else
-                <link rel="icon" type="image/x-icon" href="/favicon.ico">
-            @endif
+            <link rel="icon" href="{{ str_starts_with($favicon, 'http') ? $favicon : '/storage/' . $favicon }}">
         @else
             <link rel="icon" type="image/x-icon" href="/favicon.ico">
         @endif
