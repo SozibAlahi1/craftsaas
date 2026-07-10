@@ -1,16 +1,18 @@
 import { StorefrontHeader } from '@/components/storefront-header';
 import { ShutkirFooter } from '@/themes/shutki/components/Footer';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { ChevronRight, Filter, LayoutGrid, List } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 type Product = {
+    id: number;
     slug: string;
     name: string;
     price: string;
     old_price: string | null;
     discount_text: string | null;
     image: string;
+    variations?: any;
     category: {
         name: string;
         slug: string;
@@ -24,12 +26,57 @@ interface ProductIndexProps {
 
 export default function Index({ products, initialCategory = 'All' }: ProductIndexProps) {
     const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+    const [addedProductId, setAddedProductId] = useState<number | null>(null);
 
     // Filter products based on selected category
     const filteredProducts = useMemo(() => {
         if (selectedCategory === 'All') return products;
         return products.filter((p) => p.category?.name === selectedCategory);
     }, [products, selectedCategory]);
+
+    const isVariableProduct = (product: any) => {
+        let variations = product.variations;
+        if (typeof variations === 'string') {
+            try {
+                variations = JSON.parse(variations);
+            } catch (e) {
+                variations = null;
+            }
+        }
+        if (!variations) return false;
+
+        const hasColors = Array.isArray(variations.colors) && variations.colors.some((c: any) => c && c.label && c.label.trim() !== '');
+        const hasSizes = Array.isArray(variations.sizes) && variations.sizes.some((s: any) => s && s.label && s.label.trim() !== '');
+
+        return hasColors || hasSizes;
+    };
+
+    const handleAddToCart = (e: React.MouseEvent, product: any) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        router.post(
+            route('cart.add'),
+            {
+                product_id: product.id,
+                slug: product.slug,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: 1,
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setAddedProductId(product.id);
+                    setTimeout(() => setAddedProductId(null), 2000);
+                },
+            }
+        );
+    };
+
+    const primaryColor = 'hsl(89,32%,54%)';
+    const hoverColor = 'hsl(89,35%,42%)';
 
     return (
         <>
@@ -82,33 +129,82 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
 
                     {/* Unified Product Grid */}
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                        {filteredProducts.map((product) => (
-                            <Link
-                                key={product.slug}
-                                href={route('products.show', product.slug)}
-                                className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-transform duration-300 hover:-translate-y-1"
-                            >
-                                <div className="flex h-full min-h-[340px] flex-col">
-                                    <div className="flex-1">
-                                        <img src={product.image} alt={product.name} className="h-[220px] w-full object-cover" loading="lazy" />
-                                    </div>
+                        {filteredProducts.map((product) => {
+                            const isVariable = isVariableProduct(product);
+                            const isAdded = addedProductId === product.id;
 
-                                    <div className="px-4 pt-3 pb-4">
-                                        <h3 className="text-[1.05rem] leading-6 font-semibold text-slate-950">{product.name}</h3>
-                                        <div className="mt-2 text-[1.35rem] leading-none font-bold text-orange-600">{product.price}</div>
+                            return (
+                                <Link
+                                    key={product.slug}
+                                    href={route('products.show', product.slug)}
+                                    className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-transform duration-300 hover:-translate-y-1"
+                                >
+                                    <div className="flex h-full min-h-[380px] flex-col">
+                                        <div className="flex-1 overflow-hidden">
+                                            <img src={product.image} alt={product.name} className="h-[220px] w-full object-cover transition-transform duration-500 hover:scale-110" loading="lazy" />
+                                        </div>
 
-                                        <div className="mt-3 flex items-center gap-3 text-sm">
-                                            {product.old_price && <span className="text-slate-500 line-through">{product.old_price}</span>}
-                                            {product.discount_text && (
-                                                <span className="rounded-md bg-orange-50 px-3 py-1 font-medium text-orange-600">
-                                                    {product.discount_text}
-                                                </span>
+                                        <div className="flex flex-col justify-between px-4 pt-3 pb-4">
+                                            <div>
+                                                <h3 className="line-clamp-1 text-[1.05rem] leading-6 font-semibold text-slate-950">{product.name}</h3>
+                                                <div className="mt-2 text-[1.35rem] leading-none font-bold text-orange-600">{product.price}</div>
+
+                                                <div className="mt-3 flex items-center gap-3 text-sm">
+                                                    {product.old_price && <span className="text-slate-500 line-through">{product.old_price}</span>}
+                                                    {product.discount_text && (
+                                                        <span className="rounded-md bg-orange-50 px-3 py-1 font-medium text-orange-600">
+                                                            {product.discount_text}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Action Button */}
+                                            {isVariable ? (
+                                                <div
+                                                    className="mt-4 w-full rounded-full border text-center py-2 text-xs font-black tracking-wider uppercase transition-all duration-300"
+                                                    style={{
+                                                        borderColor: primaryColor,
+                                                        color: primaryColor,
+                                                        backgroundColor: 'transparent',
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.currentTarget.style.backgroundColor = primaryColor;
+                                                        e.currentTarget.style.color = '#ffffff';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                                        e.currentTarget.style.color = primaryColor;
+                                                    }}
+                                                >
+                                                    বিস্তারিত দেখুন
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    className="mt-4 w-full rounded-full text-center py-2 text-xs font-black tracking-wider uppercase text-white shadow-sm transition-all duration-300"
+                                                    style={{
+                                                        backgroundColor: isAdded ? '#10b981' : primaryColor,
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (!isAdded) {
+                                                            e.currentTarget.style.backgroundColor = hoverColor;
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (!isAdded) {
+                                                            e.currentTarget.style.backgroundColor = primaryColor;
+                                                        }
+                                                    }}
+                                                    onClick={(e) => handleAddToCart(e, product)}
+                                                >
+                                                    {isAdded ? 'যুক্ত করা হয়েছে! ✓' : 'কার্টে যুক্ত করুন'}
+                                                </div>
                                             )}
                                         </div>
                                     </div>
-                                </div>
-                            </Link>
-                        ))}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {filteredProducts.length === 0 && (
