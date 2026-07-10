@@ -106,14 +106,14 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                         <Link
                             key={product.id}
                             href={route('products.show', product.slug)}
-                            className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/40"
+                            className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-slate-300"
                         >
                             <div className="flex h-full min-h-[380px] flex-col">
                                 <div className="flex-1 overflow-hidden">
                                     <img
                                         src={product.image}
                                         alt={product.name}
-                                        className="h-[220px] w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                                        className="h-[220px] w-full object-cover"
                                         loading="lazy"
                                     />
                                 </div>

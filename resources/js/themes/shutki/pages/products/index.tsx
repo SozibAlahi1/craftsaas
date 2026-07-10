@@ -137,11 +137,11 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                                 <Link
                                     key={product.slug}
                                     href={route('products.show', product.slug)}
-                                    className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-transform duration-300 hover:-translate-y-1"
+                                    className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-slate-300"
                                 >
                                     <div className="flex h-full min-h-[380px] flex-col">
                                         <div className="flex-1 overflow-hidden">
-                                            <img src={product.image} alt={product.name} className="h-[220px] w-full object-cover transition-transform duration-500 hover:scale-[1.03]" loading="lazy" />
+                                            <img src={product.image} alt={product.name} className="h-[220px] w-full object-cover" loading="lazy" />
                                         </div>
 
                                         <div className="flex flex-col justify-between px-4 pt-3 pb-4">
