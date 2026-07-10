@@ -38,8 +38,8 @@ class CartController extends Controller
                 'price' => $validated['price'],
                 'image' => $validated['image'],
                 'quantity' => $validated['quantity'],
-                'color' => $validated['color'],
-                'size' => $validated['size'],
+                'color' => $validated['color'] ?? null,
+                'size' => $validated['size'] ?? null,
             ];
         }
 
