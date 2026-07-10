@@ -141,7 +141,7 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                                 >
                                     <div className="flex h-full min-h-[380px] flex-col">
                                         <div className="flex-1 overflow-hidden">
-                                            <img src={product.image} alt={product.name} className="h-[220px] w-full object-cover transition-transform duration-500 hover:scale-110" loading="lazy" />
+                                            <img src={product.image} alt={product.name} className="h-[220px] w-full object-cover transition-transform duration-500 hover:scale-[1.03]" loading="lazy" />
                                         </div>
 
                                         <div className="flex flex-col justify-between px-4 pt-3 pb-4">

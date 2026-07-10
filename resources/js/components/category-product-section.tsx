@@ -113,7 +113,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                     <img
                                         src={product.image}
                                         alt={product.name}
-                                        className="h-[220px] w-full object-cover transition-transform duration-500 hover:scale-110"
+                                        className="h-[220px] w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
                                         loading="lazy"
                                     />
                                 </div>
