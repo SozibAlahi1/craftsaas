@@ -199,3 +199,19 @@ Route::middleware(['auth'])->group(function () {
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+
+// Public Storage Asset Routing Fallback (For servers where symlinks are disabled)
+Route::get('storage/{path}', function (string $path) {
+    $filePath = storage_path('app/public/'.$path);
+
+    if (file_exists($filePath)) {
+        $mimeType = mime_content_type($filePath);
+
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+            'Cache-Control' => 'public, max-age=31536000',
+        ]);
+    }
+
+    abort(404);
+})->where('path', '.*');
