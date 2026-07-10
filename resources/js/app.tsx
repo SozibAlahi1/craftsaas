@@ -26,7 +26,7 @@ const getSiteName = () => {
     } catch (e) {
         // ignore
     }
-    return import.meta.env.VITE_APP_NAME || 'Believers';
+    return import.meta.env.VITE_APP_NAME || 'Shutki Valley';
 };
 
 // Pre-glob all theme pages and default pages at build time

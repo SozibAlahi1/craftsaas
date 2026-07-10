@@ -113,7 +113,7 @@ export default function SiteSettings({
     const [faviconPreview, setFaviconPreview] = useState<string>(settings.site_favicon_url || '');
 
     const { data, setData, post, processing, errors } = useForm<SettingsData>({
-        site_name: settings.site_name || 'Believers',
+        site_name: settings.site_name || 'Shutki Valley',
         shipping_cost: settings.shipping_cost || '60',
         footer_description: settings.footer_description || '',
         footer_facebook_url: settings.footer_facebook_url || '',

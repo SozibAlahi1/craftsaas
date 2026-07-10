@@ -7,13 +7,13 @@ export function StorefrontFooter() {
     const { props } = usePage();
     const settings = props.settings as any;
 
-    const footerDescription = settings?.footer_description || 'One of the largest Islamic Lifestyle brands in Bangladesh';
+    const footerDescription = settings?.footer_description || 'বাংলাদেশের সেরা শুকটি মাছের অনলাইন বাজার। তাজা ও মানসম্পন্ন শুকটি মাছ সরাসরি আপনার দরজায়।';
     const footerFacebookUrl = settings?.footer_facebook_url || 'https://facebook.com';
     const footerYoutubeUrl = settings?.footer_youtube_url || 'https://youtube.com';
-    const footerPhone = settings?.footer_phone || '09638090000';
-    const footerEmail = settings?.footer_email || 'cc.believerssign@gmail.com';
-    const footerAddress = settings?.footer_address || 'Shop-3/1, Eastern Plaza, Hatirpool, Dhaka, Dhaka, Bangladesh';
-    const footerCopyright = settings?.footer_copyright || '© 2026 Believers. All Rights Reserved';
+    const footerPhone = settings?.footer_phone || '01700000000';
+    const footerEmail = settings?.footer_email || 'info@shutkivalley.com';
+    const footerAddress = settings?.footer_address || 'শুটকি ভ্যালী, কক্সবাজার, বাংলাদেশ';
+    const footerCopyright = settings?.footer_copyright || '© 2026 Shutki Valley. All Rights Reserved';
 
     // Account links list fallback
     const accountLinks =
