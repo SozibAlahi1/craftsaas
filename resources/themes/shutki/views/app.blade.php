@@ -41,15 +41,22 @@
         <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
         <style>
-            /* শুকটি থিম — Typography overrides */
-            html[data-theme='shutki'] {
-                font-family: 'Inter', 'Hind Siliguri', system-ui, sans-serif;
-            }
-
+            html[data-theme='shutki'],
+            html[data-theme='shutki'] body,
             html[data-theme='shutki'] h1,
             html[data-theme='shutki'] h2,
-            html[data-theme='shutki'] .font-serif-display {
-                font-family: 'Lora', 'Hind Siliguri', Georgia, serif;
+            html[data-theme='shutki'] h3,
+            html[data-theme='shutki'] h4,
+            html[data-theme='shutki'] h5,
+            html[data-theme='shutki'] h6,
+            html[data-theme='shutki'] button,
+            html[data-theme='shutki'] input,
+            html[data-theme='shutki'] select,
+            html[data-theme='shutki'] textarea,
+            html[data-theme='shutki'] .font-serif-display,
+            html[data-theme='shutki'] [class*="font-sans"],
+            html[data-theme='shutki'] [class*="font-serif"] {
+                font-family: 'Hind Siliguri', system-ui, sans-serif !important;
             }
 
             /* Warm parchment texture effect on body */

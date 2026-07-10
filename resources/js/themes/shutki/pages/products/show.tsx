@@ -218,7 +218,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
 
                                 <h1
                                     className="text-2xl leading-tight font-black tracking-tight sm:text-3xl"
-                                    style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}
+                                    style={{ color: P.sageDark }}
                                 >
                                     {product.name}
                                 </h1>
@@ -414,7 +414,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                         <div className="p-6 sm:p-8">
                             {activeTab === 'details' && (
                                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                                    <h3 className="mb-4 text-xl font-black" style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}>
+                                    <h3 className="mb-4 text-xl font-black" style={{ color: P.sageDark }}>
                                         পণ্যের বিবরণ
                                     </h3>
                                     <p className="text-base leading-8" style={{ color: P.earthMid }}>
@@ -426,7 +426,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                             {activeTab === 'delivery' && (
                                 <div className="animate-in fade-in slide-in-from-bottom-2 max-w-3xl space-y-6 duration-500">
                                     <div>
-                                        <h3 className="mb-3 text-xl font-black" style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}>
+                                        <h3 className="mb-3 text-xl font-black" style={{ color: P.sageDark }}>
                                             শিপিং ও ডেলিভারি
                                         </h3>
                                         <p className="text-sm leading-7" style={{ color: P.earthMid }}>
@@ -453,7 +453,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                     </div>
                                     {product.return_info && (
                                         <div>
-                                            <h3 className="mb-2 text-lg font-black" style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}>
+                                            <h3 className="mb-2 text-lg font-black" style={{ color: P.sageDark }}>
                                                 রিটার্ন পলিসি
                                             </h3>
                                             <p className="text-sm leading-7" style={{ color: P.earthMid }}>
@@ -504,7 +504,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                                 >
                                                     <h3
                                                         className="mb-4 text-lg font-black"
-                                                        style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}
+                                                        style={{ color: P.sageDark }}
                                                     >
                                                         আপনার রিভিউ লিখুন
                                                     </h3>
@@ -634,7 +634,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                 {relatedProducts.length > 0 && (
                     <section className="px-4 py-10 sm:px-6 lg:px-8" style={{ background: P.sageBg, borderTop: `1px solid ${P.border}` }}>
                         <div className="mx-auto max-w-[1440px]">
-                            <h2 className="mb-6 text-2xl font-black" style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}>
+                            <h2 className="mb-6 text-2xl font-black" style={{ color: P.sageDark }}>
                                 সম্পর্কিত পণ্য
                             </h2>
                             <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">

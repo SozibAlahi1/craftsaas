@@ -62,7 +62,7 @@ export default function ThankYou({ order }: { order: OrderDetails }) {
                         </div>
                         <h1
                             className="mb-3 text-3xl font-black tracking-tight sm:text-4xl"
-                            style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}
+                            style={{ color: P.sageDark }}
                         >
                             🎉 অর্ডার নিশ্চিত হয়েছে!
                         </h1>

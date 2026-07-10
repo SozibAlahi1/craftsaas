@@ -77,7 +77,7 @@ export default function Home({ homeCategories, featuredTiles, banners = [] }: { 
                                     className="flex items-center justify-between px-5 py-4"
                                     style={{ background: P.sageBg, borderBottom: `2px solid ${P.sage}` }}
                                 >
-                                    <h2 className="text-lg font-black" style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}>
+                                    <h2 className="text-lg font-black" style={{ color: P.sageDark }}>
                                         {category.name}
                                     </h2>
                                     <Link
@@ -113,7 +113,7 @@ export default function Home({ homeCategories, featuredTiles, banners = [] }: { 
                                 <Leaf className="h-8 w-8 text-white" />
                             </div>
                         </div>
-                        <h2 className="text-2xl font-black sm:text-3xl" style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}>
+                        <h2 className="text-2xl font-black sm:text-3xl" style={{ color: P.sageDark }}>
                             প্রকৃতির সেরা শুকটি, সরাসরি আপনার দরজায়!
                         </h2>
                         <p className="mt-3 text-sm leading-7" style={{ color: P.earthMid }}>

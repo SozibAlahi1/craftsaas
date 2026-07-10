@@ -97,7 +97,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                 অর্ডার
                             </span>
                         </div>
-                        <h1 className="text-2xl font-black tracking-tight sm:text-3xl" style={{ color: P.sageDark, fontFamily: "'Lora', serif" }}>
+                        <h1 className="text-2xl font-black tracking-tight sm:text-3xl" style={{ color: P.sageDark }}>
                             🌿 অর্ডার সম্পন্ন করুন
                         </h1>
                         <p className="mt-1 text-sm" style={{ color: P.earthLight }}>
@@ -269,7 +269,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                 <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6" style={{ border: `2px solid ${P.border}` }}>
                                     <h2
                                         className="mb-5 flex items-center gap-2.5 pb-3 text-lg font-black"
-                                        style={{ color: P.sageDark, borderBottom: `2px solid ${P.sage}`, fontFamily: "'Lora', serif" }}
+                                        style={{ color: P.sageDark, borderBottom: `2px solid ${P.sage}` }}
                                     >
                                         <Leaf className="h-5 w-5" style={{ color: P.sage }} /> অর্ডার সারাংশ
                                     </h2>
