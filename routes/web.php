@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\FeaturedTileController;
 use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\Admin\LeadController;
+use App\Http\Controllers\Admin\MarketingEventController;
 use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\MetaAdsController;
 use App\Http\Controllers\Admin\OrderController;
@@ -119,6 +120,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pixels', PixelController::class)->except(['create', 'edit', 'show']);
         Route::post('pixels/{pixel}/toggle', [PixelController::class, 'toggleStatus'])->name('pixels.toggle');
 
+        // Marketing Events Routing
+        Route::get('marketing-events', [MarketingEventController::class, 'index'])->name('marketing-events.index');
+        Route::post('marketing-events/{event}/retry', [MarketingEventController::class, 'retry'])->name('marketing-events.retry');
+        Route::post('marketing-events/{event}/resend', [MarketingEventController::class, 'resend'])->name('marketing-events.resend');
+
         Route::get('stocks', [StockController::class, 'index'])->name('stocks.index');
         Route::post('stocks/{product}', [StockController::class, 'update'])->name('stocks.update');
         Route::post('stocks/variant/{variant}', [StockController::class, 'updateVariant'])->name('stocks.variant.update');
@@ -152,6 +158,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('settings/theme/activate', [SiteSettingController::class, 'activateTheme'])->name('settings.theme.activate');
         Route::post('settings/automation', [SiteSettingController::class, 'updateAutomationSettings'])->name('settings.automation.update');
         Route::post('settings/gtm', [SiteSettingController::class, 'updateGtmSettings'])->name('settings.gtm.update');
+        Route::post('settings/marketing', [SiteSettingController::class, 'updateMarketingSettings'])->name('settings.marketing.update');
 
         Route::get('courier-configure', [CourierController::class, 'index'])->name('courier.index');
         Route::post('courier-configure', [CourierController::class, 'updateSettings'])->name('courier.update');

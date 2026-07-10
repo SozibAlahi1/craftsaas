@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderStatusLog;
 use App\Services\BdCourierCheckerService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -13,7 +15,7 @@ class OrderController extends Controller
 {
     public function __construct(protected BdCourierCheckerService $bdCourierCheckerService) {}
 
-    public function index(\Illuminate\Http\Request $request): Response
+    public function index(Request $request): Response
     {
         $query = Order::with('items', 'riskScore')->latest();
 
@@ -21,9 +23,9 @@ class OrderController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('full_name', 'like', "%{$search}%")
-                  ->orWhere('address', 'like', "%{$search}%");
+                    ->orWhere('phone', 'like', "%{$search}%")
+                    ->orWhere('full_name', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%");
             });
         }
 
@@ -49,7 +51,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function bulkUpdate(\Illuminate\Http\Request $request): RedirectResponse
+    public function bulkUpdate(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'order_ids' => 'required|array',
@@ -57,17 +59,19 @@ class OrderController extends Controller
             'status' => 'required|string',
         ]);
 
-        Order::whereIn('id', $validated['order_ids'])->update(['status' => $validated['status']]);
+        $orders = Order::whereIn('id', $validated['order_ids'])->get();
 
-        foreach ($validated['order_ids'] as $orderId) {
-            \App\Models\OrderStatusLog::create([
-                'order_id' => $orderId,
+        foreach ($orders as $order) {
+            $order->update(['status' => $validated['status']]);
+
+            OrderStatusLog::create([
+                'order_id' => $order->id,
                 'status' => $validated['status'],
                 'changed_by' => auth()->id(),
             ]);
         }
 
-        return back()->with('success', count($validated['order_ids']) . ' orders updated successfully.');
+        return back()->with('success', $orders->count().' orders updated successfully.');
     }
 
     public function show(Order $order): Response
@@ -83,7 +87,7 @@ class OrderController extends Controller
     public function print(Order $order, $size)
     {
         $validSizes = ['a4', 'thermal58', 'thermal80'];
-        if (!in_array($size, $validSizes)) {
+        if (! in_array($size, $validSizes)) {
             abort(404);
         }
 

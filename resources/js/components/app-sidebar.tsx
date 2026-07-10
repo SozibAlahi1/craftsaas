@@ -12,6 +12,7 @@ import {
     DollarSign,
     HardDrive,
     LayoutGrid,
+    Megaphone,
     Menu,
     MessageCircle,
     MessageSquare,
@@ -120,6 +121,11 @@ const mainNavItems: NavItem[] = [
         title: 'Analytics',
         url: '/admin/analytics',
         icon: Activity,
+    },
+    {
+        title: 'Marketing Events',
+        url: '/admin/marketing-events',
+        icon: Megaphone,
     },
     {
         title: 'Site Settings',

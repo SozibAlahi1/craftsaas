@@ -39,6 +39,7 @@ class SiteSettingController extends Controller
             'site_favicon_url' => SiteSetting::getValue('site_favicon') ? (str_starts_with(SiteSetting::getValue('site_favicon'), 'http') ? SiteSetting::getValue('site_favicon') : '/storage/'.SiteSetting::getValue('site_favicon')) : '',
             'enable_ai_voice_confirmation' => filter_var(SiteSetting::getValue('enable_ai_voice_confirmation', false), FILTER_VALIDATE_BOOLEAN),
             'gtm_container_id' => SiteSetting::getValue('gtm_container_id', ''),
+            'marketing_purchase_trigger' => SiteSetting::getValue('marketing_purchase_trigger', 'confirmed'),
         ];
 
         // Courier configuration data
@@ -243,5 +244,19 @@ class SiteSettingController extends Controller
         SiteSetting::setValue('gtm_container_id', $validated['gtm_container_id'] ?? '');
 
         return redirect()->back()->with('success', 'Google Tag Manager settings updated successfully.');
+    }
+
+    /**
+     * Update Marketing trigger settings.
+     */
+    public function updateMarketingSettings(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'marketing_purchase_trigger' => 'required|string|in:created,confirmed,packed,shipped,delivered',
+        ]);
+
+        SiteSetting::setValue('marketing_purchase_trigger', $validated['marketing_purchase_trigger']);
+
+        return redirect()->back()->with('success', 'Marketing trigger settings updated successfully.');
     }
 }

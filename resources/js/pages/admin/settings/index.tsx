@@ -11,6 +11,7 @@ import {
     Key,
     LayoutGrid,
     Link2,
+    Megaphone,
     Menu,
     Palette,
     PhoneCall,
@@ -25,6 +26,7 @@ import {
     Wallet,
     XCircle,
 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import React, { useState } from 'react';
 
 interface LinkItem {
@@ -51,6 +53,7 @@ interface SettingsData {
     site_favicon_url?: string;
     enable_ai_voice_confirmation: boolean;
     gtm_container_id?: string;
+    marketing_purchase_trigger?: string;
 }
 
 interface Theme {
@@ -221,6 +224,21 @@ export default function SiteSettings({
             preserveScroll: true,
             onSuccess: () => {
                 setSuccessMessage('Google Tag Manager settings updated successfully!');
+                setTimeout(() => setSuccessMessage(null), 4000);
+            },
+        });
+    };
+
+    const marketingForm = useForm({
+        marketing_purchase_trigger: settings.marketing_purchase_trigger || 'confirmed',
+    });
+
+    const handleMarketingSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        marketingForm.post(route('admin.settings.marketing.update'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSuccessMessage('Marketing trigger settings updated successfully!');
                 setTimeout(() => setSuccessMessage(null), 4000);
             },
         });
@@ -1727,6 +1745,61 @@ export default function SiteSettings({
                                                 Save GTM Container
                                             </button>
                                         </form>
+                                    </div>
+
+                                    <div className="flex flex-col justify-between rounded-xl border border-slate-200 p-6 shadow-sm transition-all hover:shadow-md">
+                                        <div>
+                                            <div className="mb-4 flex items-center gap-4">
+                                                <div className="rounded-lg bg-emerald-50 p-3 text-emerald-600">
+                                                    <Megaphone className="h-6 w-6" />
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-slate-900">Marketing Settings</h4>
+                                                    <p className="text-xs text-slate-500">Configure purchase conversion trigger</p>
+                                                </div>
+                                            </div>
+                                            <p className="mb-4 text-sm text-slate-600">
+                                                Select the order status that triggers the sending of Purchase events to Meta and other platforms.
+                                            </p>
+                                        </div>
+                                        <form onSubmit={handleMarketingSubmit} className="mt-2 space-y-4">
+                                            <div>
+                                                <label className="block text-[10px] font-black tracking-wider text-slate-500 uppercase mb-2">
+                                                    Purchase Trigger Status
+                                                </label>
+                                                <Select
+                                                    value={marketingForm.data.marketing_purchase_trigger}
+                                                    onValueChange={(val) => marketingForm.setData('marketing_purchase_trigger', val)}
+                                                >
+                                                    <SelectTrigger className="w-full bg-white rounded-lg border border-slate-200 text-sm">
+                                                        <SelectValue placeholder="Select Trigger" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="created">Order Created</SelectItem>
+                                                        <SelectItem value="confirmed">Order Confirmed</SelectItem>
+                                                        <SelectItem value="packed">Packed</SelectItem>
+                                                        <SelectItem value="shipped">Shipped</SelectItem>
+                                                        <SelectItem value="delivered">Delivered</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                {marketingForm.errors.marketing_purchase_trigger && (
+                                                    <p className="mt-1 text-xs font-bold text-red-600">{marketingForm.errors.marketing_purchase_trigger}</p>
+                                                )}
+                                            </div>
+                                            <button
+                                                type="submit"
+                                                disabled={marketingForm.processing}
+                                                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-black tracking-wider text-white uppercase transition-all hover:bg-slate-800 disabled:opacity-50"
+                                            >
+                                                {marketingForm.processing ? (
+                                                    <RefreshCw className="h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Save className="h-4 w-4" />
+                                                )}
+                                                Save Settings
+                                            </button>
+                                        </form>
+                                    </div>
                                     </div>
                                 </div>
                             </div>

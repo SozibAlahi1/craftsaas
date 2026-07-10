@@ -183,33 +183,7 @@ router.on('navigate', (event) => {
                 });
             }
 
-            // 4. purchase Event (Thank you page)
-            const order = page.props.order as any;
-            if (order && name === 'checkout/thank-you') {
-                const orderItems = Object.values(order.items || {}).map((item: any) => {
-                    const price = parseFloat(String(item.price).replace(/[^\d]/g, ''));
-                    return {
-                        item_id: item.product_id ? String(item.product_id) : item.slug,
-                        item_name: item.name,
-                        price: price,
-                        quantity: parseInt(item.quantity || 1),
-                        item_variant: (item.color || item.size) ? `${item.color || ''} ${item.size || ''}`.trim() : undefined
-                    };
-                });
 
-                window.dataLayer.push({ ecommerce: null });
-                window.dataLayer.push({
-                    event: 'purchase',
-                    ecommerce: {
-                        transaction_id: order.order_id,
-                        value: parseFloat(order.total),
-                        tax: 0,
-                        shipping: parseFloat(order.shipping),
-                        currency: 'BDT',
-                        items: orderItems
-                    }
-                });
-            }
 
             // 5. add_to_cart / remove_from_cart Events (by comparing carts)
             const currentCart = page.props.cart || {};
