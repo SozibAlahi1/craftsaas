@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, Calendar, CheckCircle2, CreditCard, Home, Leaf, MapPin, Phone, Printer, Truck } from 'lucide-react';
+import { ArrowRight, Calendar, CheckCircle2, CreditCard, Home, MapPin, Phone, Printer, Truck } from 'lucide-react';
 
 import { StorefrontHeader } from '@/components/storefront-header';
 import { ShutkirFooter } from '@/themes/shutki/components/Footer';
@@ -95,7 +95,6 @@ export default function ThankYou({ order }: { order: OrderDetails }) {
                             <section className="overflow-hidden rounded-2xl bg-white shadow-sm" style={{ border: `2px solid ${P.border}` }}>
                                 <div className="px-5 py-4" style={{ background: P.sageBg, borderBottom: `2px solid ${P.sage}` }}>
                                     <h2 className="flex items-center gap-2 text-sm font-black tracking-wider uppercase" style={{ color: P.sageDark }}>
-                                        <Leaf className="h-4 w-4" style={{ color: P.sage }} />
                                         আপনার পণ্য ({items.length}টি)
                                     </h2>
                                 </div>

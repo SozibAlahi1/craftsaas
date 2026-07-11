@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ShutkirFooter } from '@/themes/shutki/components/Footer';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { AlertCircle, ChevronRight, Leaf, Lock, MapPin, Phone, ShieldCheck, Truck } from 'lucide-react';
+import { AlertCircle, ChevronRight, Lock, MapPin, Phone, ShieldCheck, Truck } from 'lucide-react';
 
 /* LIGHT Organic Palette */
 const P = {
@@ -271,7 +271,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                         className="mb-5 flex items-center gap-2.5 pb-3 text-lg font-black"
                                         style={{ color: P.sageDark, borderBottom: `2px solid ${P.sage}` }}
                                     >
-                                        <Leaf className="h-5 w-5" style={{ color: P.sage }} /> অর্ডার সারাংশ
+                                        অর্ডার সারাংশ
                                     </h2>
 
                                     <ul className="divide-y" style={{ borderColor: P.border }}>
