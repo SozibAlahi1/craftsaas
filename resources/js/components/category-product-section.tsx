@@ -97,7 +97,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
             )}
 
             {/* Product Grid */}
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4 xl:grid-cols-5">
                 {category.products.map((product) => {
                     const isVariable = isVariableProduct(product);
                     const isAdded = addedProductId === product.id;
@@ -108,7 +108,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                             href={route('products.show', product.slug)}
                             className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-slate-300"
                         >
-                            <div className={`flex h-full ${isShutkiTheme ? 'min-h-[290px] sm:min-h-[380px]' : 'min-h-[380px]'} flex-col`}>
+                            <div className={`flex h-full ${isShutkiTheme ? 'min-h-[260px] sm:min-h-[380px]' : 'min-h-[380px]'} flex-col`}>
                                 <div className="relative w-full aspect-square overflow-hidden bg-white">
                                     <img
                                         src={product.image}
@@ -118,15 +118,15 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                     />
                                 </div>
 
-                                <div className={`flex flex-col justify-between ${isShutkiTheme ? 'px-3 py-3 sm:px-4 sm:pt-3 sm:pb-4' : 'px-4 pt-3 pb-4'}`}>
+                                <div className={`flex flex-col justify-between ${isShutkiTheme ? 'px-2 pb-2.5 pt-2 sm:px-4 sm:pt-3 sm:pb-4' : 'px-4 pt-3 pb-4'}`}>
                                     <div>
-                                        <h3 className={`font-bold text-slate-950 ${isShutkiTheme ? 'line-clamp-2 text-sm sm:text-[1.05rem] leading-tight' : 'line-clamp-1 text-[1.05rem] leading-6'}`}>{product.name}</h3>
-                                        <div className={`font-black text-orange-600 ${isShutkiTheme ? 'mt-1 text-base sm:text-[1.35rem] leading-none' : 'mt-2 text-[1.35rem] leading-none'}`}>{product.price}</div>
+                                        <h3 className={`font-bold text-slate-950 ${isShutkiTheme ? 'line-clamp-2 text-xs sm:text-[1.05rem] leading-tight' : 'line-clamp-1 text-[1.05rem] leading-6'}`}>{product.name}</h3>
+                                        <div className={`font-black text-orange-600 ${isShutkiTheme ? 'mt-1 text-sm sm:text-[1.35rem] leading-none' : 'mt-2 text-[1.35rem] leading-none'}`}>{product.price}</div>
 
-                                        <div className={`flex items-center gap-3 font-semibold ${isShutkiTheme ? 'mt-1.5 text-xs' : 'mt-3 text-xs'}`}>
-                                            {product.old_price && <span className="text-slate-400 line-through">{product.old_price}</span>}
+                                        <div className={`flex flex-wrap items-center gap-x-1.5 gap-y-0.5 font-semibold ${isShutkiTheme ? 'mt-1 text-[10px] sm:text-xs' : 'mt-3 text-xs'}`}>
+                                            {product.old_price && <span className="text-slate-400 line-through whitespace-nowrap">{product.old_price}</span>}
                                             {product.discount_text && (
-                                                <span className="rounded-md bg-orange-50 px-2 py-1 text-orange-600">{product.discount_text}</span>
+                                                <span className="rounded bg-orange-50 px-1.5 py-0.5 text-[9px] sm:text-[10px] sm:text-xs text-orange-600 whitespace-nowrap">{product.discount_text}</span>
                                             )}
                                         </div>
                                     </div>
@@ -134,7 +134,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                     {/* Action Button */}
                                     {isVariable ? (
                                         <div
-                                            className={`w-full rounded-full border text-center font-black tracking-wider uppercase transition-all duration-300 ${isShutkiTheme ? 'mt-2.5 py-1.5 sm:py-2 text-[10px] sm:text-xs' : 'mt-4 py-2 text-xs'}`}
+                                            className={`w-full rounded-full border text-center font-black tracking-wider uppercase transition-all duration-300 ${isShutkiTheme ? 'mt-2 py-1 sm:py-2 text-[10px] sm:text-xs' : 'mt-4 py-2 text-xs'}`}
                                             style={{
                                                 borderColor: primaryColor,
                                                 color: textColor,
@@ -153,7 +153,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                         </div>
                                     ) : (
                                         <div
-                                            className={`w-full rounded-full text-center font-black tracking-wider uppercase text-white shadow-sm transition-all duration-300 ${isShutkiTheme ? 'mt-2.5 py-1.5 sm:py-2 text-[10px] sm:text-xs' : 'mt-4 py-2 text-xs'}`}
+                                            className={`w-full rounded-full text-center font-black tracking-wider uppercase text-white shadow-sm transition-all duration-300 ${isShutkiTheme ? 'mt-2 py-1 sm:py-2 text-[10px] sm:text-xs' : 'mt-4 py-2 text-xs'}`}
                                             style={{
                                                 backgroundColor: isAdded ? '#10b981' : primaryColor,
                                             }}
