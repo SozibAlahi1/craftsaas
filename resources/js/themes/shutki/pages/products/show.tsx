@@ -127,7 +127,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                 product_variant_id: variant?.id,
                 slug: product.slug,
                 name: product.name,
-                price: variant?.price ? `৳${variant.price.toLocaleString()}` : product.price,
+                price: variant?.price ? `৳${Math.round(parseFloat(variant.price)).toLocaleString('en-BD')}` : product.price,
                 image: product.image,
                 quantity: qty,
                 color: selectedColor,
@@ -147,7 +147,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
             product_variant_id: variant?.id,
             slug: product.slug,
             name: product.name,
-            price: variant?.price ? `৳${variant.price.toLocaleString()}` : product.price,
+            price: variant?.price ? `৳${Math.round(parseFloat(variant.price)).toLocaleString('en-BD')}` : product.price,
             image: product.image,
             quantity,
             color: selectedColor,
@@ -250,7 +250,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                 {/* Price */}
                                 <div className="mt-4 flex flex-wrap items-end gap-3">
                                     <div className="text-3xl font-black sm:text-4xl" style={{ color: P.terra }}>
-                                        {getSelectedVariant()?.price ? `৳${getSelectedVariant()?.price.toLocaleString()}` : product.price}
+                                        {getSelectedVariant()?.price ? `৳${Math.round(parseFloat(getSelectedVariant().price)).toLocaleString('en-BD')}` : product.price}
                                     </div>
                                     {product.old_price && (
                                         <div className="flex items-center gap-2">
