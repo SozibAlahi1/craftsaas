@@ -3,6 +3,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Image as ImageIcon, List, Plus, Save, Settings, Tag, Trash2, Upload, X } from 'lucide-react';
 import React from 'react';
+import { RichTextEditor } from '@/components/rich-text-editor';
 
 interface Category {
     id: number;
@@ -223,11 +224,9 @@ export default function CreateProduct({ categories }: CreateProps) {
 
                                     <div className="space-y-2">
                                         <label className="text-xs font-black tracking-widest text-slate-400 uppercase">Description</label>
-                                        <textarea
+                                        <RichTextEditor
                                             value={data.description}
-                                            onChange={(e) => setData('description', e.target.value)}
-                                            rows={6}
-                                            className="w-full resize-none rounded-none border border-slate-200 px-4 py-2.5 text-sm transition-colors focus:border-slate-400 focus:ring-0 focus:outline-none"
+                                            onChange={(val) => setData('description', val)}
                                             placeholder="Write detailed product description..."
                                         />
                                         {errors.description && (

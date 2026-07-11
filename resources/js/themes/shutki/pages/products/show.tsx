@@ -269,9 +269,11 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                     )}
                                 </div>
 
-                                <p className="mt-4 line-clamp-3 text-sm leading-7" style={{ color: P.earthMid }}>
-                                    {product.description}
-                                </p>
+                                 <div
+                                     className="mt-4 line-clamp-3 text-sm leading-7 whitespace-pre-wrap rich-description"
+                                     style={{ color: P.earthMid }}
+                                     dangerouslySetInnerHTML={{ __html: product.description }}
+                                 />
 
                                 {/* Variations */}
                                 {(product.variations.colors.filter((c) => getLabel(c)?.trim()).length > 0 ||
@@ -435,9 +437,41 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                     <h3 className="mb-4 text-xl font-black" style={{ color: P.sageDark }}>
                                         পণ্যের বিবরণ
                                     </h3>
-                                    <p className="text-base leading-8" style={{ color: P.earthMid }}>
-                                        {product.description}
-                                    </p>
+                                    <div
+                                        className="text-base leading-8 whitespace-pre-wrap rich-description"
+                                        style={{ color: P.earthMid }}
+                                        dangerouslySetInnerHTML={{ __html: product.description }}
+                                    />
+                                    <style>{`
+                                        .rich-description ul {
+                                            list-style-type: disc !important;
+                                            padding-left: 1.5rem !important;
+                                            margin-top: 0.5rem !important;
+                                            margin-bottom: 0.5rem !important;
+                                        }
+                                        .rich-description ol {
+                                            list-style-type: decimal !important;
+                                            padding-left: 1.5rem !important;
+                                            margin-top: 0.5rem !important;
+                                            margin-bottom: 0.5rem !important;
+                                        }
+                                        .rich-description h1 {
+                                            font-size: 1.5rem !important;
+                                            font-weight: 800 !important;
+                                            margin-top: 1rem !important;
+                                            margin-bottom: 0.5rem !important;
+                                        }
+                                        .rich-description h2 {
+                                            font-size: 1.25rem !important;
+                                            font-weight: 700 !important;
+                                            margin-top: 1rem !important;
+                                            margin-bottom: 0.5rem !important;
+                                        }
+                                        .rich-description a {
+                                            color: #3b82f6 !important;
+                                            text-decoration: underline !important;
+                                        }
+                                    `}</style>
                                 </div>
                             )}
 
