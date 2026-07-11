@@ -361,10 +361,10 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                         </button>
                                     </div>
 
-                                    <div className="flex w-full flex-col gap-2 min-[400px]:flex-row sm:flex-1 sm:flex-row sm:gap-3">
+                                    <div className="flex w-full flex-row gap-2 sm:gap-3">
                                         <button
                                             onClick={() => handleAddToCart(quantity)}
-                                            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border-2 px-3 py-3.5 text-[13px] font-black transition-all hover:text-white lg:text-sm"
+                                            className="inline-flex flex-1 items-center justify-center gap-1 sm:gap-1.5 rounded-xl border-2 px-1 py-3 sm:px-3 sm:py-3.5 text-[11px] min-[360px]:text-xs sm:text-sm font-black transition-all hover:text-white"
                                             style={{ borderColor: P.sage, color: P.sage }}
                                             onMouseEnter={(e) => {
                                                 e.currentTarget.style.background = P.sage;
@@ -375,14 +375,14 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                                 e.currentTarget.style.color = P.sage;
                                             }}
                                         >
-                                            <ShoppingCart className="h-4 w-4 shrink-0" /> কার্টে যোগ করুন
+                                            <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" /> কার্টে যোগ করুন
                                         </button>
                                         <button
                                             onClick={handleBuyNow}
-                                            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-3.5 text-[13px] font-black text-white shadow-md transition-all hover:-translate-y-0.5 hover:opacity-90 lg:text-sm"
+                                            className="inline-flex flex-1 items-center justify-center gap-1 sm:gap-1.5 rounded-xl px-1 py-3 sm:px-3 sm:py-3.5 text-[11px] min-[360px]:text-xs sm:text-sm font-black text-white shadow-md transition-all hover:-translate-y-0.5 hover:opacity-90"
                                             style={{ background: P.terra }}
                                         >
-                                            <ShoppingBag className="h-4 w-4 shrink-0" /> এখনই অর্ডার করুন
+                                            <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" /> এখনই অর্ডার করুন
                                         </button>
                                     </div>
                                 </div>
