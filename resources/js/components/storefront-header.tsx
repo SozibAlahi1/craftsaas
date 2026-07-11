@@ -8,6 +8,24 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { type SharedData } from '@/types';
 
+/* LIGHT Organic Palette */
+const P = {
+    sage: 'hsl(89,32%,54%)',
+    sageDark: 'hsl(89,35%,42%)',
+    sageLight: 'hsl(89,28%,88%)',
+    sageBg: 'hsl(89,22%,95%)',
+    honey: 'hsl(38,72%,52%)',
+    honeyLight: 'hsl(38,70%,92%)',
+    terra: 'hsl(18,55%,52%)',
+    terraLight: 'hsl(18,55%,94%)',
+    cream: 'hsl(48,40%,97%)',
+    white: '#ffffff',
+    border: 'hsl(89,20%,86%)',
+    earth: 'hsl(35,28%,18%)',
+    earthMid: 'hsl(35,22%,36%)',
+    earthLight: 'hsl(35,18%,52%)',
+} as const;
+
 type CatalogSection = {
     title: string;
     items: string[];
@@ -291,31 +309,64 @@ export function StorefrontHeader() {
                                                                     </div>
                                                                 </div>
                                                                 <div className="flex items-center justify-between">
-                                                                    <div className="flex items-center gap-3">
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                router.patch(route('cart.update', id), {
-                                                                                    quantity: Math.max(1, item.quantity - 1),
-                                                                                })
-                                                                            }
-                                                                            className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50"
+                                                                    {siteTheme === 'shutki' ? (
+                                                                        <div
+                                                                            className="inline-flex items-center overflow-hidden rounded-xl border"
+                                                                            style={{ borderColor: P.border }}
                                                                         >
-                                                                            <Minus className="h-3 w-3" />
-                                                                        </button>
-                                                                        <span className="w-4 text-center text-[14px] font-bold text-slate-900">
-                                                                            {item.quantity}
-                                                                        </span>
-                                                                        <button
-                                                                            onClick={() =>
-                                                                                router.patch(route('cart.update', id), {
-                                                                                    quantity: item.quantity + 1,
-                                                                                })
-                                                                            }
-                                                                            className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50"
-                                                                        >
-                                                                            <Plus className="h-3 w-3" />
-                                                                        </button>
-                                                                    </div>
+                                                                            <button
+                                                                                onClick={() =>
+                                                                                    router.patch(route('cart.update', id), {
+                                                                                        quantity: Math.max(1, item.quantity - 1),
+                                                                                    })
+                                                                                }
+                                                                                className="flex h-8 w-8 items-center justify-center text-base font-bold transition-colors"
+                                                                                style={{ background: P.sageBg, color: P.sageDark }}
+                                                                            >
+                                                                                –
+                                                                            </button>
+                                                                            <span className="mx-3 min-w-[1rem] text-center text-xs font-black" style={{ color: P.earth }}>
+                                                                                {item.quantity}
+                                                                            </span>
+                                                                            <button
+                                                                                onClick={() =>
+                                                                                    router.patch(route('cart.update', id), {
+                                                                                        quantity: item.quantity + 1,
+                                                                                    })
+                                                                                }
+                                                                                className="flex h-8 w-8 items-center justify-center text-base font-bold transition-colors"
+                                                                                style={{ background: P.sageBg, color: P.sageDark }}
+                                                                            >
+                                                                                +
+                                                                            </button>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div className="flex items-center gap-3">
+                                                                            <button
+                                                                                onClick={() =>
+                                                                                    router.patch(route('cart.update', id), {
+                                                                                        quantity: Math.max(1, item.quantity - 1),
+                                                                                    })
+                                                                                }
+                                                                                className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50"
+                                                                            >
+                                                                                <Minus className="h-3 w-3" />
+                                                                            </button>
+                                                                            <span className="w-4 text-center text-[14px] font-bold text-slate-900">
+                                                                                {item.quantity}
+                                                                            </span>
+                                                                            <button
+                                                                                onClick={() =>
+                                                                                    router.patch(route('cart.update', id), {
+                                                                                        quantity: item.quantity + 1,
+                                                                                    })
+                                                                                }
+                                                                                className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50"
+                                                                            >
+                                                                                <Plus className="h-3 w-3" />
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
                                                                     <button
                                                                         onClick={() => router.delete(route('cart.remove', id))}
                                                                         className="text-rose-500 transition-colors hover:text-rose-600"
@@ -536,29 +587,62 @@ export function StorefrontHeader() {
                                                                 </div>
                                                             </div>
                                                             <div className="flex items-center justify-between">
-                                                                <div className="flex items-center gap-3">
-                                                                    <button
-                                                                        onClick={() =>
-                                                                            router.patch(route('cart.update', id), {
-                                                                                quantity: Math.max(1, item.quantity - 1),
-                                                                            })
-                                                                        }
-                                                                        className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50"
+                                                                {siteTheme === 'shutki' ? (
+                                                                    <div
+                                                                        className="inline-flex items-center overflow-hidden rounded-xl border"
+                                                                        style={{ borderColor: P.border }}
                                                                     >
-                                                                        <Minus className="h-3 w-3" />
-                                                                    </button>
-                                                                    <span className="w-4 text-center text-[14px] font-bold text-slate-900">
-                                                                        {item.quantity}
-                                                                    </span>
-                                                                    <button
-                                                                        onClick={() =>
-                                                                            router.patch(route('cart.update', id), { quantity: item.quantity + 1 })
-                                                                        }
-                                                                        className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50"
-                                                                    >
-                                                                        <Plus className="h-3 w-3" />
-                                                                    </button>
-                                                                </div>
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                router.patch(route('cart.update', id), {
+                                                                                    quantity: Math.max(1, item.quantity - 1),
+                                                                                })
+                                                                            }
+                                                                            className="flex h-8 w-8 items-center justify-center text-base font-bold transition-colors"
+                                                                            style={{ background: P.sageBg, color: P.sageDark }}
+                                                                        >
+                                                                            –
+                                                                        </button>
+                                                                        <span className="mx-3 min-w-[1rem] text-center text-xs font-black" style={{ color: P.earth }}>
+                                                                            {item.quantity}
+                                                                        </span>
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                router.patch(route('cart.update', id), {
+                                                                                    quantity: item.quantity + 1,
+                                                                                })
+                                                                            }
+                                                                            className="flex h-8 w-8 items-center justify-center text-base font-bold transition-colors"
+                                                                            style={{ background: P.sageBg, color: P.sageDark }}
+                                                                        >
+                                                                            +
+                                                                        </button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="flex items-center gap-3">
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                router.patch(route('cart.update', id), {
+                                                                                    quantity: Math.max(1, item.quantity - 1),
+                                                                                })
+                                                                            }
+                                                                            className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50"
+                                                                        >
+                                                                            <Minus className="h-3 w-3" />
+                                                                        </button>
+                                                                        <span className="w-4 text-center text-[14px] font-bold text-slate-900">
+                                                                            {item.quantity}
+                                                                        </span>
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                router.patch(route('cart.update', id), { quantity: item.quantity + 1 })
+                                                                            }
+                                                                            className="flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50"
+                                                                        >
+                                                                            <Plus className="h-3 w-3" />
+                                                                        </button>
+                                                                    </div>
+                                                                )}
                                                                 <button
                                                                     onClick={() => router.delete(route('cart.remove', id))}
                                                                     className="text-rose-500 transition-colors hover:text-rose-600"
