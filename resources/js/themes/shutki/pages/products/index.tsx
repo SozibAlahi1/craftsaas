@@ -139,20 +139,20 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                                     href={route('products.show', product.slug)}
                                     className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-slate-300"
                                 >
-                                    <div className="flex h-full min-h-[380px] flex-col">
-                                        <div className="flex-1 overflow-hidden">
-                                            <img src={product.image} alt={product.name} className="h-[220px] w-full object-cover" loading="lazy" />
+                                    <div className="flex h-full min-h-[290px] sm:min-h-[380px] flex-col">
+                                        <div className="flex-1 overflow-hidden flex items-center justify-center bg-white">
+                                            <img src={product.image} alt={product.name} className="h-[140px] sm:h-[220px] w-full object-contain p-2" loading="lazy" />
                                         </div>
 
-                                        <div className="flex flex-col justify-between px-4 pt-3 pb-4">
+                                        <div className="flex flex-col justify-between px-3 py-3 sm:px-4 sm:pt-3 sm:pb-4">
                                             <div>
-                                                <h3 className="line-clamp-1 text-[1.05rem] leading-6 font-semibold text-slate-950">{product.name}</h3>
-                                                <div className="mt-2 text-[1.35rem] leading-none font-bold text-orange-600">{product.price}</div>
+                                                <h3 className="line-clamp-2 text-sm sm:text-[1.05rem] leading-tight font-semibold text-slate-950">{product.name}</h3>
+                                                <div className="mt-1 text-base sm:text-[1.35rem] leading-none font-bold text-orange-600">{product.price}</div>
 
-                                                <div className="mt-3 flex items-center gap-3 text-sm">
+                                                <div className="mt-1.5 flex items-center gap-3 text-xs">
                                                     {product.old_price && <span className="text-slate-500 line-through">{product.old_price}</span>}
                                                     {product.discount_text && (
-                                                        <span className="rounded-md bg-orange-50 px-3 py-1 font-medium text-orange-600">
+                                                        <span className="rounded-md bg-orange-50 px-2 py-1 font-medium text-orange-600">
                                                             {product.discount_text}
                                                         </span>
                                                     )}
@@ -162,7 +162,7 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                                             {/* Action Button */}
                                             {isVariable ? (
                                                 <div
-                                                    className="mt-4 w-full rounded-full border text-center py-2 text-xs font-black tracking-wider uppercase transition-all duration-300"
+                                                    className="mt-2.5 w-full rounded-full border text-center py-1.5 sm:py-2 text-[10px] sm:text-xs font-black tracking-wider uppercase transition-all duration-300"
                                                     style={{
                                                         borderColor: primaryColor,
                                                         color: primaryColor,
@@ -181,7 +181,7 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                                                 </div>
                                             ) : (
                                                 <div
-                                                    className="mt-4 w-full rounded-full text-center py-2 text-xs font-black tracking-wider uppercase text-white shadow-sm transition-all duration-300"
+                                                    className="mt-2.5 w-full rounded-full text-center py-1.5 sm:py-2 text-[10px] sm:text-xs font-black tracking-wider uppercase text-white shadow-sm transition-all duration-300"
                                                     style={{
                                                         backgroundColor: isAdded ? '#10b981' : primaryColor,
                                                     }}

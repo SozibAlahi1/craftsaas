@@ -647,15 +647,15 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                         onMouseEnter={(e) => (e.currentTarget.style.borderColor = P.sage)}
                                         onMouseLeave={(e) => (e.currentTarget.style.borderColor = P.border)}
                                     >
-                                        <div className="relative aspect-square overflow-hidden">
+                                        <div className="relative aspect-square overflow-hidden bg-white flex items-center justify-center">
                                             <img
                                                 src={item.image}
                                                 alt={item.name}
-                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                                             />
                                         </div>
                                         <div className="p-3">
-                                            <h3 className="line-clamp-1 text-sm font-bold" style={{ color: P.earth }}>
+                                            <h3 className="line-clamp-2 text-sm font-bold leading-tight" style={{ color: P.earth }}>
                                                 {item.name}
                                             </h3>
                                             <div className="mt-1 text-base font-black" style={{ color: P.terra }}>
