@@ -98,7 +98,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                             </span>
                         </div>
                         <h1 className="text-2xl font-black tracking-tight sm:text-3xl" style={{ color: P.sageDark }}>
-                            🌿 অর্ডার সম্পন্ন করুন
+                            অর্ডার সম্পন্ন করুন
                         </h1>
                         <p className="mt-1 text-sm" style={{ color: P.earthLight }}>
                             আপনার ডেলিভারি তথ্য ও পেমেন্ট পদ্ধতি নির্বাচন করুন।
@@ -341,7 +341,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                         className="mt-6 w-full rounded-xl py-4 text-sm font-black tracking-widest text-white uppercase shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50"
                                         style={{ background: P.sage }}
                                     >
-                                        {processing ? 'প্রক্রিয়া হচ্ছে...' : '🌿 অর্ডার দিন'}
+                                        {processing ? 'প্রক্রিয়া হচ্ছে...' : 'অর্ডার দিন'}
                                     </button>
 
                                     <div
