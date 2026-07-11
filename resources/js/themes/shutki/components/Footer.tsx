@@ -56,7 +56,7 @@ export function ShutkirFooter() {
         } catch {
             href = '/';
         }
-        const cls = 'text-[13px] font-semibold transition-colors hover:text-[#ff3000]';
+        const cls = 'text-[15px] font-semibold transition-colors hover:text-[#ff3000]';
         if (href.startsWith('http')) {
             return (
                 <a href={href} target="_blank" rel="noopener noreferrer" className={cls} style={{ color: P.textMuted }}>
@@ -87,7 +87,7 @@ export function ShutkirFooter() {
                             )}
                         </Link>
 
-                        <p className="mb-8 text-[13px] leading-6" style={{ color: P.textMuted }}>
+                        <p className="mb-8 text-[15px] leading-7" style={{ color: P.textMuted }}>
                             {footerDescription}
                         </p>
 
@@ -130,7 +130,7 @@ export function ShutkirFooter() {
 
                     {/* Column 2: Categories (Mapped to Account/Custom links for structure) */}
                     <div>
-                        <h3 className="relative mb-5 pb-2 text-[16px] font-black" style={{ color: P.textMain }}>
+                        <h3 className="relative mb-5 pb-2 text-[18px] font-black" style={{ color: P.textMain }}>
                             ক্যাটাগরি
                             <div className="absolute bottom-0 left-0 h-[2px] w-12" style={{ backgroundColor: P.accent }}></div>
                         </h3>
@@ -146,7 +146,7 @@ export function ShutkirFooter() {
 
                     {/* Column 3: Important Links */}
                     <div>
-                        <h3 className="relative mb-5 pb-2 text-[16px] font-black" style={{ color: P.textMain }}>
+                        <h3 className="relative mb-5 pb-2 text-[18px] font-black" style={{ color: P.textMain }}>
                             প্রয়োজনীয় লিংক
                             <div className="absolute bottom-0 left-0 h-[2px] w-12" style={{ backgroundColor: P.accent }}></div>
                         </h3>
@@ -162,7 +162,7 @@ export function ShutkirFooter() {
 
                     {/* Column 4: Contact Us */}
                     <div>
-                        <h3 className="relative mb-5 pb-2 text-[16px] font-black" style={{ color: P.textMain }}>
+                        <h3 className="relative mb-5 pb-2 text-[18px] font-black" style={{ color: P.textMain }}>
                             যোগাযোগ করুন
                             <div className="absolute bottom-0 left-0 h-[2px] w-12" style={{ backgroundColor: P.accent }}></div>
                         </h3>
@@ -170,7 +170,7 @@ export function ShutkirFooter() {
                             {footerAddress && (
                                 <div className="flex items-start gap-3">
                                     <MapPin className="mt-0.5 h-[18px] w-[18px] shrink-0" style={{ color: P.accent }} />
-                                    <span className="text-[13px] leading-relaxed" style={{ color: P.textMuted }}>
+                                    <span className="text-[15px] leading-relaxed" style={{ color: P.textMuted }}>
                                         <strong className="mr-1 font-bold" style={{ color: P.textMain }}>
                                             প্রধান অফিস:
                                         </strong>
@@ -182,7 +182,7 @@ export function ShutkirFooter() {
                             {footerPhone && (
                                 <div className="flex items-center gap-3">
                                     <Phone className="h-[18px] w-[18px] shrink-0" style={{ color: P.accent }} />
-                                    <span className="text-[13px]" style={{ color: P.textMuted }}>
+                                    <span className="text-[15px]" style={{ color: P.textMuted }}>
                                         <strong className="mr-1 font-bold" style={{ color: P.textMain }}>
                                             হটলাইন:
                                         </strong>
@@ -194,7 +194,7 @@ export function ShutkirFooter() {
                             {footerEmail && (
                                 <div className="flex items-center gap-3">
                                     <Mail className="h-[18px] w-[18px] shrink-0" style={{ color: P.accent }} />
-                                    <span className="text-[13px]" style={{ color: P.textMuted }}>
+                                    <span className="text-[15px]" style={{ color: P.textMuted }}>
                                         <strong className="mr-1 font-bold" style={{ color: P.textMain }}>
                                             ইমেইল:
                                         </strong>
@@ -205,7 +205,7 @@ export function ShutkirFooter() {
 
                             <div className="flex items-center gap-3">
                                 <Clock className="h-[18px] w-[18px] shrink-0" style={{ color: P.accent }} />
-                                <span className="text-[13px]" style={{ color: P.textMuted }}>
+                                <span className="text-[15px]" style={{ color: P.textMuted }}>
                                     সকাল ৯:০০ - রাত ১০:০০ (প্রতিদিন)
                                 </span>
                             </div>
@@ -216,7 +216,7 @@ export function ShutkirFooter() {
 
             {/* Bottom Bar */}
             <div className="px-4 py-4 text-center" style={{ backgroundColor: P.textMain }}>
-                <p className="text-[13px] text-gray-300">{footerCopyright}</p>
+                <p className="text-[14px] text-gray-300">{footerCopyright}</p>
             </div>
 
             {/* Back to top */}
