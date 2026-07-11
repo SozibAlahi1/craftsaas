@@ -113,7 +113,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                     <img
                                         src={product.image}
                                         alt={product.name}
-                                        className={`w-full ${isShutkiTheme ? 'h-[140px] sm:h-[220px] object-contain p-2' : 'h-[220px] object-cover'}`}
+                                        className={`w-full ${isShutkiTheme ? 'h-[140px] sm:h-[220px] object-contain' : 'h-[220px] object-cover'}`}
                                         loading="lazy"
                                     />
                                 </div>

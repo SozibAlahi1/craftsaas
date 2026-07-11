@@ -651,7 +651,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                             <img
                                                 src={item.image}
                                                 alt={item.name}
-                                                className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+                                                className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
                                             />
                                         </div>
                                         <div className="p-3">
