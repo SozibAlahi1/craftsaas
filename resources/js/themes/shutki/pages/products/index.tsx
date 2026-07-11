@@ -140,8 +140,8 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                                     className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-slate-300"
                                 >
                                     <div className="flex h-full min-h-[290px] sm:min-h-[380px] flex-col">
-                                        <div className="flex-1 overflow-hidden flex items-center justify-center bg-white">
-                                            <img src={product.image} alt={product.name} className="h-[140px] sm:h-[220px] w-full object-contain" loading="lazy" />
+                                        <div className="relative w-full aspect-square overflow-hidden bg-white">
+                                            <img src={product.image} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
                                         </div>
 
                                         <div className="flex flex-col justify-between px-3 py-3 sm:px-4 sm:pt-3 sm:pb-4">
