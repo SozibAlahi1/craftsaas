@@ -42,6 +42,7 @@ type Product = {
     color: string;
     variations: { colors: Array<string | { label: string; image: string | null }>; sizes: Array<string | { label: string; image: string | null }> };
     reviews: Review[];
+    variants?: any[];
 };
 type RelatedProduct = Pick<Product, 'slug' | 'name' | 'price' | 'old_price' | 'discount_text' | 'image'>;
 
@@ -56,6 +57,23 @@ export default function Show({ product, relatedProducts }: { product: Product; r
     const [activeTab, setActiveTab] = useState<'details' | 'delivery' | 'reviews'>('details');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
+
+    const getSelectedVariant = () => {
+        if (!product.variants || product.variants.length === 0) return null;
+
+        return product.variants.find((v: any) => {
+            const hasColor = selectedColor && selectedColor.trim() !== '';
+            const hasSize = selectedSize && selectedSize.trim() !== '';
+
+            const vColor = v.attribute_values?.find((av: any) => av.attribute.name.toLowerCase() === 'color')?.value;
+            const vSize = v.attribute_values?.find((av: any) => av.attribute.name.toLowerCase() === 'size')?.value;
+
+            if (hasColor && hasSize) return vColor === selectedColor && vSize === selectedSize;
+            if (hasColor) return vColor === selectedColor;
+            if (hasSize) return vSize === selectedSize;
+            return false;
+        });
+    };
 
     const selectColor = (label: string, image: string | null) => {
         setSelectedColor(label);
@@ -101,12 +119,15 @@ export default function Show({ product, relatedProducts }: { product: Product; r
     };
 
     const handleAddToCart = (qty = 1) => {
+        const variant = getSelectedVariant();
         router.post(
             route('cart.add'),
             {
+                product_id: product.id,
+                product_variant_id: variant?.id,
                 slug: product.slug,
                 name: product.name,
-                price: product.price,
+                price: variant?.price ? `৳${variant.price.toLocaleString()}` : product.price,
                 image: product.image,
                 quantity: qty,
                 color: selectedColor,
@@ -120,10 +141,13 @@ export default function Show({ product, relatedProducts }: { product: Product; r
     };
 
     const handleBuyNow = () => {
+        const variant = getSelectedVariant();
         router.post(route('cart.buyNow'), {
+            product_id: product.id,
+            product_variant_id: variant?.id,
             slug: product.slug,
             name: product.name,
-            price: product.price,
+            price: variant?.price ? `৳${variant.price.toLocaleString()}` : product.price,
             image: product.image,
             quantity,
             color: selectedColor,
@@ -166,8 +190,8 @@ export default function Show({ product, relatedProducts }: { product: Product; r
 
                     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
                         {/* Gallery */}
-                        <div className="flex flex-col-reverse gap-4 lg:flex-row">
-                            <div className="grid grid-cols-4 gap-2 lg:flex lg:w-20 lg:flex-col">
+                        <div className="flex flex-row gap-3 sm:gap-4">
+                            <div className="flex flex-col w-12 sm:w-20 gap-2 shrink-0">
                                 {allImages.map((image, index) => (
                                     <button
                                         key={index}
@@ -209,13 +233,6 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                         {/* Product info */}
                         <div className="space-y-4">
                             <div className="rounded-2xl bg-white p-6 shadow-sm" style={{ border: `2px solid ${P.border}` }}>
-                                <div
-                                    className="mb-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-black tracking-widest uppercase"
-                                    style={{ background: P.sageBg, color: P.sageDark }}
-                                >
-                                    <Leaf className="h-3 w-3" /> অর্গানিক শুকটি
-                                </div>
-
                                 <h1
                                     className="text-2xl leading-tight font-black tracking-tight sm:text-3xl"
                                     style={{ color: P.sageDark }}
@@ -233,7 +250,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                 {/* Price */}
                                 <div className="mt-4 flex flex-wrap items-end gap-3">
                                     <div className="text-3xl font-black sm:text-4xl" style={{ color: P.terra }}>
-                                        {product.price}
+                                        {getSelectedVariant()?.price ? `৳${getSelectedVariant()?.price.toLocaleString()}` : product.price}
                                     </div>
                                     {product.old_price && (
                                         <div className="flex items-center gap-2">
