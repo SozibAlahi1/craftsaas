@@ -337,34 +337,34 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                 )}
 
                                 {/* Qty + CTA */}
-                                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-                                    <div
-                                        className="inline-flex shrink-0 items-center self-start overflow-hidden rounded-xl sm:self-auto"
-                                        style={{ border: `2px solid ${P.border}` }}
-                                    >
-                                        <button
-                                            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                                            className="hover:bg-sage-50 flex h-11 w-11 items-center justify-center text-xl font-bold transition-colors"
-                                            style={{ background: P.sageBg, color: P.sageDark }}
+                                <div className="mt-6 flex flex-col gap-3">
+                                    <div className="flex w-full items-center gap-2">
+                                        <div
+                                            className="inline-flex shrink-0 items-center overflow-hidden rounded-xl"
+                                            style={{ border: `2px solid ${P.border}` }}
                                         >
-                                            –
-                                        </button>
-                                        <span className="mx-4 min-w-[2rem] text-center text-lg font-black" style={{ color: P.earth }}>
-                                            {quantity}
-                                        </span>
-                                        <button
-                                            onClick={() => setQuantity((q) => q + 1)}
-                                            className="flex h-11 w-11 items-center justify-center text-xl font-bold transition-colors"
-                                            style={{ background: P.sageBg, color: P.sageDark }}
-                                        >
-                                            +
-                                        </button>
-                                    </div>
+                                            <button
+                                                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                                                className="flex h-11 w-11 items-center justify-center text-xl font-bold transition-colors"
+                                                style={{ background: P.sageBg, color: P.sageDark }}
+                                            >
+                                                –
+                                            </button>
+                                            <span className="mx-4 min-w-[2rem] text-center text-lg font-black" style={{ color: P.earth }}>
+                                                {quantity}
+                                            </span>
+                                            <button
+                                                onClick={() => setQuantity((q) => q + 1)}
+                                                className="flex h-11 w-11 items-center justify-center text-xl font-bold transition-colors"
+                                                style={{ background: P.sageBg, color: P.sageDark }}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
 
-                                    <div className="flex w-full flex-row gap-2 sm:gap-3">
                                         <button
                                             onClick={() => handleAddToCart(quantity)}
-                                            className="inline-flex flex-1 items-center justify-center gap-1 sm:gap-1.5 rounded-xl border-2 px-1 py-3 sm:px-3 sm:py-3.5 text-[11px] min-[360px]:text-xs sm:text-sm font-black transition-all hover:text-white"
+                                            className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border-2 px-3 text-xs sm:text-sm font-black transition-all hover:text-white"
                                             style={{ borderColor: P.sage, color: P.sage }}
                                             onMouseEnter={(e) => {
                                                 e.currentTarget.style.background = P.sage;
@@ -375,16 +375,17 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                                 e.currentTarget.style.color = P.sage;
                                             }}
                                         >
-                                            <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" /> কার্টে যোগ করুন
-                                        </button>
-                                        <button
-                                            onClick={handleBuyNow}
-                                            className="inline-flex flex-1 items-center justify-center gap-1 sm:gap-1.5 rounded-xl px-1 py-3 sm:px-3 sm:py-3.5 text-[11px] min-[360px]:text-xs sm:text-sm font-black text-white shadow-md transition-all hover:-translate-y-0.5 hover:opacity-90"
-                                            style={{ background: P.terra }}
-                                        >
-                                            <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" /> এখনই অর্ডার করুন
+                                            <ShoppingCart className="h-4 w-4 shrink-0" /> কার্টে যোগ করুন
                                         </button>
                                     </div>
+
+                                    <button
+                                        onClick={handleBuyNow}
+                                        className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl px-3 text-xs sm:text-sm font-black text-white shadow-md transition-all hover:-translate-y-0.5 hover:opacity-90"
+                                        style={{ background: P.terra }}
+                                    >
+                                        <ShoppingBag className="h-4 w-4 shrink-0" /> এখনই অর্ডার করুন
+                                    </button>
                                 </div>
 
                                 {/* Trust row */}
