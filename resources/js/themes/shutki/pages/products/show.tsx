@@ -345,17 +345,17 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                         >
                                             <button
                                                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                                                className="flex h-11 w-11 items-center justify-center text-xl font-bold transition-colors"
+                                                className="flex h-11 w-9 sm:w-11 items-center justify-center text-xl font-bold transition-colors"
                                                 style={{ background: P.sageBg, color: P.sageDark }}
                                             >
                                                 –
                                             </button>
-                                            <span className="mx-4 min-w-[2rem] text-center text-lg font-black" style={{ color: P.earth }}>
+                                            <span className="mx-2 sm:mx-4 min-w-[1.25rem] sm:min-w-[2rem] text-center text-base sm:text-lg font-black" style={{ color: P.earth }}>
                                                 {quantity}
                                             </span>
                                             <button
                                                 onClick={() => setQuantity((q) => q + 1)}
-                                                className="flex h-11 w-11 items-center justify-center text-xl font-bold transition-colors"
+                                                className="flex h-11 w-9 sm:w-11 items-center justify-center text-xl font-bold transition-colors"
                                                 style={{ background: P.sageBg, color: P.sageDark }}
                                             >
                                                 +
