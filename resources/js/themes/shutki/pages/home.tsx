@@ -25,7 +25,17 @@ const P = {
     earthLight: 'hsl(35,18%,52%)',
 } as const;
 
-export default function Home({ homeCategories, featuredTiles, banners = [] }: { homeCategories: any[]; featuredTiles: any[]; banners?: any[] }) {
+export default function Home({
+    homeCategories,
+    featuredTiles,
+    banners = [],
+    allProducts = [],
+}: {
+    homeCategories: any[];
+    featuredTiles: any[];
+    banners?: any[];
+    allProducts?: any[];
+}) {
     return (
         <>
             <Head title="হোম" />
@@ -102,6 +112,34 @@ export default function Home({ homeCategories, featuredTiles, banners = [] }: { 
                                 </div>
                             </div>
                         ))}
+
+                        {/* All Products Section */}
+                        {allProducts.length > 0 && (
+                            <div
+                                className="overflow-hidden rounded-2xl bg-white shadow-sm"
+                                style={{ border: `2px solid ${P.border}` }}
+                            >
+                                <div
+                                    className="flex items-center justify-between px-5 py-4"
+                                    style={{ background: P.sageBg, borderBottom: `2px solid ${P.sage}` }}
+                                >
+                                    <h2 className="text-lg font-black" style={{ color: P.sageDark }}>
+                                        আমাদের সকল পণ্য
+                                    </h2>
+                                </div>
+                                <div className="p-4">
+                                    <CategoryProductSection
+                                        category={{
+                                            id: 9999,
+                                            name: 'আমাদের সকল পণ্য',
+                                            slug: 'all-products',
+                                            banner_image: null,
+                                            products: allProducts,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </section>
 

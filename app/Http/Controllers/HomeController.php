@@ -14,7 +14,7 @@ class HomeController extends Controller
         $categories = Category::where('show_on_home', true)
             ->with([
                 'products' => function ($query) {
-                    $query->latest()->take(5);
+                    $query->latest();
                 },
                 'videoReels' => function ($query) {
                     $query->where('is_active', true)->with('product')->orderBy('order');
@@ -36,10 +36,13 @@ class HomeController extends Controller
                 'link'      => $b->link,
             ]);
 
+        $allProducts = \App\Models\Product::latest()->get();
+
         return Inertia::render('home', [
             'homeCategories' => $categories,
             'featuredTiles'  => $featuredTiles,
             'banners'        => $banners,
+            'allProducts'    => $allProducts,
         ]);
     }
 }

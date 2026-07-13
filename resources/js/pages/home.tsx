@@ -4,7 +4,17 @@ import { StorefrontFooter } from '@/components/storefront-footer';
 import { StorefrontHeader } from '@/components/storefront-header';
 import { Head } from '@inertiajs/react';
 
-export default function Home({ homeCategories, featuredTiles, banners }: { homeCategories: any[]; featuredTiles: any[]; banners: any[] }) {
+export default function Home({
+    homeCategories,
+    featuredTiles,
+    banners,
+    allProducts = [],
+}: {
+    homeCategories: any[];
+    featuredTiles: any[];
+    banners: any[];
+    allProducts?: any[];
+}) {
     return (
         <>
             <Head title="Home" />
