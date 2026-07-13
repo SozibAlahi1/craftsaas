@@ -436,9 +436,9 @@ export default function CreateProduct({ categories }: CreateProps) {
                                         <table className="w-full text-left text-sm whitespace-nowrap">
                                             <thead className="border-b border-slate-200 bg-slate-50">
                                                 <tr>
-                                                    <th className="px-4 py-3 font-bold text-slate-600">Variant</th>
-                                                    <th className="px-4 py-3 font-bold text-slate-600">SKU</th>
-                                                    <th className="px-4 py-3 font-bold text-slate-600">Price (Override)</th>
+                                                                                    <th className="px-4 py-3 font-bold text-slate-600">Variant</th>
+                                                    <th className="px-4 py-3 font-bold text-slate-600">Price (BDT)</th>
+                                                    <th className="px-4 py-3 font-bold text-slate-600">SKU (Optional)</th>
                                                     <th className="px-4 py-3 font-bold text-slate-600">Stock</th>
                                                 </tr>
                                             </thead>
@@ -451,23 +451,23 @@ export default function CreateProduct({ categories }: CreateProps) {
                                                         <td className="px-4 py-2">
                                                             <input
                                                                 type="text"
-                                                                value={v.sku}
+                                                                value={v.price}
                                                                 onChange={(e) => {
                                                                     const newMatrix = [...(data as any).variant_matrix];
-                                                                    newMatrix[i].sku = e.target.value;
+                                                                    newMatrix[i].price = e.target.value;
                                                                     setData('variant_matrix', newMatrix as never);
                                                                 }}
                                                                 className="w-full rounded-none border border-slate-200 px-3 py-1.5 text-sm focus:border-slate-400 focus:ring-0 focus:outline-none"
-                                                                placeholder="Optional"
+                                                                placeholder="e.g. 1500"
                                                             />
                                                         </td>
                                                         <td className="px-4 py-2">
                                                             <input
                                                                 type="text"
-                                                                value={v.price}
+                                                                value={v.sku}
                                                                 onChange={(e) => {
                                                                     const newMatrix = [...(data as any).variant_matrix];
-                                                                    newMatrix[i].price = e.target.value;
+                                                                    newMatrix[i].sku = e.target.value;
                                                                     setData('variant_matrix', newMatrix as never);
                                                                 }}
                                                                 className="w-full rounded-none border border-slate-200 px-3 py-1.5 text-sm focus:border-slate-400 focus:ring-0 focus:outline-none"

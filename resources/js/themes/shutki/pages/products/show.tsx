@@ -118,8 +118,20 @@ export default function Show({ product, relatedProducts }: { product: Product; r
         setTimeout(() => setSuccessMessage(null), 3000);
     };
 
+    const getVariantPrice = (variant: any) => {
+        if (!variant) return null;
+        if (variant.price !== null && variant.price !== undefined && String(variant.price).trim() !== '') {
+            return variant.price;
+        }
+        if (variant.sku && !isNaN(Number(String(variant.sku).replace(/[^0-9.]/g, '')))) {
+            return variant.sku;
+        }
+        return null;
+    };
+
     const handleAddToCart = (qty = 1) => {
         const variant = getSelectedVariant();
+        const vPrice = getVariantPrice(variant);
         router.post(
             route('cart.add'),
             {
@@ -127,7 +139,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                 product_variant_id: variant?.id,
                 slug: product.slug,
                 name: product.name,
-                price: variant?.price ? `৳${Math.round(parseFloat(variant.price)).toLocaleString('en-BD')}` : product.price,
+                price: vPrice ? `৳${Math.round(parseFloat(vPrice)).toLocaleString('en-BD')}` : product.price,
                 image: product.image,
                 quantity: qty,
                 color: selectedColor,
@@ -142,12 +154,13 @@ export default function Show({ product, relatedProducts }: { product: Product; r
 
     const handleBuyNow = () => {
         const variant = getSelectedVariant();
+        const vPrice = getVariantPrice(variant);
         router.post(route('cart.buyNow'), {
             product_id: product.id,
             product_variant_id: variant?.id,
             slug: product.slug,
             name: product.name,
-            price: variant?.price ? `৳${Math.round(parseFloat(variant.price)).toLocaleString('en-BD')}` : product.price,
+            price: vPrice ? `৳${Math.round(parseFloat(vPrice)).toLocaleString('en-BD')}` : product.price,
             image: product.image,
             quantity,
             color: selectedColor,
@@ -250,7 +263,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                 {/* Price */}
                                 <div className="mt-4 flex flex-wrap items-end gap-3">
                                     <div className="text-3xl font-black sm:text-4xl" style={{ color: P.terra }}>
-                                        {getSelectedVariant()?.price ? `৳${Math.round(parseFloat(getSelectedVariant().price)).toLocaleString('en-BD')}` : product.price}
+                                        {getVariantPrice(getSelectedVariant()) ? `৳${Math.round(parseFloat(getVariantPrice(getSelectedVariant()))).toLocaleString('en-BD')}` : product.price}
                                     </div>
                                     {product.old_price && (
                                         <div className="flex items-center gap-2">

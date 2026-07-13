@@ -127,6 +127,17 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
         });
     };
 
+    const getVariantPrice = (variant: any) => {
+        if (!variant) return null;
+        if (variant.price !== null && variant.price !== undefined && String(variant.price).trim() !== '') {
+            return variant.price;
+        }
+        if (variant.sku && !isNaN(Number(String(variant.sku).replace(/[^0-9.]/g, '')))) {
+            return variant.sku;
+        }
+        return null;
+    };
+
     const handleAddToCart = (
         item: { id: number; slug: string; name: string; price: string; image: string },
         qty: number = 1,
@@ -134,6 +145,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
         size?: string,
     ) => {
         const variant = getSelectedVariant();
+        const vPrice = getVariantPrice(variant);
         router.post(
             route('cart.add'),
             {
@@ -141,7 +153,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                 product_variant_id: variant?.id,
                 slug: item.slug,
                 name: item.name,
-                price: variant?.price ? `৳${variant.price.toLocaleString()}` : item.price,
+                price: vPrice ? `৳${parseInt(String(vPrice)).toLocaleString()}` : item.price,
                 image: item.image,
                 quantity: qty,
                 color,
@@ -164,12 +176,13 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
         size?: string,
     ) => {
         const variant = getSelectedVariant();
+        const vPrice = getVariantPrice(variant);
         router.post(route('cart.buyNow'), {
             product_id: item.id,
             product_variant_id: variant?.id,
             slug: item.slug,
             name: item.name,
-            price: variant?.price ? `৳${variant.price.toLocaleString()}` : item.price,
+            price: vPrice ? `৳${parseInt(String(vPrice)).toLocaleString()}` : item.price,
             image: item.image,
             quantity: qty,
             color,
@@ -268,10 +281,10 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
 
                                 <h1 className="text-3xl leading-tight font-bold tracking-tight text-white sm:text-4xl">{product.name}</h1>
 
-                                <div className="mt-4 flex flex-wrap items-center gap-3">
-                                    <div className="text-3xl font-black text-[#cba876] sm:text-4xl">
-                                        {getSelectedVariant()?.price ? `৳${getSelectedVariant()?.price.toLocaleString()}` : product.price}
-                                    </div>
+                                    <div className="flex items-baseline gap-2 mt-4">
+                                        <span className="text-3xl font-bold text-white">
+                                            {getVariantPrice(getSelectedVariant()) ? `৳${parseInt(String(getVariantPrice(getSelectedVariant()))).toLocaleString()}` : product.price}
+                                        </span>
                                     {product.old_price && !getSelectedVariant()?.price && (
                                         <div className="flex items-center gap-3">
                                             <div className="text-lg font-semibold text-slate-500 line-through">{product.old_price}</div>
