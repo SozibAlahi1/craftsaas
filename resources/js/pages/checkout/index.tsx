@@ -219,57 +219,6 @@ export default function Checkout({ cart }: CheckoutProps) {
                                         )}
                                     </label>
 
-                                    <label
-                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'bkash' ? 'border-[#E2136E] bg-pink-50/30 ring-2 ring-[#E2136E]' : 'border-border hover:border-border/80 bg-card'}`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="payment_method"
-                                            value="bkash"
-                                            checked={data.payment_method === 'bkash'}
-                                            onChange={() => setData('payment_method', 'bkash')}
-                                            className="sr-only"
-                                        />
-                                        <span className="flex flex-1">
-                                            <span className="flex flex-col">
-                                                <span className="block text-[15px] font-black text-[#E2136E]">bKash</span>
-                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium italic">
-                                                    Pay securely with your bKash wallet
-                                                </span>
-                                            </span>
-                                        </span>
-                                        {data.payment_method === 'bkash' && (
-                                            <div className="absolute top-3 right-3 rounded-full bg-[#E2136E] p-1 text-white">
-                                                <ShieldCheck className="h-4 w-4" />
-                                            </div>
-                                        )}
-                                    </label>
-
-                                    <label
-                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'nagad' ? 'border-[#F15922] bg-orange-50/30 ring-2 ring-[#F15922]' : 'border-border hover:border-border/80 bg-card'}`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="payment_method"
-                                            value="nagad"
-                                            checked={data.payment_method === 'nagad'}
-                                            onChange={() => setData('payment_method', 'nagad')}
-                                            className="sr-only"
-                                        />
-                                        <span className="flex flex-1">
-                                            <span className="flex flex-col">
-                                                <span className="block text-[15px] font-black text-[#F15922]">Nagad</span>
-                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium italic">
-                                                    Fast and easy checkout with Nagad
-                                                </span>
-                                            </span>
-                                        </span>
-                                        {data.payment_method === 'nagad' && (
-                                            <div className="absolute top-3 right-3 rounded-full bg-[#F15922] p-1 text-white">
-                                                <ShieldCheck className="h-4 w-4" />
-                                            </div>
-                                        )}
-                                    </label>
                                 </div>
                                 {errors.payment_method && (
                                     <p className="animate-in fade-in slide-in-from-top-1 mt-4 flex items-center gap-1 text-sm font-bold text-rose-600">

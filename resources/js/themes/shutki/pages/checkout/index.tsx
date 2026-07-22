@@ -71,8 +71,6 @@ export default function Checkout({ cart }: CheckoutProps) {
 
     const paymentOptions = [
         { value: 'cod', label: 'ক্যাশ অন ডেলিভারি', sub: 'পণ্য পেয়ে পরিশোধ করুন', activeColor: P.sage, activeBg: P.sageBg },
-        { value: 'bkash', label: 'bKash', sub: 'বিকাশে পেমেন্ট করুন', activeColor: '#E2136E', activeBg: '#fff0f6' },
-        { value: 'nagad', label: 'Nagad', sub: 'নগদে পেমেন্ট করুন', activeColor: '#F15922', activeBg: '#fff6f2' },
     ];
 
     return (
