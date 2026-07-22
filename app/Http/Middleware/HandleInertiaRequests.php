@@ -61,6 +61,8 @@ class HandleInertiaRequests extends Middleware
             'settings' => [
                 'site_name' => SiteSetting::getValue('site_name', 'Shutki Valley'),
                 'shipping_cost' => SiteSetting::getValue('shipping_cost', '60'),
+                'shipping_cost_inside_dhaka' => SiteSetting::getValue('shipping_cost_inside_dhaka', '60'),
+                'shipping_cost_outside_dhaka' => SiteSetting::getValue('shipping_cost_outside_dhaka', '120'),
                 'footer_description' => SiteSetting::getValue('footer_description', 'বাংলাদেশের সেরা শুকটি মাছের অনলাইন বাজার। তাজা ও মানসম্পন্ন শুকটি মাছ সরাসরি আপনার দরজায়।'),
                 'footer_facebook_url' => SiteSetting::getValue('footer_facebook_url', 'https://facebook.com'),
                 'footer_youtube_url' => SiteSetting::getValue('footer_youtube_url', 'https://youtube.com'),

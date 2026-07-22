@@ -25,6 +25,8 @@ class SiteSettingController extends Controller
         $settings = [
             'site_name' => SiteSetting::getValue('site_name', 'Shutki Valley'),
             'shipping_cost' => SiteSetting::getValue('shipping_cost', '60'),
+            'shipping_cost_inside_dhaka' => SiteSetting::getValue('shipping_cost_inside_dhaka', '60'),
+            'shipping_cost_outside_dhaka' => SiteSetting::getValue('shipping_cost_outside_dhaka', '120'),
             'footer_description' => SiteSetting::getValue('footer_description', 'বাংলাদেশের সেরা শুকটি মাছের অনলাইন বাজার। তাজা ও মানসম্পন্ন শুকটি মাছ সরাসরি আপনার দরজায়।'),
             'footer_facebook_url' => SiteSetting::getValue('footer_facebook_url', 'https://facebook.com'),
             'footer_youtube_url' => SiteSetting::getValue('footer_youtube_url', 'https://youtube.com'),
@@ -106,6 +108,8 @@ class SiteSettingController extends Controller
             'site_name' => 'required|string|max:100',
             'site_theme' => $themeRule,
             'shipping_cost' => 'required|numeric|min:0',
+            'shipping_cost_inside_dhaka' => 'required|numeric|min:0',
+            'shipping_cost_outside_dhaka' => 'required|numeric|min:0',
             'footer_description' => 'required|string|max:500',
             'footer_facebook_url' => 'nullable|url|max:255',
             'footer_youtube_url' => 'nullable|url|max:255',

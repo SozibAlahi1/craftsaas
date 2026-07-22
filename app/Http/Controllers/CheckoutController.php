@@ -39,6 +39,7 @@ class CheckoutController extends Controller
             'phone' => ['required', 'string', 'regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
             'address' => ['required', 'string', 'min:10', 'max:500'],
             'payment_method' => ['required', 'string', 'in:cod,bkash,nagad'],
+            'shipping_area' => ['required', 'string', 'in:inside,outside'],
         ], [
             'phone.regex' => 'Please provide a valid Bangladesh phone number (e.g. 01XXXXXXXXX).',
             'address.min' => 'Please provide a more detailed address.',
@@ -63,7 +64,9 @@ class CheckoutController extends Controller
 
                 return $sum + ($price * $item['quantity']);
             }, 0);
-            $shipping = (int) SiteSetting::getValue('shipping_cost', 60);
+            $shipping_cost_inside = (int) SiteSetting::getValue('shipping_cost_inside_dhaka', 60);
+            $shipping_cost_outside = (int) SiteSetting::getValue('shipping_cost_outside_dhaka', 120);
+            $shipping = $validated['shipping_area'] === 'inside' ? $shipping_cost_inside : $shipping_cost_outside;
             $total = $subtotal + $shipping;
 
             // Create Order

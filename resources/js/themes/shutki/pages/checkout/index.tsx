@@ -43,6 +43,7 @@ export default function Checkout({ cart }: CheckoutProps) {
         phone: '',
         address: '',
         payment_method: 'cod',
+        shipping_area: 'inside',
     });
 
     const cartItems = Object.entries(cart);
@@ -50,7 +51,9 @@ export default function Checkout({ cart }: CheckoutProps) {
         const price = parseInt(item.price.replace(/[^\d]/g, ''));
         return sum + price * item.quantity;
     }, 0);
-    const shipping = settings?.shipping_cost ? parseInt(settings.shipping_cost) : 60;
+    const shipping_cost_inside = settings?.shipping_cost_inside_dhaka ? parseInt(settings.shipping_cost_inside_dhaka) : 60;
+    const shipping_cost_outside = settings?.shipping_cost_outside_dhaka ? parseInt(settings.shipping_cost_outside_dhaka) : 120;
+    const shipping = data.shipping_area === 'inside' ? shipping_cost_inside : shipping_cost_outside;
     const total = subtotal + shipping;
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -201,6 +204,75 @@ export default function Checkout({ cart }: CheckoutProps) {
                                         )}
                                     </div>
                                 </div>
+                            </section>
+
+                            {/* Shipping Area */}
+                            <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6" style={{ border: `2px solid ${P.border}` }}>
+                                <div className="mb-5 flex items-center gap-3 pb-4" style={{ borderBottom: `2px solid ${P.sage}` }}>
+                                    <div
+                                        className="flex h-10 w-10 items-center justify-center rounded-full text-white shadow-sm"
+                                        style={{ background: P.sage }}
+                                    >
+                                        <Truck className="h-5 w-5" />
+                                    </div>
+                                    <h2 className="text-lg font-black" style={{ color: P.sageDark }}>
+                                        ডেলিভারি এরিয়া নির্বাচন করুন
+                                    </h2>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <label
+                                        className="relative flex cursor-pointer flex-col rounded-xl p-4 shadow-sm transition-all"
+                                        style={{
+                                            border: `2px solid ${data.shipping_area === 'inside' ? P.sage : P.border}`,
+                                            background: data.shipping_area === 'inside' ? P.sageBg : P.white,
+                                        }}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="shipping_area"
+                                            value="inside"
+                                            checked={data.shipping_area === 'inside'}
+                                            onChange={() => setData('shipping_area', 'inside')}
+                                            className="sr-only"
+                                        />
+                                        <span className="text-sm font-black" style={{ color: P.sageDark }}>
+                                            ঢাকার ভিতরে
+                                        </span>
+                                        <span className="mt-1 text-xs font-semibold" style={{ color: P.earthLight }}>
+                                            ডেলিভারি চার্জ: ৳{shipping_cost_inside}
+                                        </span>
+                                    </label>
+
+                                    <label
+                                        className="relative flex cursor-pointer flex-col rounded-xl p-4 shadow-sm transition-all"
+                                        style={{
+                                            border: `2px solid ${data.shipping_area === 'outside' ? P.sage : P.border}`,
+                                            background: data.shipping_area === 'outside' ? P.sageBg : P.white,
+                                        }}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="shipping_area"
+                                            value="outside"
+                                            checked={data.shipping_area === 'outside'}
+                                            onChange={() => setData('shipping_area', 'outside')}
+                                            className="sr-only"
+                                        />
+                                        <span className="text-sm font-black" style={{ color: P.sageDark }}>
+                                            ঢাকার বাইরে
+                                        </span>
+                                        <span className="mt-1 text-xs font-semibold" style={{ color: P.earthLight }}>
+                                            ডেলিভারি চার্জ: ৳{shipping_cost_outside}
+                                        </span>
+                                    </label>
+                                </div>
+                                {errors.shipping_area && (
+                                    <p className="mt-1.5 flex items-center gap-1 text-xs font-bold text-red-600">
+                                        <AlertCircle className="h-3 w-3" />
+                                        {errors.shipping_area}
+                                    </p>
+                                )}
                             </section>
 
                             {/* Payment */}

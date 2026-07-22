@@ -37,6 +37,8 @@ interface LinkItem {
 interface SettingsData {
     site_name: string;
     shipping_cost: string;
+    shipping_cost_inside_dhaka: string;
+    shipping_cost_outside_dhaka: string;
     footer_description: string;
     footer_facebook_url: string;
     footer_youtube_url: string;
@@ -115,6 +117,8 @@ export default function SiteSettings({
     const { data, setData, post, processing, errors } = useForm<SettingsData>({
         site_name: settings.site_name || 'Shutki Valley',
         shipping_cost: settings.shipping_cost || '60',
+        shipping_cost_inside_dhaka: settings.shipping_cost_inside_dhaka || '60',
+        shipping_cost_outside_dhaka: settings.shipping_cost_outside_dhaka || '120',
         footer_description: settings.footer_description || '',
         footer_facebook_url: settings.footer_facebook_url || '',
         footer_youtube_url: settings.footer_youtube_url || '',
@@ -917,27 +921,75 @@ export default function SiteSettings({
                                         </div>
 
                                         <div className="space-y-6">
-                                            <div>
-                                                <label
-                                                    htmlFor="shipping_cost"
-                                                    className="mb-2 block text-xs font-black tracking-wider text-slate-700 uppercase"
-                                                >
-                                                    Flat Rate Shipping Cost (৳)
-                                                </label>
-                                                <input
-                                                    id="shipping_cost"
-                                                    type="number"
-                                                    min="0"
-                                                    value={data.shipping_cost}
-                                                    onChange={(e) => setData('shipping_cost', e.target.value)}
-                                                    placeholder="60"
-                                                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-950 placeholder-slate-400 shadow-sm transition-all focus:border-slate-950 focus:ring-1 focus:ring-slate-950 focus:outline-none"
-                                                />
-                                                {errors.shipping_cost && (
-                                                    <p className="mt-1.5 text-xs font-bold tracking-tight text-red-600 uppercase">
-                                                        {errors.shipping_cost}
-                                                    </p>
-                                                )}
+                                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                                                <div>
+                                                    <label
+                                                        htmlFor="shipping_cost_inside_dhaka"
+                                                        className="mb-2 block text-xs font-black tracking-wider text-slate-700 uppercase"
+                                                    >
+                                                        ঢাকার ভেতরে শিপিং খরচ (৳)
+                                                    </label>
+                                                    <input
+                                                        id="shipping_cost_inside_dhaka"
+                                                        type="number"
+                                                        min="0"
+                                                        value={data.shipping_cost_inside_dhaka}
+                                                        onChange={(e) => setData('shipping_cost_inside_dhaka', e.target.value)}
+                                                        placeholder="60"
+                                                        className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-950 placeholder-slate-400 shadow-sm transition-all focus:border-slate-950 focus:ring-1 focus:ring-slate-950 focus:outline-none"
+                                                    />
+                                                    {errors.shipping_cost_inside_dhaka && (
+                                                        <p className="mt-1.5 text-xs font-bold tracking-tight text-red-600 uppercase">
+                                                            {errors.shipping_cost_inside_dhaka}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        htmlFor="shipping_cost_outside_dhaka"
+                                                        className="mb-2 block text-xs font-black tracking-wider text-slate-700 uppercase"
+                                                    >
+                                                        ঢাকার বাইরে শিপিং খরচ (৳)
+                                                    </label>
+                                                    <input
+                                                        id="shipping_cost_outside_dhaka"
+                                                        type="number"
+                                                        min="0"
+                                                        value={data.shipping_cost_outside_dhaka}
+                                                        onChange={(e) => setData('shipping_cost_outside_dhaka', e.target.value)}
+                                                        placeholder="120"
+                                                        className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-950 placeholder-slate-400 shadow-sm transition-all focus:border-slate-950 focus:ring-1 focus:ring-slate-950 focus:outline-none"
+                                                    />
+                                                    {errors.shipping_cost_outside_dhaka && (
+                                                        <p className="mt-1.5 text-xs font-bold tracking-tight text-red-600 uppercase">
+                                                            {errors.shipping_cost_outside_dhaka}
+                                                        </p>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        htmlFor="shipping_cost"
+                                                        className="mb-2 block text-xs font-black tracking-wider text-slate-700 uppercase"
+                                                    >
+                                                        ফ্ল্যাট রেট শিপিং খরচ (৳)
+                                                    </label>
+                                                    <input
+                                                        id="shipping_cost"
+                                                        type="number"
+                                                        min="0"
+                                                        value={data.shipping_cost}
+                                                        onChange={(e) => setData('shipping_cost', e.target.value)}
+                                                        placeholder="60"
+                                                        className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-950 placeholder-slate-400 shadow-sm transition-all focus:border-slate-950 focus:ring-1 focus:ring-slate-950 focus:outline-none"
+                                                    />
+                                                    {errors.shipping_cost && (
+                                                        <p className="mt-1.5 text-xs font-bold tracking-tight text-red-600 uppercase">
+                                                            {errors.shipping_cost}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
 
                                             <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4">

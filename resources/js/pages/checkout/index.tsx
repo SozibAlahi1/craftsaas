@@ -28,6 +28,7 @@ export default function Checkout({ cart }: CheckoutProps) {
         phone: '',
         address: '',
         payment_method: 'cod',
+        shipping_area: 'inside',
     });
 
     const cartItems = Object.entries(cart);
@@ -35,7 +36,9 @@ export default function Checkout({ cart }: CheckoutProps) {
         const price = parseInt(item.price.replace(/[^\d]/g, ''));
         return sum + price * item.quantity;
     }, 0);
-    const shipping = settings?.shipping_cost ? parseInt(settings.shipping_cost) : 60;
+    const shipping_cost_inside = settings?.shipping_cost_inside_dhaka ? parseInt(settings.shipping_cost_inside_dhaka) : 60;
+    const shipping_cost_outside = settings?.shipping_cost_outside_dhaka ? parseInt(settings.shipping_cost_outside_dhaka) : 120;
+    const shipping = data.shipping_area === 'inside' ? shipping_cost_inside : shipping_cost_outside;
     const total = subtotal + shipping;
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -182,6 +185,64 @@ export default function Checkout({ cart }: CheckoutProps) {
                                         </div>
                                     </div>
                                 </div>
+                            </section>
+
+                            {/* Shipping Area */}
+                            <section className="border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6">
+                                <div className="mb-5 flex items-center gap-3">
+                                    <div className="bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full shadow-md">
+                                        <Truck className="h-5 w-5" />
+                                    </div>
+                                    <h2 className="text-foreground text-xl font-bold tracking-tight">Select Shipping Area</h2>
+                                </div>
+                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <label
+                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.shipping_area === 'inside' ? 'border-primary bg-muted ring-primary ring-2' : 'border-border hover:border-border/80 bg-card'}`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="shipping_area"
+                                            value="inside"
+                                            checked={data.shipping_area === 'inside'}
+                                            onChange={() => setData('shipping_area', 'inside')}
+                                            className="sr-only"
+                                        />
+                                        <span className="flex flex-1">
+                                            <span className="flex flex-col">
+                                                <span className="text-foreground block text-[15px] font-black">Inside Dhaka</span>
+                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium">
+                                                    Delivery Charge: ৳{shipping_cost_inside}
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <label
+                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.shipping_area === 'outside' ? 'border-primary bg-muted ring-primary ring-2' : 'border-border hover:border-border/80 bg-card'}`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="shipping_area"
+                                            value="outside"
+                                            checked={data.shipping_area === 'outside'}
+                                            onChange={() => setData('shipping_area', 'outside')}
+                                            className="sr-only"
+                                        />
+                                        <span className="flex flex-1">
+                                            <span className="flex flex-col">
+                                                <span className="text-foreground block text-[15px] font-black">Outside Dhaka</span>
+                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium">
+                                                    Delivery Charge: ৳{shipping_cost_outside}
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </label>
+                                </div>
+                                {errors.shipping_area && (
+                                    <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 flex items-center gap-1 text-sm font-bold text-rose-600">
+                                        <AlertCircle className="h-4 w-4" />
+                                        {errors.shipping_area}
+                                    </p>
+                                )}
                             </section>
 
                             {/* Payment Method */}
