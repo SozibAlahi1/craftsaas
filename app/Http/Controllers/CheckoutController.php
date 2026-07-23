@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\OrderConfirmationCallJob;
+use App\Models\AbandonedCart;
+use App\Models\BlockedCustomer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\SiteSetting;
+use App\Services\CustomerSegmentService;
+use App\Services\RiskScoringService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class CheckoutController extends Controller
@@ -45,8 +52,8 @@ class CheckoutController extends Controller
             'address.min' => 'Please provide a more detailed address.',
         ]);
 
-        if (\App\Models\BlockedCustomer::where('phone', $validated['phone'])->exists()) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
+        if (BlockedCustomer::where('phone', $validated['phone'])->exists()) {
+            throw ValidationException::withMessages([
                 'phone' => 'This phone number has been restricted from placing new orders.',
             ]);
         }
@@ -83,9 +90,9 @@ class CheckoutController extends Controller
             ]);
 
             // Sync Customer
-            $customerSegmentService = new \App\Services\CustomerSegmentService();
+            $customerSegmentService = new CustomerSegmentService;
             $customer = $customerSegmentService->syncFromOrder($order);
-            
+
             $order->update(['customer_id' => $customer->id]);
 
             // Create Order Items
@@ -93,15 +100,15 @@ class CheckoutController extends Controller
                 $product = Product::where('slug', $item['slug'])->lockForUpdate()->first();
 
                 if ($product) {
-                    if (!$product->is_in_stock || $product->stock_quantity < $item['quantity']) {
-                        throw \Illuminate\Validation\ValidationException::withMessages([
+                    if (! $product->is_in_stock || $product->stock_quantity < $item['quantity']) {
+                        throw ValidationException::withMessages([
                             'cart' => "Sorry, '{$product->name}' is out of stock or does not have enough quantity.",
                         ]);
                     }
 
                     // Decrement product stock
                     $product->decrement('stock_quantity', $item['quantity']);
-                    
+
                     // Auto-update is_in_stock if it reaches 0
                     if ($product->stock_quantity <= 0) {
                         $product->update(['is_in_stock' => false]);
@@ -109,7 +116,7 @@ class CheckoutController extends Controller
 
                     // Decrement variant stock if exists
                     if (isset($item['product_variant_id']) && $item['product_variant_id']) {
-                        $variant = \App\Models\ProductVariant::where('id', $item['product_variant_id'])->lockForUpdate()->first();
+                        $variant = ProductVariant::where('id', $item['product_variant_id'])->lockForUpdate()->first();
                         if ($variant) {
                             $variant->decrement('stock_quantity', $item['quantity']);
                         }
@@ -132,11 +139,12 @@ class CheckoutController extends Controller
             }
 
             // Evaluate Risk Score
-            $riskScoringService = new \App\Services\RiskScoringService();
+            $riskScoringService = new RiskScoringService;
             $riskScoringService->evaluate($order);
 
             // Prepare order details for the thank you page (for UI display)
             $orderDetails = [
+                'id' => $order->id,
                 'order_id' => $order->order_number,
                 'customer' => $validated,
                 'items' => $cart,
@@ -148,13 +156,13 @@ class CheckoutController extends Controller
             ];
 
             // Mark abandoned cart as recovered
-            \App\Models\AbandonedCart::where('session_id', Session::getId())->update(['status' => 'recovered']);
+            AbandonedCart::where('session_id', Session::getId())->update(['status' => 'recovered']);
 
             // Store in session and clear cart
             Session::put('last_order', $orderDetails);
             Session::forget('cart');
 
-            \App\Jobs\OrderConfirmationCallJob::dispatch($order)->afterCommit();
+            OrderConfirmationCallJob::dispatch($order)->afterCommit();
 
             return redirect()->route('checkout.thank-you');
         });

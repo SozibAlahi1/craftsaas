@@ -20,6 +20,7 @@ class PixelService
                     return [
                         'id' => $pixel->id,
                         'pixel_id' => $pixel->pixel_id,
+                        'test_event_code' => $pixel->test_event_code,
                         // DO NOT include access_token here to prevent frontend exposure
                     ];
                 })->toArray();

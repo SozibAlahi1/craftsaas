@@ -112,7 +112,11 @@ router.on('navigate', (event) => {
             })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
             pixels.forEach((pixel) => {
-                window.fbq('init', pixel.pixel_id);
+                if (pixel.test_event_code) {
+                    window.fbq('init', pixel.pixel_id, {}, { testEventCode: pixel.test_event_code });
+                } else {
+                    window.fbq('init', pixel.pixel_id);
+                }
             });
             isPixelInitialized = true;
         }
@@ -121,24 +125,29 @@ router.on('navigate', (event) => {
             window.fbq('track', 'PageView');
         }
 
-        // --- GOOGLE TAG MANAGER (GTM) EVENT TRACKING ---
+        // --- EVENT TRACKING (GTM & Facebook Pixel) ---
         const gtmContainerId = (page.props.settings as any)?.gtm_container_id;
-
         if (gtmContainerId) {
             window.dataLayer = window.dataLayer || [];
+        }
 
-            // 1. page_view Event
+        // 1. page_view Event
+        if (gtmContainerId) {
             window.dataLayer.push({
                 event: 'page_view',
                 page_path: window.location.pathname,
                 page_title: document.title,
                 page_location: window.location.href,
             });
+        }
 
-            // 2. view_item Event (Product details page)
-            const product = page.props.product as any;
-            if (product && (name === 'products/show' || name.endsWith('products/show'))) {
-                const productPrice = parseFloat(String(product.price).replace(/[^\d]/g, ''));
+        // 2. view_item / ViewContent Event (Product details page)
+        const product = page.props.product as any;
+        if (product && (name === 'products/show' || name.endsWith('products/show'))) {
+            const productPrice = parseFloat(String(product.price).replace(/[^\d]/g, ''));
+            
+            // GTM view_item
+            if (gtmContainerId) {
                 window.dataLayer.push({ ecommerce: null });
                 window.dataLayer.push({
                     event: 'view_item',
@@ -157,21 +166,35 @@ router.on('navigate', (event) => {
                 });
             }
 
-            // 3. begin_checkout Event (Checkout index page)
-            if (name === 'checkout/index') {
-                const cart = page.props.cart || {};
-                const cartItems = Object.values(cart).map((item: any) => {
-                    const price = parseFloat(String(item.price).replace(/[^\d]/g, ''));
-                    return {
-                        item_id: item.product_id ? String(item.product_id) : item.slug,
-                        item_name: item.name,
-                        price: price,
-                        quantity: parseInt(item.quantity || 1),
-                        item_variant: (item.color || item.size) ? `${item.color || ''} ${item.size || ''}`.trim() : undefined
-                    };
+            // Meta Pixel ViewContent
+            if (window.fbq) {
+                window.fbq('track', 'ViewContent', {
+                    content_ids: [String(product.id)],
+                    content_name: product.name,
+                    content_type: 'product',
+                    value: productPrice,
+                    currency: 'BDT'
                 });
-                const totalValue = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            }
+        }
 
+        // 3. begin_checkout / InitiateCheckout Event (Checkout index page)
+        if (name === 'checkout/index') {
+            const cart = page.props.cart || {};
+            const cartItems = Object.values(cart).map((item: any) => {
+                const price = parseFloat(String(item.price).replace(/[^\d]/g, ''));
+                return {
+                    item_id: item.product_id ? String(item.product_id) : item.slug,
+                    item_name: item.name,
+                    price: price,
+                    quantity: parseInt(item.quantity || 1),
+                    item_variant: (item.color || item.size) ? `${item.color || ''} ${item.size || ''}`.trim() : undefined
+                };
+            });
+            const totalValue = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            // GTM begin_checkout
+            if (gtmContainerId) {
                 window.dataLayer.push({ ecommerce: null });
                 window.dataLayer.push({
                     event: 'begin_checkout',
@@ -183,76 +206,132 @@ router.on('navigate', (event) => {
                 });
             }
 
+            // Meta Pixel InitiateCheckout
+            if (window.fbq) {
+                window.fbq('track', 'InitiateCheckout', {
+                    content_ids: cartItems.map(item => String(item.item_id)),
+                    content_type: 'product',
+                    value: totalValue,
+                    currency: 'BDT'
+                });
+            }
+        }
 
-
-            // 5. add_to_cart / remove_from_cart Events (by comparing carts)
-            const currentCart = page.props.cart || {};
-
-            const normalizeCart = (cartData: any) => {
-                if (!cartData) return {};
-                if (Array.isArray(cartData)) return {}; // Empty cart is returned as [] from PHP
-                return cartData;
-            };
-
-            if (previousCart !== null) {
-                const prevNormalized = normalizeCart(previousCart);
-                const currNormalized = normalizeCart(currentCart);
-
-                const addedItems: any[] = [];
-                const removedItems: any[] = [];
-
-                // Compare to find additions
-                Object.keys(currNormalized).forEach(key => {
-                    const currItem = currNormalized[key];
-                    const prevItem = prevNormalized[key];
-                    const price = parseFloat(String(currItem.price).replace(/[^\d]/g, ''));
-
-                    if (!prevItem) {
-                        addedItems.push({
-                            item_id: currItem.product_id ? String(currItem.product_id) : currItem.slug,
-                            item_name: currItem.name,
-                            price: price,
-                            quantity: parseInt(currItem.quantity || 1),
-                            item_variant: (currItem.color || currItem.size) ? `${currItem.color || ''} ${currItem.size || ''}`.trim() : undefined
-                        });
-                    } else if (currItem.quantity > prevItem.quantity) {
-                        addedItems.push({
-                            item_id: currItem.product_id ? String(currItem.product_id) : currItem.slug,
-                            item_name: currItem.name,
-                            price: price,
-                            quantity: parseInt(currItem.quantity) - parseInt(prevItem.quantity),
-                            item_variant: (currItem.color || currItem.size) ? `${currItem.color || ''} ${currItem.size || ''}`.trim() : undefined
-                        });
-                    }
+        // 4. purchase / Purchase Event (Thank you page)
+        if (name === 'checkout/thank-you' || name.endsWith('checkout/thank-you')) {
+            const order = page.props.order as any;
+            if (order) {
+                const orderItems = Object.values(order.items || {}).map((item: any) => {
+                    const price = parseFloat(String(item.price).replace(/[^\d]/g, ''));
+                    return {
+                        item_id: item.product_id ? String(item.product_id) : item.slug,
+                        item_name: item.name,
+                        price: price,
+                        quantity: parseInt(item.quantity || 1),
+                    };
                 });
 
-                // Compare to find removals
-                Object.keys(prevNormalized).forEach(key => {
-                    const prevItem = prevNormalized[key];
-                    const currItem = currNormalized[key];
-                    const price = parseFloat(String(prevItem.price).replace(/[^\d]/g, ''));
+                // GTM purchase
+                if (gtmContainerId) {
+                    window.dataLayer.push({ ecommerce: null });
+                    window.dataLayer.push({
+                        event: 'purchase',
+                        ecommerce: {
+                            transaction_id: order.order_id,
+                            value: parseFloat(order.total),
+                            tax: 0,
+                            shipping: parseFloat(order.shipping),
+                            currency: 'BDT',
+                            items: orderItems
+                        }
+                    });
+                }
 
-                    if (!currItem) {
-                        removedItems.push({
-                            item_id: prevItem.product_id ? String(prevItem.product_id) : prevItem.slug,
-                            item_name: prevItem.name,
-                            price: price,
-                            quantity: parseInt(prevItem.quantity || 1),
-                            item_variant: (prevItem.color || prevItem.size) ? `${prevItem.color || ''} ${prevItem.size || ''}`.trim() : undefined
-                        });
-                    } else if (currItem.quantity < prevItem.quantity) {
-                        removedItems.push({
-                            item_id: prevItem.product_id ? String(prevItem.product_id) : prevItem.slug,
-                            item_name: prevItem.name,
-                            price: price,
-                            quantity: parseInt(prevItem.quantity) - parseInt(currItem.quantity),
-                            item_variant: (prevItem.color || prevItem.size) ? `${prevItem.color || ''} ${prevItem.size || ''}`.trim() : undefined
-                        });
-                    }
-                });
+                // Meta Pixel Purchase
+                if (window.fbq) {
+                    const eventId = order.id ? `order_${order.id}_Purchase` : undefined;
+                    window.fbq('track', 'Purchase', {
+                        content_ids: orderItems.map(item => String(item.item_id)),
+                        content_type: 'product',
+                        value: parseFloat(order.total),
+                        currency: 'BDT',
+                        order_id: order.order_id
+                    }, eventId ? { eventID: eventId } : undefined);
+                }
+            }
+        }
 
-                if (addedItems.length > 0) {
-                    const addedValue = addedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        // 5. add_to_cart / AddToCart and remove_from_cart Events (by comparing carts)
+        const currentCart = page.props.cart || {};
+
+        const normalizeCart = (cartData: any) => {
+            if (!cartData) return {};
+            if (Array.isArray(cartData)) return {}; // Empty cart is returned as [] from PHP
+            return cartData;
+        };
+
+        if (previousCart !== null) {
+            const prevNormalized = normalizeCart(previousCart);
+            const currNormalized = normalizeCart(currentCart);
+
+            const addedItems: any[] = [];
+            const removedItems: any[] = [];
+
+            // Compare to find additions
+            Object.keys(currNormalized).forEach(key => {
+                const currItem = currNormalized[key];
+                const prevItem = prevNormalized[key];
+                const price = parseFloat(String(currItem.price).replace(/[^\d]/g, ''));
+
+                if (!prevItem) {
+                    addedItems.push({
+                        item_id: currItem.product_id ? String(currItem.product_id) : currItem.slug,
+                        item_name: currItem.name,
+                        price: price,
+                        quantity: parseInt(currItem.quantity || 1),
+                        item_variant: (currItem.color || currItem.size) ? `${currItem.color || ''} ${currItem.size || ''}`.trim() : undefined
+                    });
+                } else if (currItem.quantity > prevItem.quantity) {
+                    addedItems.push({
+                        item_id: currItem.product_id ? String(currItem.product_id) : currItem.slug,
+                        item_name: currItem.name,
+                        price: price,
+                        quantity: parseInt(currItem.quantity) - parseInt(prevItem.quantity),
+                        item_variant: (currItem.color || currItem.size) ? `${currItem.color || ''} ${currItem.size || ''}`.trim() : undefined
+                    });
+                }
+            });
+
+            // Compare to find removals
+            Object.keys(prevNormalized).forEach(key => {
+                const prevItem = prevNormalized[key];
+                const currItem = currNormalized[key];
+                const price = parseFloat(String(prevItem.price).replace(/[^\d]/g, ''));
+
+                if (!currItem) {
+                    removedItems.push({
+                        item_id: prevItem.product_id ? String(prevItem.product_id) : prevItem.slug,
+                        item_name: prevItem.name,
+                        price: price,
+                        quantity: parseInt(prevItem.quantity || 1),
+                        item_variant: (prevItem.color || prevItem.size) ? `${prevItem.color || ''} ${prevItem.size || ''}`.trim() : undefined
+                    });
+                } else if (currItem.quantity < prevItem.quantity) {
+                    removedItems.push({
+                        item_id: prevItem.product_id ? String(prevItem.product_id) : prevItem.slug,
+                        item_name: prevItem.name,
+                        price: price,
+                        quantity: parseInt(prevItem.quantity) - parseInt(currItem.quantity),
+                        item_variant: (prevItem.color || prevItem.size) ? `${prevItem.color || ''} ${prevItem.size || ''}`.trim() : undefined
+                    });
+                }
+            });
+
+            if (addedItems.length > 0) {
+                const addedValue = addedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                // GTM add_to_cart
+                if (gtmContainerId) {
                     window.dataLayer.push({ ecommerce: null });
                     window.dataLayer.push({
                         event: 'add_to_cart',
@@ -264,8 +343,22 @@ router.on('navigate', (event) => {
                     });
                 }
 
-                if (removedItems.length > 0) {
-                    const removedValue = removedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                // Meta Pixel AddToCart
+                if (window.fbq) {
+                    window.fbq('track', 'AddToCart', {
+                        content_ids: addedItems.map(item => String(item.item_id)),
+                        content_type: 'product',
+                        value: addedValue,
+                        currency: 'BDT'
+                    });
+                }
+            }
+
+            if (removedItems.length > 0) {
+                const removedValue = removedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                // GTM remove_from_cart
+                if (gtmContainerId) {
                     window.dataLayer.push({ ecommerce: null });
                     window.dataLayer.push({
                         event: 'remove_from_cart',
@@ -277,9 +370,9 @@ router.on('navigate', (event) => {
                     });
                 }
             }
-
-            // Sync previousCart for the next navigation
-            previousCart = JSON.parse(JSON.stringify(currentCart));
         }
+
+        // Sync previousCart for the next navigation
+        previousCart = JSON.parse(JSON.stringify(currentCart));
     }
 });
