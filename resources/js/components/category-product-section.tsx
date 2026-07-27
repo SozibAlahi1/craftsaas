@@ -84,7 +84,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
             {/* Category Banner (Clickable Heading) */}
             {category.banner_image && (
                 <Link
-                    href={route('products.index', { category: category.name })}
+                    href={route('products.index', { category: category.slug })}
                     className="group block overflow-hidden rounded-md transition-transform duration-500 hover:scale-[1.01]"
                 >
                     <img

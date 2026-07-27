@@ -78,7 +78,7 @@ export function FeaturedTiles({ categories = [], tiles = [] }: FeaturedTilesProp
                         {/* Category Banner (If exists) */}
                         {category.banner_image && (
                             <Link 
-                                href={route('products.index', { category: category.name })}
+                                href={route('products.index', { category: category.slug })}
                                 className="group mb-10 block overflow-hidden rounded-2xl shadow-xl border border-slate-800"
                             >
                                 <img 
@@ -103,7 +103,7 @@ export function FeaturedTiles({ categories = [], tiles = [] }: FeaturedTilesProp
                         
                         <div className="mt-10 text-center flex justify-center">
                             <Link 
-                                href={route('products.index', { category: category.name })}
+                                href={route('products.index', { category: category.slug })}
                                 className="inline-flex h-10 items-center justify-center text-xs font-semibold uppercase tracking-wider text-blue-500 hover:text-white hover:underline underline-offset-4"
                             >
                                 View All {category.name}

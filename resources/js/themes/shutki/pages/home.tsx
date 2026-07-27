@@ -91,7 +91,7 @@ export default function Home({
                                         {category.name}
                                     </h2>
                                     <Link
-                                        href={route('products.index', { category: category.name })}
+                                        href={route('products.index', { category: category.slug })}
                                         className="flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-black transition-all hover:text-white hover:shadow-sm"
                                         style={{ borderColor: P.sage, color: P.sage }}
                                         onMouseEnter={(e) => {

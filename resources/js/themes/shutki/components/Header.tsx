@@ -10,7 +10,7 @@ import { type SharedData } from '@/types';
 
 const getMenuItemHref = (item: DynamicMenuItem) => {
     if (item.type === 'category' && item.category) {
-        return route('products.index', { category: item.category.name });
+        return route('products.index', { category: item.category.slug });
     }
     return item.url || '#';
 };
