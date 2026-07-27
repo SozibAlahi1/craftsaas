@@ -26,12 +26,19 @@ type Product = {
     } | null;
 };
 
+type Category = {
+    id: number;
+    name: string;
+    slug: string;
+};
+
 interface ProductIndexProps {
     products: Product[];
+    categories: Category[];
     initialCategory?: string;
 }
 
-export default function Index({ products, initialCategory = 'All' }: ProductIndexProps) {
+export default function Index({ products, categories, initialCategory = 'All' }: ProductIndexProps) {
     const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
 
     // Filter products based on selected category (matching against slug or name case-insensitively)
@@ -46,13 +53,19 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
 
     const displayCategoryName = useMemo(() => {
         if (selectedCategory === 'All') return 'Our Collection';
-        const matched = products.find(
+        // First look up by slug in the dedicated categories list
+        const matchedCat = categories.find(
+            (c) => c.slug?.toLowerCase() === selectedCategory.toLowerCase(),
+        );
+        if (matchedCat) return matchedCat.name;
+        // Fallback: look up via products (covers name-based old URLs)
+        const matchedProduct = products.find(
             (p) =>
                 p.category?.name?.toLowerCase() === selectedCategory.toLowerCase() ||
                 p.category?.slug?.toLowerCase() === selectedCategory.toLowerCase(),
         );
-        return matched?.category?.name ?? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1);
-    }, [selectedCategory, products]);
+        return matchedProduct?.category?.name ?? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1);
+    }, [selectedCategory, categories, products]);
 
     return (
         <>

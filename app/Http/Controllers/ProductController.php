@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,6 +17,7 @@ class ProductController extends Controller
     {
         return Inertia::render('products/index', [
             'products' => Product::with('category')->get(),
+            'categories' => Category::all(['id', 'name', 'slug']),
             'initialCategory' => request('category', 'All'),
         ]);
     }
