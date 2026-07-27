@@ -17,16 +17,18 @@ class ProductController extends Controller
     {
         $categorySlug = request('category', 'All');
 
+        $categories = Category::all(['id', 'name', 'slug']);
+
         $categoryName = 'All';
         if ($categorySlug !== 'All') {
-            $cat = Category::where('slug', $categorySlug)
-                ->orWhere('name', $categorySlug)
-                ->first(['name']);
+            $cat = $categories->firstWhere('slug', $categorySlug)
+                ?? $categories->firstWhere('name', $categorySlug);
             $categoryName = $cat?->name ?? $categorySlug;
         }
 
         return Inertia::render('products/index', [
             'products' => Product::with('category')->get(),
+            'categories' => $categories,
             'initialCategory' => $categorySlug,
             'initialCategoryName' => $categoryName,
         ]);
