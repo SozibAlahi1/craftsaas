@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Services\SlugService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -31,7 +31,7 @@ class CategoryController extends Controller
             'show_on_home' => 'boolean',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['slug'] = SlugService::make($validated['name']);
 
         if ($request->hasFile('banner_image')) {
             $path = $request->file('banner_image')->store('categories', 'public');
@@ -60,7 +60,7 @@ class CategoryController extends Controller
             'show_on_home' => 'boolean',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['slug'] = SlugService::make($validated['name']);
 
         if ($request->hasFile('banner_image')) {
             $path = $request->file('banner_image')->store('categories', 'public');

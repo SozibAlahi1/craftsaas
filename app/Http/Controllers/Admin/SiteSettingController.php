@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
-use App\Services\SteadfastService;
+use App\Services\Courier\SteadfastService;
 use App\Services\ThemeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

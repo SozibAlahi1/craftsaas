@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -23,7 +24,7 @@ class ProductController extends Controller
     {
         return Inertia::render('admin/products/create', [
             'categories' => Category::all(['id', 'name']),
-            'attributes' => \App\Models\ProductAttribute::with('values')->get(),
+            'attributes' => ProductAttribute::with('values')->get(),
         ]);
     }
 
@@ -57,7 +58,7 @@ class ProductController extends Controller
             'variations.sizes.*.image' => 'nullable|image|max:2048',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['slug'] = SlugService::make($validated['name']);
 
         // Handle Primary Image
         if ($request->hasFile('image')) {
@@ -83,7 +84,7 @@ class ProductController extends Controller
         $normalizedVariations = ['colors' => [], 'sizes' => []];
         foreach (['colors', 'sizes'] as $type) {
             foreach ($variations[$type] ?? [] as $index => $variation) {
-                if (!empty(trim($variation['label'] ?? ''))) {
+                if (! empty(trim($variation['label'] ?? ''))) {
                     $normalizedVariations[$type][] = ['label' => trim($variation['label'])];
                 }
             }
@@ -101,7 +102,7 @@ class ProductController extends Controller
                 ]);
 
                 foreach ($variantData['attributes'] ?? [] as $attrName => $attrValue) {
-                    $attribute = \App\Models\ProductAttribute::firstOrCreate(['name' => trim($attrName)]);
+                    $attribute = ProductAttribute::firstOrCreate(['name' => trim($attrName)]);
                     $value = $attribute->values()->firstOrCreate(['value' => trim($attrValue)]);
                     $variant->attributeValues()->attach($value->id);
                 }
@@ -119,7 +120,7 @@ class ProductController extends Controller
         return Inertia::render('admin/products/edit', [
             'product' => $product,
             'categories' => Category::all(['id', 'name']),
-            'attributes' => \App\Models\ProductAttribute::with('values')->get(),
+            'attributes' => ProductAttribute::with('values')->get(),
         ]);
     }
 
@@ -154,7 +155,7 @@ class ProductController extends Controller
             'variations.sizes.*.image' => 'nullable|image|max:2048',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['slug'] = SlugService::make($validated['name']);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
@@ -179,7 +180,7 @@ class ProductController extends Controller
         $normalizedVariations = ['colors' => [], 'sizes' => []];
         foreach (['colors', 'sizes'] as $type) {
             foreach ($variations[$type] ?? [] as $index => $variation) {
-                if (!empty(trim($variation['label'] ?? ''))) {
+                if (! empty(trim($variation['label'] ?? ''))) {
                     $normalizedVariations[$type][] = ['label' => trim($variation['label'])];
                 }
             }
@@ -197,12 +198,12 @@ class ProductController extends Controller
             // But since orders might link to variants, deleting variants is bad!
             // Let's update by ID or create new ones.
             $matrix = $request->input('variant_matrix');
-            
+
             // Keep track of IDs we received to delete the missing ones
             $receivedVariantIds = [];
 
             foreach ($matrix as $variantData) {
-                if (!empty($variantData['id'])) {
+                if (! empty($variantData['id'])) {
                     // Update existing
                     $variant = $product->variants()->find($variantData['id']);
                     if ($variant) {
@@ -216,7 +217,7 @@ class ProductController extends Controller
                         // Sync attributes
                         $attrValueIds = [];
                         foreach ($variantData['attributes'] ?? [] as $attrName => $attrValue) {
-                            $attribute = \App\Models\ProductAttribute::firstOrCreate(['name' => trim($attrName)]);
+                            $attribute = ProductAttribute::firstOrCreate(['name' => trim($attrName)]);
                             $value = $attribute->values()->firstOrCreate(['value' => trim($attrValue)]);
                             $attrValueIds[] = $value->id;
                         }
@@ -233,7 +234,7 @@ class ProductController extends Controller
 
                     $attrValueIds = [];
                     foreach ($variantData['attributes'] ?? [] as $attrName => $attrValue) {
-                        $attribute = \App\Models\ProductAttribute::firstOrCreate(['name' => trim($attrName)]);
+                        $attribute = ProductAttribute::firstOrCreate(['name' => trim($attrName)]);
                         $value = $attribute->values()->firstOrCreate(['value' => trim($attrValue)]);
                         $attrValueIds[] = $value->id;
                     }
