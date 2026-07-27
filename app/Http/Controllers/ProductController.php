@@ -15,10 +15,20 @@ class ProductController extends Controller
      */
     public function index(): Response
     {
+        $categorySlug = request('category', 'All');
+
+        $categoryName = 'All';
+        if ($categorySlug !== 'All') {
+            $cat = Category::where('slug', $categorySlug)
+                ->orWhere('name', $categorySlug)
+                ->first(['name']);
+            $categoryName = $cat?->name ?? $categorySlug;
+        }
+
         return Inertia::render('products/index', [
             'products' => Product::with('category')->get(),
-            'categories' => Category::all(['id', 'name', 'slug']),
-            'initialCategory' => request('category', 'All'),
+            'initialCategory' => $categorySlug,
+            'initialCategoryName' => $categoryName,
         ]);
     }
 
