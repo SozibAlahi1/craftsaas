@@ -28,6 +28,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function CreateProduct({ categories }: CreateProps) {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
+        slug: '',
         category_id: '',
         price: '',
         old_price: '',
@@ -69,6 +70,24 @@ export default function CreateProduct({ categories }: CreateProps) {
             setData('discount_text', '');
         }
     }, [data.price, data.old_price]);
+
+    const [slugManuallyEdited, setSlugManuallyEdited] = React.useState(false);
+
+    const toSlug = (value: string) =>
+        value
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim()
+            .replace(/\s+/g, '-');
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setData((prev) => ({
+            ...prev,
+            name: value,
+            slug: slugManuallyEdited ? prev.slug : toSlug(value),
+        }));
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -182,12 +201,33 @@ export default function CreateProduct({ categories }: CreateProps) {
                                         <input
                                             type="text"
                                             value={data.name}
-                                            onChange={(e) => setData('name', e.target.value)}
+                                            onChange={handleNameChange}
                                             className="w-full rounded-none border border-slate-200 px-4 py-2.5 text-sm transition-colors focus:border-slate-400 focus:ring-0 focus:outline-none"
                                             placeholder="e.g. Premium Leather Wallet"
                                         />
                                         {errors.name && (
                                             <p className="mt-1 text-xs font-bold tracking-tighter text-red-500 uppercase">{errors.name}</p>
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black tracking-widest text-slate-400 uppercase">URL Slug</label>
+                                        <div className="flex items-center border border-slate-200 focus-within:border-slate-400">
+                                            <span className="pl-4 text-xs font-bold text-slate-400 select-none">/product/</span>
+                                            <input
+                                                type="text"
+                                                value={data.slug}
+                                                onChange={(e) => {
+                                                    setSlugManuallyEdited(true);
+                                                    setData('slug', e.target.value);
+                                                }}
+                                                className="flex-1 bg-transparent px-2 py-2.5 text-sm focus:ring-0 focus:outline-none"
+                                                placeholder="auto-generated"
+                                            />
+                                        </div>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase">Leave blank to auto-generate from name</p>
+                                        {errors.slug && (
+                                            <p className="mt-1 text-xs font-bold tracking-tighter text-red-500 uppercase">{errors.slug}</p>
                                         )}
                                     </div>
 

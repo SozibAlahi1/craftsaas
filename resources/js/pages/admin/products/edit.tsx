@@ -30,6 +30,7 @@ export default function EditProduct({ categories, product }: EditProps) {
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT',
         name: product.name || '',
+        slug: product.slug || '',
         category_id: product.category_id || '',
         price: product.price || '',
         old_price: product.old_price || '',
@@ -236,6 +237,24 @@ export default function EditProduct({ categories, product }: EditProps) {
                                         />
                                         {errors.name && (
                                             <p className="mt-1 text-xs font-bold tracking-tighter text-red-500 uppercase">{errors.name}</p>
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black tracking-widest text-slate-400 uppercase">URL Slug</label>
+                                        <div className="flex items-center border border-slate-200 focus-within:border-slate-400">
+                                            <span className="pl-4 text-xs font-bold text-slate-400 select-none">/product/</span>
+                                            <input
+                                                type="text"
+                                                value={data.slug}
+                                                onChange={(e) => setData('slug', e.target.value)}
+                                                className="flex-1 bg-transparent px-2 py-2.5 text-sm focus:ring-0 focus:outline-none"
+                                                placeholder="url-slug"
+                                            />
+                                        </div>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase">Leave blank to auto-generate from name</p>
+                                        {errors.slug && (
+                                            <p className="mt-1 text-xs font-bold tracking-tighter text-red-500 uppercase">{errors.slug}</p>
                                         )}
                                     </div>
 

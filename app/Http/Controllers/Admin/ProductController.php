@@ -9,6 +9,7 @@ use App\Models\ProductAttribute;
 use App\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -32,6 +33,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:products,slug',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|string',
             'old_price' => 'nullable|string',
@@ -58,7 +60,9 @@ class ProductController extends Controller
             'variations.sizes.*.image' => 'nullable|image|max:2048',
         ]);
 
-        $validated['slug'] = SlugService::make($validated['name']);
+        $validated['slug'] = filled($validated['slug'] ?? null)
+            ? Str::slug($validated['slug'])
+            : SlugService::make($validated['name']);
 
         // Handle Primary Image
         if ($request->hasFile('image')) {
@@ -128,6 +132,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:products,slug,'.$product->id,
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|string',
             'old_price' => 'nullable|string',
@@ -155,7 +160,9 @@ class ProductController extends Controller
             'variations.sizes.*.image' => 'nullable|image|max:2048',
         ]);
 
-        $validated['slug'] = SlugService::make($validated['name']);
+        $validated['slug'] = filled($validated['slug'] ?? null)
+            ? Str::slug($validated['slug'])
+            : SlugService::make($validated['name']);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');

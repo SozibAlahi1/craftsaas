@@ -7,6 +7,7 @@ import { useRef, useState } from 'react';
 interface Category {
     id: number;
     name: string;
+    slug: string;
     description: string | null;
     banner_image: string | null;
     show_on_home: boolean;
@@ -26,6 +27,7 @@ export default function EditCategory({ category }: EditCategoryProps) {
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT',
         name: category.name,
+        slug: category.slug,
         description: category.description || '',
         banner_image: null as File | null,
         show_on_home: category.show_on_home,
@@ -100,6 +102,22 @@ export default function EditCategory({ category }: EditCategoryProps) {
                                             placeholder="e.g. Panjabi"
                                         />
                                         {errors.name && <p className="text-xs font-bold text-red-500 uppercase">{errors.name}</p>}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black tracking-widest text-slate-600 uppercase">URL Slug</label>
+                                        <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50/50 focus-within:border-slate-400 focus-within:bg-white">
+                                            <span className="pl-4 text-xs font-bold text-slate-400 select-none">/category/</span>
+                                            <input
+                                                type="text"
+                                                value={data.slug}
+                                                onChange={(e) => setData('slug', e.target.value)}
+                                                className="flex-1 rounded-xl bg-transparent px-2 py-3 text-sm font-bold outline-none"
+                                                placeholder="url-slug"
+                                            />
+                                        </div>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase">Leave blank to auto-generate from name</p>
+                                        {errors.slug && <p className="text-xs font-bold text-red-500 uppercase">{errors.slug}</p>}
                                     </div>
 
                                     <div className="space-y-2">

@@ -13,6 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function CreateCategory() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
+        slug: '',
         description: '',
         banner_image: null as File | null,
         show_on_home: false,
@@ -20,6 +21,23 @@ export default function CreateCategory() {
 
     const [preview, setPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
+
+    const toSlug = (value: string) =>
+        value
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim()
+            .replace(/\s+/g, '-');
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setData((prev) => ({
+            ...prev,
+            name: value,
+            slug: slugManuallyEdited ? prev.slug : toSlug(value),
+        }));
+    };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -81,11 +99,30 @@ export default function CreateCategory() {
                                         <input
                                             type="text"
                                             value={data.name}
-                                            onChange={(e) => setData('name', e.target.value)}
+                                            onChange={handleNameChange}
                                             className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-bold outline-none focus:border-slate-400 focus:bg-white focus:ring-0"
                                             placeholder="e.g. Panjabi"
                                         />
                                         {errors.name && <p className="text-xs font-bold text-red-500 uppercase">{errors.name}</p>}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black tracking-widest text-slate-600 uppercase">URL Slug</label>
+                                        <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50/50 focus-within:border-slate-400 focus-within:bg-white">
+                                            <span className="pl-4 text-xs font-bold text-slate-400 select-none">/category/</span>
+                                            <input
+                                                type="text"
+                                                value={data.slug}
+                                                onChange={(e) => {
+                                                    setSlugManuallyEdited(true);
+                                                    setData('slug', e.target.value);
+                                                }}
+                                                className="flex-1 rounded-xl bg-transparent px-2 py-3 text-sm font-bold outline-none"
+                                                placeholder="auto-generated"
+                                            />
+                                        </div>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase">Leave blank to auto-generate from name</p>
+                                        {errors.slug && <p className="text-xs font-bold text-red-500 uppercase">{errors.slug}</p>}
                                     </div>
 
                                     <div className="space-y-2">

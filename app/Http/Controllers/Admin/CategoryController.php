@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Services\SlugService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -26,12 +27,15 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
+            'slug' => 'nullable|string|max:255|unique:categories,slug',
             'description' => 'nullable|string',
             'banner_image' => 'nullable|image|max:2048',
             'show_on_home' => 'boolean',
         ]);
 
-        $validated['slug'] = SlugService::make($validated['name']);
+        $validated['slug'] = filled($validated['slug'] ?? null)
+            ? Str::slug($validated['slug'])
+            : SlugService::make($validated['name']);
 
         if ($request->hasFile('banner_image')) {
             $path = $request->file('banner_image')->store('categories', 'public');
@@ -55,12 +59,15 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,'.$category->id,
+            'slug' => 'nullable|string|max:255|unique:categories,slug,'.$category->id,
             'description' => 'nullable|string',
             'banner_image' => 'nullable|image|max:2048',
             'show_on_home' => 'boolean',
         ]);
 
-        $validated['slug'] = SlugService::make($validated['name']);
+        $validated['slug'] = filled($validated['slug'] ?? null)
+            ? Str::slug($validated['slug'])
+            : SlugService::make($validated['name']);
 
         if ($request->hasFile('banner_image')) {
             $path = $request->file('banner_image')->store('categories', 'public');
