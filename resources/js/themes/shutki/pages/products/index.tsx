@@ -22,16 +22,20 @@ type Product = {
 interface ProductIndexProps {
     products: Product[];
     initialCategory?: string;
+    initialCategoryName?: string;
 }
 
-export default function Index({ products, initialCategory = 'All' }: ProductIndexProps) {
+export default function Index({ products, initialCategory = 'All', initialCategoryName = 'All' }: ProductIndexProps) {
     const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+    const [selectedCategoryName] = useState<string>(initialCategoryName);
     const [addedProductId, setAddedProductId] = useState<number | null>(null);
 
     // Filter products based on selected category
     const filteredProducts = useMemo(() => {
         if (selectedCategory === 'All') return products;
-        return products.filter((p) => p.category?.name === selectedCategory);
+        return products.filter(
+            (p) => p.category?.name === selectedCategory || p.category?.slug === selectedCategory,
+        );
     }, [products, selectedCategory]);
 
     const isVariableProduct = (product: any) => {
@@ -80,7 +84,7 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
 
     return (
         <>
-            <Head title={selectedCategory === 'All' ? 'সকল পণ্য' : selectedCategory} />
+            <Head title={selectedCategory === 'All' ? 'সকল পণ্য' : selectedCategoryName || selectedCategory} />
             <main className="bg-background text-foreground min-h-screen">
                 <StorefrontHeader />
 
@@ -95,7 +99,7 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                             <span className="font-bold text-slate-900">পণ্যসমূহ</span>
                         </div>
                         <h1 className="text-4xl font-black tracking-tight text-slate-950">
-                            {selectedCategory === 'All' ? 'সকল পণ্য' : selectedCategory}
+                            {selectedCategory === 'All' ? 'সকল পণ্য' : selectedCategoryName || selectedCategory}
                         </h1>
                         <p className="mt-2 max-w-2xl text-slate-600">আমাদের সংগ্রহ থেকে বাছাইকৃত সেরা মানের পণ্য ব্রাউজ করুন।</p>
                     </div>
@@ -107,7 +111,7 @@ export default function Index({ products, initialCategory = 'All' }: ProductInde
                         <div className="flex items-center gap-6">
                             <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
                                 <Filter className="h-4 w-4 text-orange-600" />
-                                {selectedCategory === 'All' ? 'সকল পণ্য' : `${selectedCategory}`} দেখাচ্ছে
+                                {selectedCategory === 'All' ? 'সকল পণ্য' : `${selectedCategoryName || selectedCategory}`} দেখাচ্ছে
                             </div>
                             <div className="h-4 w-px bg-slate-200" />
                             <p className="text-sm font-medium text-slate-500">
