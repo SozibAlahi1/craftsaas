@@ -132,9 +132,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::patch('orders/bulk-update', [OrderController::class, 'bulkUpdate'])->name('orders.bulk-update');
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+        Route::put('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
         Route::get('orders/{order}/print/{size}', [OrderController::class, 'print'])->name('orders.print');
         Route::get('orders/{order}/sync-courier', [CourierController::class, 'syncStatus'])->name('orders.sync-courier');
+        Route::get('products-search-api', [OrderController::class, 'searchProducts'])->name('products.search-api');
         Route::get('abandoned-carts', [AbandonedCartController::class, 'index'])->name('abandoned-carts.index');
         Route::post('abandoned-carts/{cart}/mark-recovered', [AbandonedCartController::class, 'markRecovered'])->name('abandoned-carts.mark-recovered');
         Route::delete('abandoned-carts/{cart}', [AbandonedCartController::class, 'destroy'])->name('abandoned-carts.destroy');

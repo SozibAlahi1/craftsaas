@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderActivity;
+use App\Models\OrderItem;
 use App\Models\OrderStatusLog;
+use App\Models\Product;
 use App\Services\BdCourierCheckerService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -125,5 +130,197 @@ class OrderController extends Controller
 
             return back()->with('error', 'Could not fetch fraud data: '.$e->getMessage());
         }
+    }
+
+    public function edit(Order $order): Response
+    {
+        $products = Product::select('id', 'name', 'price', 'image')->latest()->get()->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => (float) preg_replace('/[^\d.]/', '', (string) $product->price),
+                'image' => $product->image,
+            ];
+        });
+
+        return Inertia::render('admin/orders/edit', [
+            'order' => $order->load('items'),
+            'products' => $products,
+        ]);
+    }
+
+    public function update(Request $request, Order $order): RedirectResponse
+    {
+        $validated = $request->validate([
+            'full_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string|max:1000',
+            'payment_method' => 'required|string|max:50',
+            'status' => 'required|string|max:50',
+            'shipping' => 'required|numeric|min:0',
+            'items' => 'required|array|min:1',
+            'items.*.id' => 'nullable|integer',
+            'items.*.product_id' => 'nullable|integer',
+            'items.*.product_variant_id' => 'nullable|integer',
+            'items.*.name' => 'required|string|max:255',
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.options' => 'nullable',
+        ]);
+
+        DB::transaction(function () use ($validated, $order) {
+            $oldData = $order->only(['full_name', 'phone', 'address', 'payment_method', 'status', 'shipping', 'subtotal', 'total']);
+            $oldStatus = $order->status;
+
+            $oldItems = $order->items->map(fn ($item) => [
+                'id' => $item->id,
+                'name' => $item->name,
+                'price' => (float) $item->price,
+                'quantity' => (int) $item->quantity,
+            ])->keyBy('id')->toArray();
+
+            // Compute subtotal and total
+            $subtotal = 0;
+            foreach ($validated['items'] as $itemData) {
+                $subtotal += $itemData['price'] * $itemData['quantity'];
+            }
+            $shipping = (float) $validated['shipping'];
+            $total = $subtotal + $shipping;
+
+            // Sync order items & track item level diffs
+            $addedItems = [];
+            $updatedItems = [];
+            $existingItemIds = [];
+
+            foreach ($validated['items'] as $itemData) {
+                $options = is_array($itemData['options'] ?? null) ? $itemData['options'] : null;
+
+                if (! empty($itemData['id']) && isset($oldItems[$itemData['id']])) {
+                    $oldItem = $oldItems[$itemData['id']];
+                    $item = OrderItem::where('order_id', $order->id)->where('id', $itemData['id'])->first();
+                    if ($item) {
+                        $item->update([
+                            'product_id' => $itemData['product_id'] ?? null,
+                            'product_variant_id' => $itemData['product_variant_id'] ?? null,
+                            'name' => $itemData['name'],
+                            'price' => $itemData['price'],
+                            'quantity' => $itemData['quantity'],
+                            'options' => $options,
+                        ]);
+                        $existingItemIds[] = $item->id;
+
+                        if ($oldItem['name'] !== $itemData['name'] || $oldItem['price'] != $itemData['price'] || $oldItem['quantity'] != $itemData['quantity']) {
+                            $updatedItems[] = [
+                                'name' => $itemData['name'],
+                                'old_price' => $oldItem['price'],
+                                'new_price' => $itemData['price'],
+                                'old_quantity' => $oldItem['quantity'],
+                                'new_quantity' => $itemData['quantity'],
+                            ];
+                        }
+
+                        continue;
+                    }
+                }
+
+                $newItem = OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $itemData['product_id'] ?? null,
+                    'product_variant_id' => $itemData['product_variant_id'] ?? null,
+                    'name' => $itemData['name'],
+                    'price' => $itemData['price'],
+                    'quantity' => $itemData['quantity'],
+                    'options' => $options,
+                ]);
+                $existingItemIds[] = $newItem->id;
+
+                $addedItems[] = [
+                    'name' => $itemData['name'],
+                    'price' => $itemData['price'],
+                    'quantity' => $itemData['quantity'],
+                ];
+            }
+
+            // Remove items no longer in the order
+            $removedItems = [];
+            foreach ($oldItems as $oldId => $oldItem) {
+                if (! in_array($oldId, $existingItemIds)) {
+                    $removedItems[] = [
+                        'name' => $oldItem['name'],
+                        'price' => $oldItem['price'],
+                        'quantity' => $oldItem['quantity'],
+                    ];
+                }
+            }
+
+            OrderItem::where('order_id', $order->id)
+                ->whereNotIn('id', $existingItemIds)
+                ->delete();
+
+            // Update order details
+            $order->update([
+                'full_name' => $validated['full_name'],
+                'phone' => $validated['phone'],
+                'address' => $validated['address'],
+                'payment_method' => $validated['payment_method'],
+                'status' => $validated['status'],
+                'shipping' => $shipping,
+                'subtotal' => $subtotal,
+                'total' => $total,
+            ]);
+
+            // Log status change if status changed
+            if ($oldStatus !== $validated['status']) {
+                OrderStatusLog::create([
+                    'order_id' => $order->id,
+                    'status' => $validated['status'],
+                    'changed_by' => auth()->id(),
+                ]);
+            }
+
+            // Log order activity with rich item & field changes
+            $newPayload = array_merge(
+                $order->only(['full_name', 'phone', 'address', 'payment_method', 'status', 'shipping', 'subtotal', 'total']),
+                [
+                    'added_items' => $addedItems,
+                    'removed_items' => $removedItems,
+                    'updated_items' => $updatedItems,
+                ]
+            );
+
+            OrderActivity::create([
+                'order_id' => $order->id,
+                'user_id' => auth()->id(),
+                'action' => 'Order Updated',
+                'old_value' => $oldData,
+                'new_value' => $newPayload,
+            ]);
+        });
+
+        return redirect()->route('admin.orders.show', $order->id)->with('success', 'Order updated successfully.');
+    }
+
+    public function searchProducts(Request $request): JsonResponse
+    {
+        $query = $request->input('q');
+
+        if (empty($query)) {
+            return response()->json([]);
+        }
+
+        $products = Product::where('name', 'like', '%'.$query.'%')
+            ->select('id', 'name', 'price', 'image')
+            ->take(10)
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => (float) preg_replace('/[^\d.]/', '', (string) $product->price),
+                    'image' => $product->image,
+                ];
+            });
+
+        return response()->json($products);
     }
 }

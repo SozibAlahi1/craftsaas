@@ -1,8 +1,7 @@
-import { OrderTimeline } from '@/components/order-timeline';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, CheckCircle2, Clock, CreditCard, MapPin, Package, Phone, Printer, ShieldAlert, Truck, User, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Clock, CreditCard, MapPin, Package, Pencil, Phone, Printer, ShieldAlert, Truck, User, XCircle } from 'lucide-react';
 
 interface OrderItem {
     id: number;
@@ -115,6 +114,13 @@ export default function OrderShow({ order, activities, statusLogs, notes }: Orde
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
+                        <Link
+                            href={route('admin.orders.edit', order.id)}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-950 bg-slate-950 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-slate-800 active:scale-[0.97]"
+                        >
+                            <Pencil className="h-3.5 w-3.5" />
+                            Edit Order
+                        </Link>
                         <a
                             href={route('admin.orders.print', { order: order.id, size: 'a4' })}
                             target="_blank"
@@ -218,8 +224,6 @@ export default function OrderShow({ order, activities, statusLogs, notes }: Orde
                                 </div>
                             </div>
                         </section>
-
-                        <OrderTimeline activities={activities} statusLogs={statusLogs} notes={notes} />
                     </div>
 
                     <div className="flex flex-col gap-6">

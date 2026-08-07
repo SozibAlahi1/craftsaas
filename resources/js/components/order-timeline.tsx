@@ -35,6 +35,114 @@ interface OrderTimelineProps {
     notes: Note[];
 }
 
+const fieldLabels: Record<string, string> = {
+    full_name: 'Customer Name',
+    phone: 'Phone Number',
+    address: 'Address',
+    payment_method: 'Payment Method',
+    status: 'Status',
+    shipping: 'Shipping Fee',
+    subtotal: 'Subtotal',
+    total: 'Total Amount',
+};
+
+const safeJsonParse = (str: any) => {
+    if (typeof str !== 'string') return str;
+    try {
+        return JSON.parse(str);
+    } catch {
+        return null;
+    }
+};
+
+const formatValue = (key: string, val: any) => {
+    if (val === null || val === undefined) return 'N/A';
+    if (['shipping', 'subtotal', 'total'].includes(key)) {
+        return `৳${Number(val).toLocaleString()}`;
+    }
+    if (typeof val === 'string') {
+        return val.replace(/_/g, ' ');
+    }
+    return String(val);
+};
+
+const renderActivityDetails = (oldVal: any, newVal: any) => {
+    const oldObj = safeJsonParse(oldVal);
+    const newObj = safeJsonParse(newVal);
+
+    if (!oldObj || !newObj || typeof oldObj !== 'object' || typeof newObj !== 'object') {
+        if (typeof newVal === 'string') {
+            return <p className="mt-1 text-xs font-semibold text-slate-700">{newVal}</p>;
+        }
+        return null;
+    }
+
+    const addedItems: any[] = newObj.added_items || [];
+    const removedItems: any[] = newObj.removed_items || [];
+    const updatedItems: any[] = newObj.updated_items || [];
+
+    const ignoreKeys = ['added_items', 'removed_items', 'updated_items', 'items_summary'];
+    const changedKeys = Object.keys(newObj).filter(
+        (key) => !ignoreKeys.includes(key) && oldObj[key] !== undefined && oldObj[key] !== newObj[key]
+    );
+
+    const hasChanges = changedKeys.length > 0 || addedItems.length > 0 || removedItems.length > 0 || updatedItems.length > 0;
+
+    if (!hasChanges) {
+        return <p className="mt-1 text-xs font-medium text-slate-500">Order saved with no changes.</p>;
+    }
+
+    return (
+        <div className="mt-2 space-y-2 rounded-lg border border-slate-200 bg-slate-50/80 p-3.5 text-xs">
+            {/* Added Items */}
+            {addedItems.map((item, idx) => (
+                <div key={`added-${idx}`} className="flex items-center gap-1.5 font-medium text-emerald-800">
+                    <span className="font-bold text-emerald-600">➕ Added Product:</span>
+                    <span className="font-bold text-slate-900">{item.name}</span>
+                    <span className="text-slate-500">(Qty: {item.quantity}, ৳{Number(item.price).toLocaleString()})</span>
+                </div>
+            ))}
+
+            {/* Removed Items */}
+            {removedItems.map((item, idx) => (
+                <div key={`removed-${idx}`} className="flex items-center gap-1.5 font-medium text-red-800">
+                    <span className="font-bold text-red-600">➖ Removed Product:</span>
+                    <span className="font-bold text-slate-900 line-through">{item.name}</span>
+                </div>
+            ))}
+
+            {/* Updated Items */}
+            {updatedItems.map((item, idx) => (
+                <div key={`updated-${idx}`} className="flex flex-wrap items-center gap-1.5 font-medium text-slate-700">
+                    <span className="font-bold text-blue-600">✏️ Updated Item ({item.name}):</span>
+                    {item.old_quantity !== item.new_quantity && (
+                        <span>
+                            Qty: <span className="line-through text-slate-400">{item.old_quantity}</span> →{' '}
+                            <span className="font-bold text-slate-900">{item.new_quantity}</span>
+                        </span>
+                    )}
+                    {item.old_price !== item.new_price && (
+                        <span>
+                            Price: <span className="line-through text-slate-400">৳{Number(item.old_price).toLocaleString()}</span> →{' '}
+                            <span className="font-bold text-slate-900">৳{Number(item.new_price).toLocaleString()}</span>
+                        </span>
+                    )}
+                </div>
+            ))}
+
+            {/* Field Changes */}
+            {changedKeys.map((key) => (
+                <div key={key} className="flex flex-wrap items-center gap-1.5 font-medium text-slate-700">
+                    <span className="font-bold text-slate-900">{fieldLabels[key] || key.replace(/_/g, ' ')}:</span>
+                    <span className="line-through text-slate-400">{formatValue(key, oldObj[key])}</span>
+                    <span className="text-slate-400">→</span>
+                    <span className="font-bold text-emerald-700">{formatValue(key, newObj[key])}</span>
+                </div>
+            ))}
+        </div>
+    );
+};
+
 export function OrderTimeline({ activities, statusLogs, notes }: OrderTimelineProps) {
     // Combine all events into a single array and sort by created_at descending
     const events: any[] = [
@@ -81,12 +189,7 @@ export function OrderTimeline({ activities, statusLogs, notes }: OrderTimelinePr
                                         </div>
 
                                         <div className="text-sm text-slate-600">
-                                            {isActivity && (
-                                                <span className="text-xs text-slate-500">
-                                                    {event.data.old_value ? `From: ${JSON.stringify(event.data.old_value)} ` : ''}
-                                                    {event.data.new_value ? `To: ${JSON.stringify(event.data.new_value)}` : ''}
-                                                </span>
-                                            )}
+                                            {isActivity && renderActivityDetails(event.data.old_value, event.data.new_value)}
                                             {isNote && (
                                                 <div className="mt-1 rounded-md bg-slate-50 p-3 text-sm text-slate-700">{event.data.note}</div>
                                             )}

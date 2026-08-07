@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { AlertTriangle, CheckCircle2, Clock, Copy, Eye, Filter, MoreVertical, Package, RefreshCw, Search, Truck, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Clock, Copy, Eye, Filter, MoreVertical, Package, Pencil, RefreshCw, Search, Truck, XCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 interface Order {
@@ -439,6 +439,13 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-1" ref={menuRef}>
                                                     <Link
+                                                        href={route('admin.orders.edit', order.id)}
+                                                        className="p-2 text-slate-400 transition-colors hover:text-slate-950"
+                                                        title="Edit order"
+                                                    >
+                                                        <Pencil className="h-4 w-4" />
+                                                    </Link>
+                                                    <Link
                                                         href={route('admin.orders.show', order.id)}
                                                         className="p-2 text-slate-400 transition-colors hover:text-slate-950"
                                                         title="View details"
@@ -454,7 +461,7 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                                             <MoreVertical className="h-4 w-4" />
                                                         </button>
                                                         {openMenuId === order.id && (
-                                                            <div className="absolute top-full right-0 z-50 mt-1 w-40 rounded-lg border border-slate-200 bg-white shadow-lg">
+                                                            <div className="absolute bottom-full right-0 z-50 mb-1 w-40 rounded-lg border border-slate-200 bg-white shadow-lg">
                                                                 <div className="overflow-hidden rounded-lg">
                                                                     <button
                                                                         onClick={() => {
@@ -466,6 +473,13 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                                                         <Copy className="h-4 w-4" />
                                                                         Copy Order ID
                                                                     </button>
+                                                                    <Link
+                                                                        href={route('admin.orders.edit', order.id)}
+                                                                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                                                                    >
+                                                                        <Pencil className="h-4 w-4" />
+                                                                        Edit Order
+                                                                    </Link>
                                                                     <Link
                                                                         href={route('admin.orders.show', order.id)}
                                                                         className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-50"
