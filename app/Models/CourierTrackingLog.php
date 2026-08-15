@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class CourierTrackingLog extends Model
 {
     protected $fillable = [
-        'courier_shipment_id', 'status', 'location', 
-        'remarks', 'tracked_at'
+        'courier_shipment_id', 'status', 'location',
+        'remarks', 'tracked_at',
     ];
 
     protected function casts(): array

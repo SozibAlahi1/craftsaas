@@ -8,7 +8,7 @@ class AbandonedCart extends Model
 {
     protected $fillable = [
         'session_id', 'customer_name', 'customer_phone',
-        'customer_address', 'cart_data', 'last_active_at', 'status'
+        'customer_address', 'cart_data', 'last_active_at', 'status',
     ];
 
     protected function casts(): array

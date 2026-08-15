@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\BotService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
@@ -27,13 +26,14 @@ class WebhookController extends Controller
                 return response($challenge, 200);
             }
         }
+
         return response('Forbidden', 403);
     }
 
     public function handleWhatsapp(Request $request)
     {
         // Simple signature check logic could be added here
-        
+
         $body = $request->all();
 
         if (isset($body['object']) && $body['object'] === 'whatsapp_business_account') {
@@ -51,6 +51,7 @@ class WebhookController extends Controller
                     }
                 }
             }
+
             return response('EVENT_RECEIVED', 200);
         }
 

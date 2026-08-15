@@ -36,6 +36,8 @@ export function ProductCard({ product }: { product: ShutkiProduct }) {
             },
             {
                 preserveScroll: true,
+                preserveState: true,
+                only: ['cart', 'cartCount', 'flash'],
                 onFinish: () => setIsAdding(false),
             },
         );
@@ -55,7 +57,7 @@ export function ProductCard({ product }: { product: ShutkiProduct }) {
     };
 
     return (
-        <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10">
+        <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white p-3 transition-colors duration-300">
             {/* Image Wrap */}
             <Link href={route('products.show', product.slug)} className="relative aspect-square w-full overflow-hidden rounded-xl bg-slate-50">
                 <img
@@ -67,7 +69,7 @@ export function ProductCard({ product }: { product: ShutkiProduct }) {
 
                 {/* Discount Badge */}
                 {product.discount_text && (
-                    <span className="absolute left-2.5 top-2.5 rounded-lg bg-gradient-to-r from-[#F97316] to-[#EA580C] px-2.5 py-1 text-[11px] font-black text-white shadow-md">
+                    <span className="absolute left-2.5 top-2.5 rounded-lg bg-gradient-to-r from-[#F97316] to-[#EA580C] px-2.5 py-1 text-[11px] font-black text-white">
                         {product.discount_text}
                     </span>
                 )}
@@ -110,7 +112,7 @@ export function ProductCard({ product }: { product: ShutkiProduct }) {
                         </button>
                         <button
                             onClick={handleQuickBuyNow}
-                            className="flex items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-[#F97316] to-[#EA580C] py-2 text-xs font-black text-white shadow-md transition-transform hover:scale-[1.02]"
+                            className="flex items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-[#F97316] to-[#EA580C] py-2 text-xs font-black text-white transition-opacity hover:opacity-95"
                         >
                             <ShoppingBag className="h-3.5 w-3.5" />
                             <span>অর্ডার করুন</span>

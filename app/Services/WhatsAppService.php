@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Log;
 class WhatsAppService
 {
     protected string $token;
+
     protected string $phoneId;
+
     protected string $version;
 
     public function __construct()
@@ -22,7 +24,7 @@ class WhatsAppService
     {
         try {
             $url = "https://graph.facebook.com/{$this->version}/{$this->phoneId}/messages";
-            
+
             $payload = [
                 'messaging_product' => 'whatsapp',
                 'to' => $to,
@@ -33,7 +35,7 @@ class WhatsAppService
                 ],
             ];
 
-            if (!empty($components)) {
+            if (! empty($components)) {
                 $payload['template']['components'] = $components;
             }
 
@@ -44,19 +46,20 @@ class WhatsAppService
                 'response' => $response->json(),
             ];
         } catch (\Exception $e) {
-            Log::error('WhatsApp API Error: ' . $e->getMessage());
+            Log::error('WhatsApp API Error: '.$e->getMessage());
+
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
             ];
         }
     }
-    
+
     public function sendText(string $to, string $text): array
     {
         try {
             $url = "https://graph.facebook.com/{$this->version}/{$this->phoneId}/messages";
-            
+
             $payload = [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
@@ -75,7 +78,8 @@ class WhatsAppService
                 'response' => $response->json(),
             ];
         } catch (\Exception $e) {
-            Log::error('WhatsApp API Error: ' . $e->getMessage());
+            Log::error('WhatsApp API Error: '.$e->getMessage());
+
             return [
                 'success' => false,
                 'error' => $e->getMessage(),

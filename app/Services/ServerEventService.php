@@ -12,13 +12,13 @@ class ServerEventService
     /**
      * Send event to Facebook Conversions API.
      */
-    public function sendFacebookCAPI(string $eventName, array $eventData, array $userData, string $eventId = null): void
+    public function sendFacebookCAPI(string $eventName, array $eventData, array $userData, ?string $eventId = null): void
     {
         $pixels = Pixel::where('is_active', true)->whereNotNull('access_token')->get();
 
         foreach ($pixels as $pixel) {
             $hashedUserData = $this->hashUserData($userData);
-            
+
             $payload = [
                 'data' => [
                     [
@@ -28,7 +28,7 @@ class ServerEventService
                         'event_id' => $eventId,
                         'user_data' => $hashedUserData,
                         'custom_data' => $eventData,
-                    ]
+                    ],
                 ],
             ];
 
@@ -47,8 +47,8 @@ class ServerEventService
                     'sent_at' => now(),
                 ]);
 
-                if (!$response->successful()) {
-                    Log::error("Facebook CAPI Error for Pixel {$pixel->pixel_id}: " . $response->body());
+                if (! $response->successful()) {
+                    Log::error("Facebook CAPI Error for Pixel {$pixel->pixel_id}: ".$response->body());
                 }
             } catch (\Exception $e) {
                 PixelEvent::create([
@@ -58,7 +58,7 @@ class ServerEventService
                     'status' => 'error',
                     'sent_at' => now(),
                 ]);
-                Log::error("Facebook CAPI Exception: " . $e->getMessage());
+                Log::error('Facebook CAPI Exception: '.$e->getMessage());
             }
         }
     }
@@ -66,7 +66,7 @@ class ServerEventService
     /**
      * Send event to TikTok Events API.
      */
-    public function sendTikTokEvent(string $eventName, array $eventData, array $userData, string $eventId = null): void
+    public function sendTikTokEvent(string $eventName, array $eventData, array $userData, ?string $eventId = null): void
     {
         // Similar implementation for TikTok CAPI can go here
         // Currently a placeholder as per user request focus on Facebook primarily
@@ -78,11 +78,11 @@ class ServerEventService
     private function hashUserData(array $userData): array
     {
         $hashed = [];
-        
+
         if (isset($userData['em'])) {
             $hashed['em'] = hash('sha256', strtolower(trim($userData['em'])));
         }
-        
+
         if (isset($userData['ph'])) {
             // Basic phone normalization (remove non-digits)
             $phone = preg_replace('/[^0-9]/', '', $userData['ph']);

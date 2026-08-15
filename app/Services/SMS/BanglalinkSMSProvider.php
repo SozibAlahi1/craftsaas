@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Log;
 class BanglalinkSMSProvider implements SMSServiceInterface
 {
     protected string $username;
+
     protected string $password;
+
     protected string $shortcode;
 
     public function __construct()
@@ -35,7 +37,8 @@ class BanglalinkSMSProvider implements SMSServiceInterface
                 'response' => $response->body(),
             ];
         } catch (\Exception $e) {
-            Log::error('Banglalink SMS Error: ' . $e->getMessage());
+            Log::error('Banglalink SMS Error: '.$e->getMessage());
+
             return [
                 'success' => false,
                 'response' => $e->getMessage(),

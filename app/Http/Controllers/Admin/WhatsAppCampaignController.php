@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendWhatsAppCampaignJob;
 use App\Models\WhatsappCampaign;
 use App\Models\WhatsappLog;
-use App\Jobs\SendWhatsAppCampaignJob;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,8 +14,9 @@ class WhatsAppCampaignController extends Controller
     public function index()
     {
         $campaigns = WhatsappCampaign::latest()->paginate(15);
+
         return Inertia::render('admin/whatsapp-campaigns/index', [
-            'campaigns' => $campaigns
+            'campaigns' => $campaigns,
         ]);
     }
 
@@ -41,7 +42,7 @@ class WhatsAppCampaignController extends Controller
             WhatsappLog::create([
                 'whatsapp_campaign_id' => $campaign->id,
                 'phone' => $recipient['phone'],
-                'status' => 'pending'
+                'status' => 'pending',
             ]);
         }
 

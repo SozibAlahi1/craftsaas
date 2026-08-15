@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\FacebookAccount;
 use App\Models\Campaign;
+use App\Models\FacebookAccount;
 use App\Services\MetaAdsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class MetaAdsController extends Controller
@@ -14,13 +15,14 @@ class MetaAdsController extends Controller
     public function index()
     {
         $accounts = FacebookAccount::all();
-        
-        $campaigns = Campaign::with(['adAccount.facebookAccount', 'spendLogs' => function($query) {
+
+        $campaigns = Campaign::with(['adAccount.facebookAccount', 'spendLogs' => function ($query) {
             $query->where('date', '>=', now()->subDays(30));
-        }])->get()->map(function($campaign) {
+        }])->get()->map(function ($campaign) {
             $spend = $campaign->spendLogs->sum('spend');
             $clicks = $campaign->spendLogs->sum('clicks');
             $cpc = $clicks > 0 ? $spend / $clicks : 0;
+
             return [
                 'id' => $campaign->id,
                 'name' => $campaign->name,
@@ -47,7 +49,7 @@ class MetaAdsController extends Controller
         ]);
 
         $account = FacebookAccount::create($validated);
-        
+
         app(MetaAdsService::class)->syncAdAccounts($account);
 
         return redirect()->back()->with('success', 'Account added and ad accounts synced.');
@@ -57,11 +59,11 @@ class MetaAdsController extends Controller
     {
         $metaAdsService->syncDailySpend(now()->toDateString());
         $metaAdsService->syncDailySpend(now()->subDay()->toDateString());
-        
+
         // Clear finance cache since we imported new spend
-        \Illuminate\Support\Facades\Cache::forget('finance_dashboard_7');
-        \Illuminate\Support\Facades\Cache::forget('finance_dashboard_30');
-        \Illuminate\Support\Facades\Cache::forget('finance_dashboard_90');
+        Cache::forget('finance_dashboard_7');
+        Cache::forget('finance_dashboard_30');
+        Cache::forget('finance_dashboard_90');
 
         return redirect()->back()->with('success', 'Meta Ads data synced successfully.');
     }

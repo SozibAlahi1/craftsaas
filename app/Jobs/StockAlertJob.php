@@ -4,12 +4,14 @@ namespace App\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 
 class StockAlertJob implements ShouldQueue
 {
     use Queueable;
 
     public $product;
+
     public $variant;
 
     /**
@@ -27,7 +29,7 @@ class StockAlertJob implements ShouldQueue
     public function handle(): void
     {
         $message = "Low Stock Alert: {$this->product->name}";
-        
+
         if ($this->variant) {
             $message .= " (Variant SKU: {$this->variant->sku}) is down to {$this->variant->stock_quantity} units.";
         } else {
@@ -35,6 +37,6 @@ class StockAlertJob implements ShouldQueue
         }
 
         // We log it. In a real app we might notify admins via email, Slack, etc.
-        \Illuminate\Support\Facades\Log::warning($message);
+        Log::warning($message);
     }
 }

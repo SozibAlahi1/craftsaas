@@ -39,9 +39,9 @@ class SendWhatsAppCampaignJob implements ShouldQueue
             }
 
             $result = $whatsappService->sendTemplate(
-                $log->phone, 
-                $this->campaign->template_name, 
-                'en', 
+                $log->phone,
+                $this->campaign->template_name,
+                'en',
                 $this->campaign->template_params ?? []
             );
 

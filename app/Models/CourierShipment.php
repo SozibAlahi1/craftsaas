@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class CourierShipment extends Model
 {
     protected $fillable = [
-        'order_id', 'courier_name', 'consignment_id', 
-        'tracking_code', 'status', 'response_json'
+        'order_id', 'courier_name', 'consignment_id',
+        'tracking_code', 'status', 'response_json',
     ];
 
     protected function casts(): array

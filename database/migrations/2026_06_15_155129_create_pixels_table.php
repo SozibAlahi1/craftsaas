@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('pixel_id');
-            $table->string('access_token')->nullable();
+            $table->text('access_token')->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('test_event_code')->nullable();
             $table->timestamps();

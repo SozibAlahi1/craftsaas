@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AnalyticsEvent;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
@@ -25,7 +26,7 @@ class AnalyticsController extends Controller
             ->get();
 
         // Top Products
-        $topProducts = \App\Models\OrderItem::selectRaw('name as product_name, SUM(quantity) as total_sold, SUM(price * quantity) as total_revenue')
+        $topProducts = OrderItem::selectRaw('name as product_name, SUM(quantity) as total_sold, SUM(price * quantity) as total_revenue')
             ->where('created_at', '>=', $startDate)
             ->groupBy('name')
             ->orderByDesc('total_sold')
@@ -45,10 +46,11 @@ class AnalyticsController extends Controller
             ->map(function ($item) {
                 // simple hostname extraction
                 $host = parse_url($item->referrer, PHP_URL_HOST) ?? 'Direct';
+
                 return ['source' => $host, 'visits' => $item->visits];
             })
             ->groupBy('source')
-            ->map(fn($group, $key) => ['name' => $key, 'value' => $group->sum('visits')])
+            ->map(fn ($group, $key) => ['name' => $key, 'value' => $group->sum('visits')])
             ->values();
 
         if ($trafficSources->isEmpty()) {

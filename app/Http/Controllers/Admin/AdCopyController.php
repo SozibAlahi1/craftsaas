@@ -14,7 +14,7 @@ class AdCopyController extends Controller
     public function index()
     {
         $products = Product::select('id', 'name', 'price')->get();
-        
+
         $copies = AdCopy::with('product:id,name')->latest()->paginate(20);
 
         return Inertia::render('admin/ad-copies/index', [
@@ -58,6 +58,7 @@ class AdCopyController extends Controller
     public function destroy(AdCopy $adCopy)
     {
         $adCopy->delete();
+
         return redirect()->back()->with('success', 'Ad copy deleted.');
     }
 }

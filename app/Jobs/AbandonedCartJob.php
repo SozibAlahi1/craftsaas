@@ -2,11 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Models\AbandonedCart;
+use App\Models\Lead;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
-use App\Models\AbandonedCart;
-use Carbon\Carbon;
 
 class AbandonedCartJob implements ShouldQueue
 {
@@ -39,10 +40,10 @@ class AbandonedCartJob implements ShouldQueue
         $leadsCreated = 0;
         foreach ($abandonedCartsWithPhone as $cart) {
             $phone = preg_replace('/[^\d\+]/', '', $cart->customer_phone);
-            
+
             // Only create if it's a valid looking phone
             if (strlen($phone) >= 10) {
-                $lead = \App\Models\Lead::firstOrCreate(
+                $lead = Lead::firstOrCreate(
                     ['phone' => $phone],
                     [
                         'name' => $cart->customer_name,
@@ -52,7 +53,7 @@ class AbandonedCartJob implements ShouldQueue
                         'notes' => 'Auto-generated from abandoned cart session.',
                     ]
                 );
-                
+
                 if ($lead->wasRecentlyCreated) {
                     $leadsCreated++;
                 }

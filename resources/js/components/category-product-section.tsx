@@ -71,6 +71,8 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
             },
             {
                 preserveScroll: true,
+                preserveState: true,
+                only: ['cart', 'cartCount', 'flash'],
                 onSuccess: () => {
                     setAddedProductId(product.id);
                     setTimeout(() => setAddedProductId(null), 2000);

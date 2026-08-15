@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\StockAlertJob;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\StockMovement;
@@ -12,13 +13,8 @@ class InventoryService
     /**
      * Adjust stock for a product or variant.
      *
-     * @param int $productId
-     * @param int|null $variantId
-     * @param int $quantity (can be positive or negative)
-     * @param string $type ('manual', 'order', 'return', etc.)
-     * @param int|null $orderId
-     * @param int|null $userId
-     * @param string|null $notes
+     * @param  int  $quantity  (can be positive or negative)
+     * @param  string  $type  ('manual', 'order', 'return', etc.)
      */
     public function adjustStock(
         int $productId,
@@ -35,7 +31,7 @@ class InventoryService
 
         DB::transaction(function () use ($productId, $variantId, $quantity, $type, $orderId, $userId, $notes) {
             $product = Product::lockForUpdate()->findOrFail($productId);
-            
+
             // Adjust product total stock
             $product->stock_quantity += $quantity;
             if ($product->stock_quantity <= 0) {
@@ -66,7 +62,7 @@ class InventoryService
                 'user_id' => $userId,
                 'notes' => $notes,
             ]);
-            
+
             // Check for low stock alert
             $this->checkLowStock($product, $variantId ? $variant : null);
         });
@@ -81,11 +77,11 @@ class InventoryService
 
         if ($variant) {
             if ($variant->stock_quantity <= $threshold) {
-                \App\Jobs\StockAlertJob::dispatch($product, $variant);
+                StockAlertJob::dispatch($product, $variant);
             }
         } else {
             if ($product->stock_quantity <= $threshold) {
-                \App\Jobs\StockAlertJob::dispatch($product, null);
+                StockAlertJob::dispatch($product, null);
             }
         }
     }

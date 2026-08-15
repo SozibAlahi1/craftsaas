@@ -32,13 +32,13 @@ class OrderConfirmationCallJob implements ShouldQueue
         // Only call if enabled and order is pending
         if ($isEnabled && $this->order->status === 'pending') {
             $result = $callService->initiateCall($this->order);
-            
+
             $this->order->callLogs()->create([
                 'provider' => $result['provider'] ?? 'dummy',
                 'call_id' => $result['call_id'] ?? null,
                 'status' => $result['status'] ?? 'initiated',
             ]);
-            
+
             $this->order->notes()->create([
                 'note' => 'AI Voice Confirmation call initiated.',
                 'type' => 'internal',

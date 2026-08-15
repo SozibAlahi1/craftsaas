@@ -18,7 +18,7 @@ class Banner extends Model
     {
         return [
             'is_active' => 'boolean',
-            'order'     => 'integer',
+            'order' => 'integer',
         ];
     }
 
@@ -27,6 +27,6 @@ class Banner extends Model
      */
     public function getImageUrlAttribute(): string
     {
-        return asset('storage/' . $this->image_path);
+        return asset('storage/'.$this->image_path);
     }
 }

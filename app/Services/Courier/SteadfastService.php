@@ -2,8 +2,8 @@
 
 namespace App\Services\Courier;
 
-use App\Models\SiteSetting;
 use App\Models\Order;
+use App\Models\SiteSetting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -51,7 +51,7 @@ class SteadfastService implements CourierServiceInterface
         $recipientPhone = preg_replace('/[^\d]/', '', $recipientPhone);
         $recipientAddress = mb_substr($order->address, 0, 250);
         $codAmount = in_array(strtolower($order->payment_method), ['bkash', 'nagad', 'sslcommerz']) ? 0 : (int) $order->total;
-        
+
         $itemsDescription = $order->items->map(function ($item) {
             return "{$item->name} (x{$item->quantity})";
         })->implode(', ');

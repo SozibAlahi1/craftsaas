@@ -22,13 +22,13 @@ class CourierWebhookController extends Controller
         $trackingCode = $request->input('tracking_code');
         $status = $request->input('status'); // e.g., 'delivered', 'returned', 'shipped'
 
-        if (!$trackingCode || !$status) {
+        if (! $trackingCode || ! $status) {
             return response()->json(['message' => 'Invalid payload'], 400);
         }
 
         $shipment = CourierShipment::where('tracking_code', $trackingCode)->first();
-        
-        if (!$shipment) {
+
+        if (! $shipment) {
             return response()->json(['message' => 'Shipment not found'], 404);
         }
 
@@ -66,24 +66,24 @@ class CourierWebhookController extends Controller
 
         if (in_array($courierStatus, ['delivered', 'partial_delivered'])) {
             $order->update(['status' => 'delivered']);
-            
+
             $order->statusLogs()->create([
                 'status' => 'delivered',
                 'changed_by' => null, // System
             ]);
-            
+
         } elseif (in_array($courierStatus, ['returned', 'cancelled', 'rejected'])) {
             $order->update(['status' => 'cancelled']);
-            
+
             $order->statusLogs()->create([
                 'status' => 'cancelled',
                 'changed_by' => null, // System
             ]);
-            
+
         } elseif (in_array($courierStatus, ['shipped', 'in_transit'])) {
             if ($order->status !== 'shipped') {
                 $order->update(['status' => 'shipped']);
-                
+
                 $order->statusLogs()->create([
                     'status' => 'shipped',
                     'changed_by' => null, // System

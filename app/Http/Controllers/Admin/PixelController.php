@@ -13,6 +13,7 @@ class PixelController extends Controller
     public function index()
     {
         $pixels = Pixel::latest()->get();
+
         return Inertia::render('admin/pixels/index', compact('pixels'));
     }
 
@@ -58,7 +59,7 @@ class PixelController extends Controller
 
     public function toggleStatus(Pixel $pixel, PixelService $pixelService)
     {
-        $pixel->update(['is_active' => !$pixel->is_active]);
+        $pixel->update(['is_active' => ! $pixel->is_active]);
         $pixelService->clearCache();
 
         return back()->with('success', 'Pixel status toggled.');

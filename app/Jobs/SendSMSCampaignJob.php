@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\SmsCampaign;
-use App\Models\SmsLog;
 use App\Services\SMS\SMSServiceInterface;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;

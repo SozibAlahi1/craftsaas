@@ -12,7 +12,7 @@ class BotInboxController extends Controller
     public function index(Request $request)
     {
         $conversations = BotConversation::latest('last_message_at')
-            ->when($request->status === 'unresolved', fn($q) => $q->where('is_resolved', false))
+            ->when($request->status === 'unresolved', fn ($q) => $q->where('is_resolved', false))
             ->paginate(20);
 
         return Inertia::render('admin/bot-inbox/index', [

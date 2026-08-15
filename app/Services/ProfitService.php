@@ -16,7 +16,7 @@ class ProfitService
     public function calculateOrderProfit(Order $order): ProfitSnapshot
     {
         $orderDate = $order->created_at->toDateString();
-        
+
         // 1. Revenue
         $revenue = $order->total;
 
@@ -67,7 +67,7 @@ class ProfitService
     private function calculateAttributedAdSpend(string $date): float
     {
         $totalSpend = AdSpendLog::where('date', $date)->sum('spend');
-        
+
         if ($totalSpend == 0) {
             return 0.0;
         }

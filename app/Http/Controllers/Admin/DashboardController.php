@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,9 +16,9 @@ class DashboardController extends Controller
     public function index(Request $request): Response
     {
         $dateFrom = $request->query('date_from');
-        $dateTo   = $request->query('date_to');
+        $dateTo = $request->query('date_to');
 
-        /** @var \Illuminate\Database\Eloquent\Builder $base */
+        /** @var Builder $base */
         $base = Order::query();
 
         if ($dateFrom) {
@@ -29,16 +30,16 @@ class DashboardController extends Controller
         }
 
         // ── Stat cards ──────────────────────────────────────────────────
-        $todayOrders     = (clone $base)->whereDate('created_at', today())->count();
+        $todayOrders = (clone $base)->whereDate('created_at', today())->count();
         $confirmedOrders = (clone $base)->where('status', 'confirmed')->count();
-        $pendingOrders   = (clone $base)->where('status', 'pending')->count();
+        $pendingOrders = (clone $base)->where('status', 'pending')->count();
         $deliveredOrders = (clone $base)->where('status', 'delivered')->count();
         $cancelledOrders = (clone $base)->where('status', 'cancelled')->count();
-        $returnOrders    = (clone $base)->where('status', 'returned')->count();
-        $courierOrders   = (clone $base)->whereNotNull('courier_consignment_id')->count();
-        $totalOrders      = (clone $base)->count();
-        $totalProducts    = Product::count();
-        $totalCategories  = Category::count();
+        $returnOrders = (clone $base)->where('status', 'returned')->count();
+        $courierOrders = (clone $base)->whereNotNull('courier_consignment_id')->count();
+        $totalOrders = (clone $base)->count();
+        $totalProducts = Product::count();
+        $totalCategories = Category::count();
 
         $totalRevenue = (clone $base)->where('status', '!=', 'cancelled')
             ->sum('total');
@@ -52,10 +53,10 @@ class DashboardController extends Controller
                 ->sum('total');
             $profit = round($revenue * 0.20, 2); // assume 20% profit
             $weeklyData[] = [
-                'day'     => $date->format('D'),
-                'date'    => $date->format('Y-m-d'),
+                'day' => $date->format('D'),
+                'date' => $date->format('Y-m-d'),
                 'revenue' => (float) $revenue,
-                'profit'  => (float) $profit,
+                'profit' => (float) $profit,
             ];
         }
 
@@ -69,10 +70,10 @@ class DashboardController extends Controller
                 ->sum('total');
             $profit = round($revenue * 0.20, 2);
             $monthlyData[] = [
-                'day'     => $month->format('M'),
-                'date'    => $month->format('Y-m'),
+                'day' => $month->format('M'),
+                'date' => $month->format('Y-m'),
                 'revenue' => (float) $revenue,
-                'profit'  => (float) $profit,
+                'profit' => (float) $profit,
             ];
         }
 
@@ -105,23 +106,23 @@ class DashboardController extends Controller
 
         return Inertia::render('dashboard', [
             'stats' => [
-                'today_orders'     => $todayOrders,
+                'today_orders' => $todayOrders,
                 'confirmed_orders' => $confirmedOrders,
-                'pending_orders'   => $pendingOrders,
+                'pending_orders' => $pendingOrders,
                 'delivered_orders' => $deliveredOrders,
                 'cancelled_orders' => $cancelledOrders,
-                'return_orders'    => $returnOrders,
-                'courier_orders'   => $courierOrders,
-                'total_orders'      => $totalOrders,
-                'total_products'    => $totalProducts,
-                'total_categories'  => $totalCategories,
-                'total_revenue'     => $totalRevenue,
+                'return_orders' => $returnOrders,
+                'courier_orders' => $courierOrders,
+                'total_orders' => $totalOrders,
+                'total_products' => $totalProducts,
+                'total_categories' => $totalCategories,
+                'total_revenue' => $totalRevenue,
             ],
-            'weeklyData'       => $weeklyData,
-            'monthlyData'      => $monthlyData,
-            'salesByCategory'  => $salesByCategory,
-            'recentOrders'     => $recentOrders,
-            'topProducts'      => $topProducts,
+            'weeklyData' => $weeklyData,
+            'monthlyData' => $monthlyData,
+            'salesByCategory' => $salesByCategory,
+            'recentOrders' => $recentOrders,
+            'topProducts' => $topProducts,
         ]);
     }
 }

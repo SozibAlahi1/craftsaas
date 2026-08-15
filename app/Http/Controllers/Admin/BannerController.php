@@ -16,11 +16,11 @@ class BannerController extends Controller
         return Inertia::render('admin/banners/index', [
             'banners' => Banner::orderBy('order')->get()->map(function (Banner $b) {
                 return [
-                    'id'        => $b->id,
-                    'title'     => $b->title,
+                    'id' => $b->id,
+                    'title' => $b->title,
                     'image_url' => $b->image_url,
-                    'link'      => $b->link,
-                    'order'     => $b->order,
+                    'link' => $b->link,
+                    'order' => $b->order,
                     'is_active' => $b->is_active,
                 ];
             }),
@@ -35,21 +35,21 @@ class BannerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'     => 'nullable|string|max:255',
-            'image'     => 'required|mimes:jpg,jpeg,png,webp,svg,avif|max:5120',
-            'link'      => 'nullable|string|max:255',
-            'order'     => 'nullable|integer',
+            'title' => 'nullable|string|max:255',
+            'image' => 'required|mimes:jpg,jpeg,png,webp,svg,avif|max:5120',
+            'link' => 'nullable|string|max:255',
+            'order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
         ]);
 
         $path = $request->file('image')->store('banners', 'public');
 
         Banner::create([
-            'title'      => $validated['title'] ?? null,
+            'title' => $validated['title'] ?? null,
             'image_path' => $path,
-            'link'       => $validated['link'] ?? null,
-            'order'      => $validated['order'] ?? 0,
-            'is_active'  => $validated['is_active'] ?? true,
+            'link' => $validated['link'] ?? null,
+            'order' => $validated['order'] ?? 0,
+            'is_active' => $validated['is_active'] ?? true,
         ]);
 
         return redirect()->route('admin.banners.index')
@@ -60,11 +60,11 @@ class BannerController extends Controller
     {
         return Inertia::render('admin/banners/edit', [
             'banner' => [
-                'id'        => $banner->id,
-                'title'     => $banner->title,
+                'id' => $banner->id,
+                'title' => $banner->title,
                 'image_url' => $banner->image_url,
-                'link'      => $banner->link,
-                'order'     => $banner->order,
+                'link' => $banner->link,
+                'order' => $banner->order,
                 'is_active' => $banner->is_active,
             ],
         ]);
@@ -73,17 +73,17 @@ class BannerController extends Controller
     public function update(Request $request, Banner $banner)
     {
         $validated = $request->validate([
-            'title'     => 'nullable|string|max:255',
-            'image'     => 'nullable|mimes:jpg,jpeg,png,webp,svg,avif|max:5120',
-            'link'      => 'nullable|string|max:255',
-            'order'     => 'nullable|integer',
+            'title' => 'nullable|string|max:255',
+            'image' => 'nullable|mimes:jpg,jpeg,png,webp,svg,avif|max:5120',
+            'link' => 'nullable|string|max:255',
+            'order' => 'nullable|integer',
             'is_active' => 'nullable|boolean',
         ]);
 
         $updateData = [
-            'title'     => $validated['title'] ?? null,
-            'link'      => $validated['link'] ?? null,
-            'order'     => $validated['order'] ?? $banner->order,
+            'title' => $validated['title'] ?? null,
+            'link' => $validated['link'] ?? null,
+            'order' => $validated['order'] ?? $banner->order,
             'is_active' => $validated['is_active'] ?? $banner->is_active,
         ];
 

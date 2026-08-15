@@ -131,6 +131,8 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
             },
             {
                 preserveScroll: true,
+                preserveState: true,
+                only: ['cart', 'cartCount', 'flash'],
                 onSuccess: () => flash('কার্টে যোগ হয়েছে!'),
             },
         );
@@ -160,7 +162,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
 
                 {/* Notification Toast */}
                 {successMessage && (
-                    <div className="fixed bottom-24 right-6 z-[60] animate-in fade-in slide-in-from-right-4 duration-300">
+                    <div className="animate-in fade-in slide-in-from-right-4 fixed right-6 bottom-24 z-[60] duration-300">
                         <div className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#F97316] to-[#EA580C] px-6 py-4 font-bold text-white shadow-2xl">
                             <Check className="h-5 w-5" /> {successMessage}
                         </div>
@@ -184,7 +186,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
                         {/* Image Gallery */}
                         <div className="flex flex-row gap-3 sm:gap-4">
-                            <div className="flex shrink-0 flex-col gap-2 w-14 sm:w-20">
+                            <div className="flex w-14 shrink-0 flex-col gap-2 sm:w-20">
                                 {allImages.map((image, index) => (
                                     <button
                                         key={index}
@@ -206,13 +208,13 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                             className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                                         />
                                         {product.discount_text && (
-                                            <span className="absolute left-4 top-4 rounded-xl bg-gradient-to-r from-[#F97316] to-[#EA580C] px-4 py-2 text-xs font-black text-white shadow-md">
+                                            <span className="absolute top-4 left-4 rounded-xl bg-gradient-to-r from-[#F97316] to-[#EA580C] px-4 py-2 text-xs font-black text-white shadow-md">
                                                 {product.discount_text}
                                             </span>
                                         )}
                                         <button
                                             type="button"
-                                            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-400 backdrop-blur-md transition-colors hover:text-red-500 shadow-sm"
+                                            className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-400 shadow-sm backdrop-blur-md transition-colors hover:text-red-500"
                                         >
                                             <Heart className="h-5 w-5" />
                                         </button>
@@ -224,9 +226,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                         {/* Details & Actions */}
                         <div className="space-y-4">
                             <div className="rounded-3xl border border-blue-100 bg-white p-6 shadow-sm sm:p-8">
-                                <h1 className="text-2xl font-black leading-snug text-slate-900 sm:text-3xl">
-                                    {product.name}
-                                </h1>
+                                <h1 className="text-2xl leading-snug font-black text-slate-900 sm:text-3xl">{product.name}</h1>
 
                                 <div className="mt-3 flex items-center gap-2 text-xs font-bold text-amber-500">
                                     <Star className="h-4 w-4 fill-amber-400" />
@@ -242,14 +242,12 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                             : product.price}
                                     </div>
                                     {product.old_price && (
-                                        <div className="text-base font-semibold text-slate-400 line-through">
-                                            {product.old_price}
-                                        </div>
+                                        <div className="text-base font-semibold text-slate-400 line-through">{product.old_price}</div>
                                     )}
                                 </div>
 
                                 <div
-                                    className="mt-4 line-clamp-3 text-sm leading-7 text-slate-600 rich-description"
+                                    className="rich-description mt-4 line-clamp-3 text-sm leading-7 text-slate-600"
                                     dangerouslySetInnerHTML={{ __html: product.description }}
                                 />
 
@@ -259,7 +257,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                     <div className="mt-6 space-y-4">
                                         {product.variations.colors.filter((c) => getLabel(c)?.trim()).length > 0 && (
                                             <div>
-                                                <div className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                                                <div className="mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase">
                                                     টাইপ / ভ্যারিয়েন্ট
                                                 </div>
                                                 <div className="flex flex-wrap gap-2">
@@ -286,9 +284,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                         )}
                                         {product.variations.sizes.filter((s) => getLabel(s)?.trim()).length > 0 && (
                                             <div>
-                                                <div className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-                                                    ওজন / প্যাকেজিং
-                                                </div>
+                                                <div className="mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase">ওজন / প্যাকেজিং</div>
                                                 <div className="flex flex-wrap gap-2">
                                                     {product.variations.sizes.map((s) => {
                                                         const label = getLabel(s);
@@ -335,7 +331,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
 
                                         <button
                                             onClick={() => handleAddToCart(quantity)}
-                                            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50/50 px-4 text-xs font-black text-[#0F52BA] shadow-sm transition-colors hover:bg-blue-100 hover:border-blue-300 sm:text-sm"
+                                            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50/50 px-4 text-xs font-black text-[#0F52BA] shadow-sm transition-colors hover:border-blue-300 hover:bg-blue-100 sm:text-sm"
                                         >
                                             <ShoppingCart className="h-4 w-4" /> কার্টে যোগ করুন
                                         </button>
@@ -377,7 +373,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                 <button
                                     key={tab}
                                     onClick={() => setActiveTab(tab)}
-                                    className={`relative px-6 py-4 text-xs font-black uppercase tracking-wider transition-colors sm:text-sm ${
+                                    className={`relative px-6 py-4 text-xs font-black tracking-wider uppercase transition-colors sm:text-sm ${
                                         activeTab === tab ? 'text-[#0F52BA]' : 'text-slate-500 hover:text-slate-900'
                                     }`}
                                 >
@@ -392,7 +388,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                 <div className="space-y-4">
                                     <h3 className="text-lg font-black text-slate-900">পণ্যের বিস্তারিত বিবরণ</h3>
                                     <div
-                                        className="text-sm leading-8 text-slate-700 rich-description"
+                                        className="rich-description text-sm leading-8 text-slate-700"
                                         dangerouslySetInnerHTML={{ __html: product.description }}
                                     />
                                 </div>
@@ -402,7 +398,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                 <div className="space-y-4 text-sm text-slate-700">
                                     <h3 className="text-lg font-black text-slate-900">শিপিং ও ডেলিভারি শর্তাবলী</h3>
                                     <p>{product.delivery_info || 'সারাবাংলাদেশে দ্রুত ও নিরাপদ ক্যাশ অন ডেলিভারি দেওয়া হয়।'}</p>
-                                    <div className="grid gap-4 sm:grid-cols-2 pt-2">
+                                    <div className="grid gap-4 pt-2 sm:grid-cols-2">
                                         <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-4">
                                             <div className="text-xs font-bold text-[#0F52BA] uppercase">ঢাকার ভেতরে</div>
                                             <div className="mt-1 font-bold text-slate-900">{product.delivery_dhaka || '২৪ - ৪৮ ঘণ্টার মধ্যে'}</div>
@@ -444,7 +440,10 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
 
                                         <div className="flex-1 space-y-4">
                                             {isReviewFormOpen && (
-                                                <form onSubmit={submitReview} className="rounded-2xl border border-blue-100 bg-white p-5 space-y-4 shadow-sm">
+                                                <form
+                                                    onSubmit={submitReview}
+                                                    className="space-y-4 rounded-2xl border border-blue-100 bg-white p-5 shadow-sm"
+                                                >
                                                     <div>
                                                         <label className="mb-1 block text-xs font-bold text-slate-700">আপনার নাম</label>
                                                         <input
@@ -459,14 +458,12 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                                         <label className="mb-1 block text-xs font-bold text-slate-700">রেটিং</label>
                                                         <div className="flex gap-2">
                                                             {[1, 2, 3, 4, 5].map((s) => (
-                                                                <button
-                                                                    type="button"
-                                                                    key={s}
-                                                                    onClick={() => setReviewData('rating', s)}
-                                                                >
+                                                                <button type="button" key={s} onClick={() => setReviewData('rating', s)}>
                                                                     <Star
                                                                         className={`h-6 w-6 ${
-                                                                            s <= reviewData.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
+                                                                            s <= reviewData.rating
+                                                                                ? 'fill-amber-400 text-amber-400'
+                                                                                : 'text-slate-300'
                                                                         }`}
                                                                     />
                                                                 </button>
@@ -496,7 +493,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                             {reviews.map((r) => (
                                                 <div key={r.id} className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="font-bold text-slate-900 text-sm">{r.name}</span>
+                                                        <span className="text-sm font-bold text-slate-900">{r.name}</span>
                                                         <div className="flex gap-0.5">
                                                             {[...Array(5)].map((_, i) => (
                                                                 <Star
@@ -523,7 +520,7 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                 {relatedProducts.length > 0 && (
                     <section className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
                         <h2 className="mb-6 text-xl font-black text-slate-900">সম্পর্কিত অন্যান্য শুকটি মাছ</h2>
-                        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5">
                             {relatedProducts.map((rp) => (
                                 <ProductCard key={rp.id} product={rp} />
                             ))}

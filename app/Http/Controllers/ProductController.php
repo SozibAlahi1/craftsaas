@@ -50,7 +50,7 @@ class ProductController extends Controller
 
         $relatedProducts = Product::where('slug', '!=', $slug)
             ->with('category')
-            ->take(5)
+            ->take(10)
             ->get();
 
         return Inertia::render('products/show', [

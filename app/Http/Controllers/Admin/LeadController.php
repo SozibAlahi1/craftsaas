@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,8 +17,8 @@ class LeadController extends Controller
         if ($request->search) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('phone', 'like', "%{$request->search}%")
-                  ->orWhere('email', 'like', "%{$request->search}%");
+                    ->orWhere('phone', 'like', "%{$request->search}%")
+                    ->orWhere('email', 'like', "%{$request->search}%");
             });
         }
 
@@ -39,7 +40,7 @@ class LeadController extends Controller
 
         return Inertia::render('admin/leads/show', [
             'lead' => $lead,
-            'users' => \App\Models\User::all(['id', 'name']),
+            'users' => User::all(['id', 'name']),
         ]);
     }
 
@@ -88,7 +89,7 @@ class LeadController extends Controller
 
         $path = $request->file('csv_file')->getRealPath();
         $data = array_map('str_getcsv', file($path));
-        
+
         $header = array_shift($data);
         // Simple heuristic to find phone and name columns
         $phoneIdx = array_search('phone', array_map('strtolower', $header));
@@ -100,10 +101,12 @@ class LeadController extends Controller
 
         $imported = 0;
         foreach ($data as $row) {
-            if (!isset($row[$phoneIdx]) || empty(trim($row[$phoneIdx]))) continue;
-            
+            if (! isset($row[$phoneIdx]) || empty(trim($row[$phoneIdx]))) {
+                continue;
+            }
+
             $phone = preg_replace('/[^\d\+]/', '', $row[$phoneIdx]);
-            
+
             Lead::firstOrCreate(
                 ['phone' => $phone],
                 [

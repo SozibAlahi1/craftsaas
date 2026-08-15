@@ -15,10 +15,10 @@ class DummyCallService implements CallServiceInterface
     {
         // In a real implementation, you would call the AI Voice Provider's API here.
         // e.g. Http::post('https://api.bland.ai/v1/calls', [...])
-        
+
         return [
             'provider' => 'dummy_ai',
-            'call_id' => 'call_' . Str::random(16),
+            'call_id' => 'call_'.Str::random(16),
             'status' => 'initiated',
         ];
     }
@@ -31,7 +31,7 @@ class DummyCallService implements CallServiceInterface
         return [
             'status' => 'completed',
             'duration' => rand(20, 120),
-            'recording_url' => 'https://dummy-recording-url.com/' . $callId . '.mp3',
+            'recording_url' => 'https://dummy-recording-url.com/'.$callId.'.mp3',
         ];
     }
 }

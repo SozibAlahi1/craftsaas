@@ -29,12 +29,6 @@ export default function Home({
             ? selectedCategory.products || []
             : allProducts;
 
-    const shutkiBadges = [
-        '১০০% কেমিক্যাল মুক্ত',
-        'সোনাদিয়া দ্বীপে শুকানো',
-        'অরিজিনাল প্রিমিয়াম সাইজ',
-        'ভ্যাকুয়াম ফ্রেশ প্যাক',
-    ];
 
     return (
         <>
@@ -72,7 +66,7 @@ export default function Home({
                                 <Link
                                     key={tile.id}
                                     href={tile.link || route('home')}
-                                    className="group relative flex flex-col overflow-hidden rounded-3xl border border-blue-100 bg-white p-2 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:border-[#0F52BA]/60 hover:shadow-2xl hover:shadow-blue-500/15"
+                                    className="group relative flex flex-col overflow-hidden rounded-3xl bg-white p-2 transition-transform duration-500"
                                 >
                                     <div className="relative aspect-[4/3] sm:aspect-square w-full overflow-hidden rounded-2xl bg-slate-100">
                                         <img
@@ -82,23 +76,7 @@ export default function Home({
                                             loading="lazy"
                                         />
 
-                                        {/* Gradient Overlay */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/20 to-transparent opacity-85 transition-opacity duration-300 group-hover:opacity-95" />
 
-                                        {/* Shutki Quality Badge */}
-                                        <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-3 py-1 text-[11px] font-black text-[#0F52BA] backdrop-blur-md shadow-md">
-                                            <Sparkles className="h-3 w-3 text-[#F97316]" /> {shutkiBadges[index % shutkiBadges.length]}
-                                        </span>
-
-                                        {/* Bottom Action Card */}
-                                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-xl bg-white/95 px-3.5 py-2.5 backdrop-blur-md transition-all duration-300 shadow-lg group-hover:bg-gradient-to-r group-hover:from-[#0F52BA] group-hover:to-[#1E40AF]">
-                                            <span className="text-xs font-black text-slate-900 group-hover:text-white transition-colors truncate pr-2">
-                                                {tile.title || 'শুকটি অর্ডার করুন'}
-                                            </span>
-                                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#F97316] text-white transition-transform duration-300 group-hover:scale-110 group-hover:bg-white group-hover:text-[#0F52BA]">
-                                                <ArrowRight className="h-3.5 w-3.5" />
-                                            </div>
-                                        </div>
                                     </div>
                                 </Link>
                             ))}
@@ -126,34 +104,7 @@ export default function Home({
                         </Link>
                     </div>
 
-                    {/* Category Filter Pills - Light Theme */}
-                    {homeCategories.length > 0 && (
-                        <div className="no-scrollbar mb-8 flex items-center gap-2.5 overflow-x-auto pb-2">
-                            <button
-                                onClick={() => setActiveCategorySlug('all')}
-                                className={`shrink-0 rounded-full px-5 py-2.5 text-xs font-black transition-all ${
-                                    activeCategorySlug === 'all'
-                                        ? 'bg-gradient-to-r from-[#0F52BA] to-[#1E40AF] text-white shadow-md shadow-blue-500/20'
-                                        : 'border border-blue-100 bg-white text-slate-700 hover:border-blue-300'
-                                }`}
-                            >
-                                সকল শুকটি ({allProducts.length})
-                            </button>
-                            {homeCategories.map((cat) => (
-                                <button
-                                    key={cat.id}
-                                    onClick={() => setActiveCategorySlug(cat.slug)}
-                                    className={`shrink-0 rounded-full px-5 py-2.5 text-xs font-black transition-all ${
-                                        activeCategorySlug === cat.slug
-                                            ? 'bg-gradient-to-r from-[#0F52BA] to-[#1E40AF] text-white shadow-md shadow-blue-500/20'
-                                            : 'border border-blue-100 bg-white text-slate-700 hover:border-blue-300'
-                                }`}
-                                >
-                                    {cat.name} ({cat.products?.length || 0})
-                                </button>
-                            ))}
-                        </div>
-                    )}
+
 
                     {/* Products Grid */}
                     {displayedProducts.length > 0 ? (
@@ -195,7 +146,7 @@ export default function Home({
                                 <Anchor className="h-7 w-7" />
                             </div>
                             <h2 className="mt-4 text-2xl font-black text-slate-900 sm:text-3xl">
-                                কেন কক্সবাজারের শুটকি ওশেন থেকে কেনাকাটা করবেন?
+                                কেন কক্সবাজারের শুটকি কিনবেন?
                             </h2>
                             <p className="mt-2 text-sm text-slate-600">
                                 আমরা সরাসরি বঙ্গোপসাগরের মহেশখালী ও সোনাদিয়া দ্বীপের জেলেদের কাছ থেকে সংগৃহীত সেরা মাছ প্রাকৃতিকভাবে শুকিয়ে আপনার ঘরে পৌঁছে দিই।

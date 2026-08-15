@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('account_id')->unique();
-            $table->string('access_token');
+            $table->text('access_token');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

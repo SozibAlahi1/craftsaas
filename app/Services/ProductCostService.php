@@ -42,7 +42,7 @@ class ProductCostService
     /**
      * Get the historical cost for a product/variant at a specific date.
      */
-    public function getHistoricalCost(int $productId, ?int $variantId = null, string $date = null): float
+    public function getHistoricalCost(int $productId, ?int $variantId = null, ?string $date = null): float
     {
         $date = $date ?? now()->toDateString();
 
@@ -59,6 +59,7 @@ class ProductCostService
         }
 
         $cost = $query->whereNull('variant_id')->first();
+
         return $cost ? $cost->cost_price : 0.0;
     }
 }

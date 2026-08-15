@@ -42,14 +42,14 @@ class AnalyticsService
         ];
 
         $updates = ['steps' => $steps];
-        
+
         if ($eventName === 'Purchase' && isset($properties['order_id'])) {
             $updates['converted'] = true;
             $updates['order_id'] = $properties['order_id'];
         }
 
         // If user logged in during session
-        if ($userId && !$journey->user_id) {
+        if ($userId && ! $journey->user_id) {
             $updates['user_id'] = $userId;
         }
 

@@ -39,11 +39,11 @@ class RiskScoringService
                     $factors[] = "Customer has $cancelledCount previous cancelled order(s).";
                 }
             }
-            
+
             if ($deliveredCount > 0 && $cancelledCount === 0) {
                 // Loyal customer, negative risk
                 $score -= 10;
-                $factors[] = "Customer has successful delivery history.";
+                $factors[] = 'Customer has successful delivery history.';
             }
         }
 
@@ -52,10 +52,10 @@ class RiskScoringService
         if ($order->fraud_success_ratio !== null) {
             if ($order->fraud_success_ratio < 50) {
                 $score += 40;
-                $factors[] = "Courier network shows low success ratio (" . $order->fraud_success_ratio . "%).";
+                $factors[] = 'Courier network shows low success ratio ('.$order->fraud_success_ratio.'%).';
             } elseif ($order->fraud_success_ratio > 90) {
                 $score -= 10;
-                $factors[] = "Courier network shows high success ratio.";
+                $factors[] = 'Courier network shows high success ratio.';
             }
         }
 

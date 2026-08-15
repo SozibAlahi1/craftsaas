@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class MimSMSProvider implements SMSServiceInterface
 {
     protected string $apiKey;
+
     protected string $senderId;
 
     public function __construct()
@@ -31,7 +32,8 @@ class MimSMSProvider implements SMSServiceInterface
                 'response' => $response->json() ?? $response->body(),
             ];
         } catch (\Exception $e) {
-            Log::error('MimSMS Error: ' . $e->getMessage());
+            Log::error('MimSMS Error: '.$e->getMessage());
+
             return [
                 'success' => false,
                 'response' => $e->getMessage(),

@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LandingPage;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class LandingPageController extends Controller
 {
     public function index()
     {
         $pages = LandingPage::latest()->paginate(20);
+
         return Inertia::render('admin/landing-pages/index', ['pages' => $pages]);
     }
 
@@ -22,7 +23,7 @@ class LandingPageController extends Controller
             'title' => 'required|string|max:255',
         ]);
 
-        $slug = Str::slug($validated['title']) . '-' . rand(1000, 9999);
+        $slug = Str::slug($validated['title']).'-'.rand(1000, 9999);
 
         $page = LandingPage::create([
             'title' => $validated['title'],
@@ -40,8 +41,9 @@ class LandingPageController extends Controller
     public function builder(LandingPage $landingPage)
     {
         $landingPage->load('sections');
+
         return Inertia::render('admin/landing-pages/builder', [
-            'page' => $landingPage
+            'page' => $landingPage,
         ]);
     }
 
@@ -81,12 +83,14 @@ class LandingPageController extends Controller
             'status' => 'published',
             'published_at' => now(),
         ]);
+
         return redirect()->back()->with('success', 'Page published! Public URL is ready.');
     }
 
     public function destroy(LandingPage $landingPage)
     {
         $landingPage->delete();
+
         return redirect()->route('admin.landing-pages.index')->with('success', 'Landing page deleted.');
     }
 }

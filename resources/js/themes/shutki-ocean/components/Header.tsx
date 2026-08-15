@@ -213,20 +213,17 @@ export function ShutkiOceanHeader() {
                         {/* Cart Drawer Trigger */}
                         <button
                             onClick={() => setIsCartOpen(true)}
-                            className="group relative flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#F97316] to-[#EA580C] px-4.5 py-2.5 text-white shadow-md shadow-orange-500/20 transition-all hover:scale-[1.02] hover:shadow-lg"
+                            className="group relative flex items-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#F97316] to-[#EA580C] px-4 py-2.5 text-white transition-transform hover:opacity-95"
                         >
                             <div className="relative">
                                 <ShoppingCart className="h-5 w-5" />
                                 {cartCount > 0 && (
-                                    <span className="absolute -right-2.5 -top-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-black text-[#F97316] shadow-sm">
+                                    <span className="absolute -right-2.5 -top-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-black text-[#F97316]">
                                         {cartCount}
                                     </span>
                                 )}
                             </div>
-                            <div className="text-left">
-                                <div className="text-[10px] font-bold uppercase tracking-wider text-orange-100">কার্ট হিসাব</div>
-                                <div className="text-sm font-black">৳{cartTotal.toLocaleString('en-BD')}</div>
-                            </div>
+                            <div className="text-sm font-black">৳{cartTotal.toLocaleString('en-BD')}</div>
                         </button>
                     </div>
 
@@ -234,7 +231,7 @@ export function ShutkiOceanHeader() {
                     <div className="flex items-center gap-3 lg:hidden">
                         <button
                             onClick={() => setIsCartOpen(true)}
-                            className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white shadow-md"
+                            className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white transition-opacity hover:opacity-95"
                         >
                             <ShoppingCart className="h-5 w-5" />
                             {cartCount > 0 && (
@@ -297,11 +294,6 @@ export function ShutkiOceanHeader() {
                         ))}
                     </nav>
 
-                    <div className="flex items-center gap-4 text-xs font-bold text-[#0F52BA]">
-                        <span className="inline-flex items-center gap-1.5 bg-blue-100/80 px-3 py-1 rounded-full">
-                            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" /> সোনাদিয়া দ্বীপের ফ্রেশ স্টক
-                        </span>
-                    </div>
                 </div>
             </div>
 

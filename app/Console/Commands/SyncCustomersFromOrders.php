@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Customer;
+use App\Models\Order;
+use App\Services\CustomerSegmentService;
 use Illuminate\Console\Command;
 
 class SyncCustomersFromOrders extends Command
@@ -23,11 +26,11 @@ class SyncCustomersFromOrders extends Command
     /**
      * Execute the console command.
      */
-    public function handle(\App\Services\CustomerSegmentService $segmentService)
+    public function handle(CustomerSegmentService $segmentService)
     {
         $this->info('Syncing customers from existing orders...');
 
-        $orders = \App\Models\Order::whereNull('customer_id')->oldest()->get();
+        $orders = Order::whereNull('customer_id')->oldest()->get();
         $count = 0;
 
         foreach ($orders as $order) {
@@ -37,7 +40,7 @@ class SyncCustomersFromOrders extends Command
         }
 
         // Recalculate segments properly to ensure accurate totals
-        $customers = \App\Models\Customer::all();
+        $customers = Customer::all();
         foreach ($customers as $customer) {
             $segmentService->recalculateSegment($customer);
         }

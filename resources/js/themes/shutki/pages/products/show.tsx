@@ -204,7 +204,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
                         {/* Gallery */}
                         <div className="flex flex-row gap-3 sm:gap-4">
-                            <div className="flex flex-col w-12 sm:w-20 gap-2 shrink-0">
+                            <div className="flex w-12 shrink-0 flex-col gap-2 sm:w-20">
                                 {allImages.map((image, index) => (
                                     <button
                                         key={index}
@@ -246,10 +246,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                         {/* Product info */}
                         <div className="space-y-4">
                             <div className="rounded-2xl bg-white p-6 shadow-sm" style={{ border: `2px solid ${P.border}` }}>
-                                <h1
-                                    className="text-2xl leading-tight font-black tracking-tight sm:text-3xl"
-                                    style={{ color: P.sageDark }}
-                                >
+                                <h1 className="text-2xl leading-tight font-black tracking-tight sm:text-3xl" style={{ color: P.sageDark }}>
                                     {product.name}
                                 </h1>
 
@@ -263,7 +260,9 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                 {/* Price */}
                                 <div className="mt-4 flex flex-wrap items-end gap-3">
                                     <div className="text-3xl font-black sm:text-4xl" style={{ color: P.terra }}>
-                                        {getVariantPrice(getSelectedVariant()) ? `৳${Math.round(parseFloat(getVariantPrice(getSelectedVariant()))).toLocaleString('en-BD')}` : product.price}
+                                        {getVariantPrice(getSelectedVariant())
+                                            ? `৳${Math.round(parseFloat(getVariantPrice(getSelectedVariant()))).toLocaleString('en-BD')}`
+                                            : product.price}
                                     </div>
                                     {product.old_price && (
                                         <div className="flex items-center gap-2">
@@ -282,11 +281,11 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                     )}
                                 </div>
 
-                                 <div
-                                     className="mt-4 line-clamp-3 text-sm leading-7 whitespace-pre-wrap rich-description"
-                                     style={{ color: P.earthMid }}
-                                     dangerouslySetInnerHTML={{ __html: product.description }}
-                                 />
+                                <div
+                                    className="rich-description mt-4 line-clamp-3 text-sm leading-7 whitespace-pre-wrap"
+                                    style={{ color: P.earthMid }}
+                                    dangerouslySetInnerHTML={{ __html: product.description }}
+                                />
 
                                 {/* Variations */}
                                 {(product.variations.colors.filter((c) => getLabel(c)?.trim()).length > 0 ||
@@ -360,17 +359,20 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                         >
                                             <button
                                                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                                                className="flex h-11 w-9 sm:w-11 items-center justify-center text-xl font-bold transition-colors"
+                                                className="flex h-11 w-9 items-center justify-center text-xl font-bold transition-colors sm:w-11"
                                                 style={{ background: P.sageBg, color: P.sageDark }}
                                             >
                                                 –
                                             </button>
-                                            <span className="mx-2 sm:mx-4 min-w-[1.25rem] sm:min-w-[2rem] text-center text-base sm:text-lg font-black" style={{ color: P.earth }}>
+                                            <span
+                                                className="mx-2 min-w-[1.25rem] text-center text-base font-black sm:mx-4 sm:min-w-[2rem] sm:text-lg"
+                                                style={{ color: P.earth }}
+                                            >
                                                 {quantity}
                                             </span>
                                             <button
                                                 onClick={() => setQuantity((q) => q + 1)}
-                                                className="flex h-11 w-9 sm:w-11 items-center justify-center text-xl font-bold transition-colors"
+                                                className="flex h-11 w-9 items-center justify-center text-xl font-bold transition-colors sm:w-11"
                                                 style={{ background: P.sageBg, color: P.sageDark }}
                                             >
                                                 +
@@ -379,7 +381,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
 
                                         <button
                                             onClick={() => handleAddToCart(quantity)}
-                                            className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border-2 px-3 text-xs sm:text-sm font-black transition-all hover:text-white"
+                                            className="inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border-2 px-3 text-xs font-black transition-all hover:text-white sm:text-sm"
                                             style={{ borderColor: P.sage, color: P.sage }}
                                             onMouseEnter={(e) => {
                                                 e.currentTarget.style.background = P.sage;
@@ -396,7 +398,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
 
                                     <button
                                         onClick={handleBuyNow}
-                                        className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl px-3 text-xs sm:text-sm font-black text-white shadow-md transition-all hover:-translate-y-0.5 hover:opacity-90"
+                                        className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl px-3 text-xs font-black text-white shadow-md transition-all hover:-translate-y-0.5 hover:opacity-90 sm:text-sm"
                                         style={{ background: P.terra }}
                                     >
                                         <ShoppingBag className="h-4 w-4 shrink-0" /> এখনই অর্ডার করুন
@@ -451,7 +453,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                         পণ্যের বিবরণ
                                     </h3>
                                     <div
-                                        className="text-base leading-8 whitespace-pre-wrap rich-description"
+                                        className="rich-description text-base leading-8 whitespace-pre-wrap"
                                         style={{ color: P.earthMid }}
                                         dangerouslySetInnerHTML={{ __html: product.description }}
                                     />
@@ -567,10 +569,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                                     className="animate-in slide-in-from-top-4 rounded-xl p-6 duration-300"
                                                     style={{ border: `2px solid ${P.sage}`, background: P.sageBg }}
                                                 >
-                                                    <h3
-                                                        className="mb-4 text-lg font-black"
-                                                        style={{ color: P.sageDark }}
-                                                    >
+                                                    <h3 className="mb-4 text-lg font-black" style={{ color: P.sageDark }}>
                                                         আপনার রিভিউ লিখুন
                                                     </h3>
                                                     <form onSubmit={submitReview} className="space-y-4">
@@ -702,7 +701,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                             <h2 className="mb-6 text-2xl font-black" style={{ color: P.sageDark }}>
                                 সম্পর্কিত পণ্য
                             </h2>
-                            <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5">
                                 {relatedProducts.map((item) => (
                                     <Link
                                         key={item.slug}
@@ -720,7 +719,7 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                             />
                                         </div>
                                         <div className="p-3">
-                                            <h3 className="line-clamp-2 text-sm font-bold leading-tight" style={{ color: P.earth }}>
+                                            <h3 className="line-clamp-2 text-sm leading-tight font-bold" style={{ color: P.earth }}>
                                                 {item.name}
                                             </h3>
                                             <div className="mt-1 text-base font-black" style={{ color: P.terra }}>

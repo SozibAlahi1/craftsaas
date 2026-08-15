@@ -12,7 +12,7 @@ export function ShutkiOceanFooter() {
     const footerPhone = settings?.footer_phone || '01700000000';
     const footerEmail = settings?.footer_email || 'info@shutkiocean.com';
     const footerAddress = settings?.footer_address || 'কক্সবাজার সমুদ্র সৈকত সড়ক, চট্টগ্রাম, বাংলাদেশ';
-    const footerCopyright = settings?.footer_copyright || `© ${new Date().getFullYear()} Shutki Ocean Premium. All Rights Reserved.`;
+    const footerCopyright = settings?.footer_copyright || `© ${new Date().getFullYear()} শুটকি ওশান প্রিমিয়াম। সর্বস্বত্ব সংরক্ষিত।`;
 
     const footerWhatsappUrl = settings?.footer_whatsapp_url || `https://wa.me/${footerPhone.replace(/[^0-9]/g, '')}`;
 
@@ -25,7 +25,9 @@ export function ShutkiOceanFooter() {
             : [
                   { label: 'আমার অ্যাকাউন্ট', url: '/dashboard' },
                   { label: 'অর্ডার ট্র্যাক করুন', url: '#' },
-                  { label: 'শিপিং ও রিটার্ন পলিসি', url: '#' },
+                  { label: 'রিফান্ড ও রিটার্ন পলিসি', url: '#' },
+                  { label: 'অ্যাফিলিয়েট হিসেবে যোগ দিন', url: '#' },
+                  { label: 'অভিযোগ বক্স', url: '#' },
               ];
 
     const informationLinks =
@@ -33,6 +35,7 @@ export function ShutkiOceanFooter() {
             ? settings.footer_info_links
             : [
                   { label: 'সকল শুটকি কালেকশন', url: '/products' },
+                  { label: 'আমাদের শোরুম', url: '#' },
                   { label: 'আমাদের সম্পর্কে', url: '#' },
                   { label: 'প্রাইভেসি পলিসি', url: '#' },
                   { label: 'টার্মস ও কন্ডিশনস', url: '#' },
@@ -40,6 +43,26 @@ export function ShutkiOceanFooter() {
 
     const renderLink = (link: { label: string; url: string }) => {
         let href = link.url;
+        let label = link.label;
+
+        const labelMap: Record<string, string> = {
+            'My Account': 'আমার অ্যাকাউন্ট',
+            'Track My Order': 'অর্ডার ট্র্যাক করুন',
+            'Refund & Returned': 'রিটার্ন ও রিফান্ড পলিসি',
+            'Shipping & Return Policy': 'শিপিং ও রিটার্ন পলিসি',
+            'Shop All': 'সকল শুটকি কালেকশন',
+            'About Us': 'আমাদের সম্পর্কে',
+            'Privacy Policy': 'প্রাইভেসি পলিসি',
+            'Terms & Conditions': 'টার্মস ও কন্ডিশনস',
+            'Join As Affiliate': 'অ্যাফিলিয়েট হিসেবে যোগ দিন',
+            'Complain Box': 'অভিযোগ বক্স',
+            'Our Showrooms': 'আমাদের শোরুম',
+        };
+
+        if (labelMap[label]) {
+            label = labelMap[label];
+        }
+
         try {
             if (href && !href.startsWith('/') && !href.startsWith('#') && !href.startsWith('http')) href = route(href);
         } catch {
@@ -49,13 +72,13 @@ export function ShutkiOceanFooter() {
         if (href.startsWith('http')) {
             return (
                 <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
-                    {link.label}
+                    {label}
                 </a>
             );
         }
         return (
             <Link href={href} className={cls}>
-                {link.label}
+                {label}
             </Link>
         );
     };
@@ -111,7 +134,7 @@ export function ShutkiOceanFooter() {
 
             {/* Main Distinct Footer Columns */}
             <div className="mx-auto max-w-[1440px] px-4 pt-14 pb-12 sm:px-6 lg:px-8">
-                <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr_1fr_1.3fr]">
+                <div className="grid gap-10 items-start lg:grid-cols-[1.3fr_1fr_1fr_1.3fr]">
                     {/* Column 1: Brand & Tagline */}
                     <div>
                         <Link href={route('home')} className="mb-4 inline-flex items-center gap-2.5 group">
@@ -153,7 +176,9 @@ export function ShutkiOceanFooter() {
                                     rel="noopener noreferrer"
                                     className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FF0000] text-white shadow-md transition-all hover:scale-110"
                                 >
-                                    <Youtube className="h-5 w-5 fill-current" />
+                                    <svg className="h-5 w-5 fill-current" viewBox="0 0 24 24">
+                                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                                    </svg>
                                 </a>
                             )}
                             {footerPhone && (

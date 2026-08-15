@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\LandingPage;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Cache;
+use Inertia\Inertia;
 
 class LandingPageController extends Controller
 {
@@ -20,7 +18,7 @@ class LandingPageController extends Controller
         // We can pass the page to an Inertia React View
         // Note: For extreme speed, we could compile this to raw blade, but requirement states "full React SPA within Inertia"
         return Inertia::render('storefront/landing-page/show', [
-            'page' => $landingPage
+            'page' => $landingPage,
         ]);
     }
 }

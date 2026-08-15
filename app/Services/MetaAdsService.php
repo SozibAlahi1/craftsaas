@@ -16,7 +16,7 @@ class MetaAdsService
      */
     public function syncAdAccounts(FacebookAccount $account): void
     {
-        $response = Http::get("https://graph.facebook.com/v19.0/me/adaccounts", [
+        $response = Http::get('https://graph.facebook.com/v19.0/me/adaccounts', [
             'access_token' => $account->access_token,
             'fields' => 'id,name',
         ]);
@@ -32,22 +32,22 @@ class MetaAdsService
                 );
             }
         } else {
-            Log::error("Failed to sync ad accounts: " . $response->body());
+            Log::error('Failed to sync ad accounts: '.$response->body());
         }
     }
 
     /**
      * Sync daily spend for all active campaigns.
      */
-    public function syncDailySpend(string $date = null): void
+    public function syncDailySpend(?string $date = null): void
     {
         $date = $date ?? now()->subDay()->toDateString(); // Default to yesterday's spend
-        
+
         $adAccounts = AdAccount::with('facebookAccount')->get();
 
         foreach ($adAccounts as $adAccount) {
             $token = $adAccount->facebookAccount->access_token;
-            
+
             $response = Http::get("https://graph.facebook.com/v19.0/{$adAccount->account_id}/insights", [
                 'access_token' => $token,
                 'time_range' => json_encode(['since' => $date, 'until' => $date]),
@@ -81,7 +81,7 @@ class MetaAdsService
                     );
                 }
             } else {
-                Log::error("Failed to sync insights for {$adAccount->account_id}: " . $response->body());
+                Log::error("Failed to sync insights for {$adAccount->account_id}: ".$response->body());
             }
         }
     }

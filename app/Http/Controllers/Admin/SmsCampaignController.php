@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendSMSCampaignJob;
 use App\Models\SmsCampaign;
 use App\Models\SmsLog;
-use App\Jobs\SendSMSCampaignJob;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,8 +14,9 @@ class SmsCampaignController extends Controller
     public function index()
     {
         $campaigns = SmsCampaign::latest()->paginate(15);
+
         return Inertia::render('admin/sms-campaigns/index', [
-            'campaigns' => $campaigns
+            'campaigns' => $campaigns,
         ]);
     }
 
@@ -43,7 +44,7 @@ class SmsCampaignController extends Controller
                 'sms_campaign_id' => $campaign->id,
                 'phone' => $recipient['phone'],
                 'message' => $campaign->message_template,
-                'status' => 'pending'
+                'status' => 'pending',
             ]);
         }
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Services\InventoryService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,14 +21,14 @@ class StockController extends Controller
         ]);
     }
 
-    public function update(Request $request, Product $product, \App\Services\InventoryService $inventoryService)
+    public function update(Request $request, Product $product, InventoryService $inventoryService)
     {
         $validated = $request->validate([
             'stock_quantity' => 'required|integer|min:0',
         ]);
 
         $diff = $validated['stock_quantity'] - $product->stock_quantity;
-        
+
         if ($diff !== 0) {
             $inventoryService->adjustStock(
                 $product->id,
@@ -42,7 +44,7 @@ class StockController extends Controller
         return redirect()->back()->with('success', 'Stock updated successfully.');
     }
 
-    public function updateVariant(Request $request, \App\Models\ProductVariant $variant, \App\Services\InventoryService $inventoryService)
+    public function updateVariant(Request $request, ProductVariant $variant, InventoryService $inventoryService)
     {
         $validated = $request->validate([
             'stock_quantity' => 'required|integer|min:0',

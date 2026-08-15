@@ -17,7 +17,7 @@ export function FeaturedTiles({ categories = [], tiles = [] }: { categories?: an
                             <Link
                                 key={tile.id}
                                 href={tile.link || route('home')}
-                                className="group relative overflow-hidden rounded-md bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
+                                className="group relative overflow-hidden rounded-md bg-white transition-all duration-500"
                             >
                                 <div className="relative aspect-square overflow-hidden rounded-md bg-white">
                                     <img

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Banner;
 use App\Models\Category;
 use App\Models\FeaturedTile;
+use App\Models\Product;
 use Inertia\Inertia;
 
 class HomeController extends Controller
@@ -29,20 +30,20 @@ class HomeController extends Controller
         $banners = Banner::where('is_active', true)
             ->orderBy('order')
             ->get()
-            ->map(fn(Banner $b) => [
-                'id'        => $b->id,
-                'title'     => $b->title,
+            ->map(fn (Banner $b) => [
+                'id' => $b->id,
+                'title' => $b->title,
                 'image_url' => $b->image_url,
-                'link'      => $b->link,
+                'link' => $b->link,
             ]);
 
-        $allProducts = \App\Models\Product::latest()->get();
+        $allProducts = Product::latest()->get();
 
         return Inertia::render('home', [
             'homeCategories' => $categories,
-            'featuredTiles'  => $featuredTiles,
-            'banners'        => $banners,
-            'allProducts'    => $allProducts,
+            'featuredTiles' => $featuredTiles,
+            'banners' => $banners,
+            'allProducts' => $allProducts,
         ]);
     }
 }

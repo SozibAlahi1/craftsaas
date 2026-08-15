@@ -18,7 +18,7 @@ class CustomerSegmentService
             [
                 'name' => $order->full_name,
                 'address' => $order->address,
-                'segment' => 'new'
+                'segment' => 'new',
             ]
         );
 
@@ -26,12 +26,12 @@ class CustomerSegmentService
         $customer->name = $order->full_name;
         $customer->address = $order->address;
         $customer->last_order_at = $order->created_at;
-        
+
         $customer->total_orders = $customer->orders()->count() + 1; // +1 since current order might not be linked yet if called before saving
         $customer->total_spent = $customer->orders()->sum('total') + $order->total;
-        
+
         $customer->segment = $this->calculateSegment($customer->total_orders, $customer->total_spent);
-        
+
         $customer->save();
 
         return $customer;
@@ -53,7 +53,7 @@ class CustomerSegmentService
         if ($ordersCount >= 5 && $totalSpent >= 10000) {
             return 'vip';
         }
-        
+
         if ($ordersCount >= 2) {
             return 'loyal';
         }
