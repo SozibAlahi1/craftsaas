@@ -208,6 +208,8 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                 onFinish: () => setActiveAction(null),
             },
         );
+    };
+
     const handleDeleteSingle = () => {
         if (!deleteConfirmOrder) return;
         setIsDeletingSingle(true);
