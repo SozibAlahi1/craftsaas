@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlockedCustomer;
 use App\Models\Order;
 use App\Models\OrderActivity;
 use App\Models\OrderItem;
 use App\Models\OrderStatusLog;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Services\BdCourierCheckerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -322,5 +324,108 @@ class OrderController extends Controller
             });
 
         return response()->json($products);
+    }
+
+    public function destroy(Order $order, Request $request): RedirectResponse
+    {
+        DB::transaction(function () use ($order, $request) {
+            $restoreStock = $request->boolean('restore_stock', true);
+
+            if ($restoreStock) {
+                foreach ($order->items as $item) {
+                    if ($item->product_id) {
+                        $product = Product::find($item->product_id);
+                        if ($product) {
+                            $product->increment('stock_quantity', $item->quantity);
+                            if ($product->stock_quantity > 0 && ! $product->is_in_stock) {
+                                $product->update(['is_in_stock' => true]);
+                            }
+                        }
+                    }
+
+                    if ($item->product_variant_id) {
+                        $variant = ProductVariant::find($item->product_variant_id);
+                        if ($variant) {
+                            $variant->increment('stock_quantity', $item->quantity);
+                        }
+                    }
+                }
+            }
+
+            $order->items()->delete();
+            $order->activities()->delete();
+            $order->statusLogs()->delete();
+            $order->notes()->delete();
+            $order->callLogs()->delete();
+            $order->riskScore()?->delete();
+            $order->delete();
+        });
+
+        return back()->with('success', 'Order deleted successfully.');
+    }
+
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'order_ids' => 'required|array',
+            'order_ids.*' => 'exists:orders,id',
+            'restore_stock' => 'nullable|boolean',
+        ]);
+
+        $orders = Order::whereIn('id', $validated['order_ids'])->with('items')->get();
+        $count = $orders->count();
+        $restoreStock = $request->boolean('restore_stock', true);
+
+        DB::transaction(function () use ($orders, $restoreStock) {
+            foreach ($orders as $order) {
+                if ($restoreStock) {
+                    foreach ($order->items as $item) {
+                        if ($item->product_id) {
+                            $product = Product::find($item->product_id);
+                            if ($product) {
+                                $product->increment('stock_quantity', $item->quantity);
+                                if ($product->stock_quantity > 0 && ! $product->is_in_stock) {
+                                    $product->update(['is_in_stock' => true]);
+                                }
+                            }
+                        }
+
+                        if ($item->product_variant_id) {
+                            $variant = ProductVariant::find($item->product_variant_id);
+                            if ($variant) {
+                                $variant->increment('stock_quantity', $item->quantity);
+                            }
+                        }
+                    }
+                }
+
+                $order->items()->delete();
+                $order->activities()->delete();
+                $order->statusLogs()->delete();
+                $order->notes()->delete();
+                $order->callLogs()->delete();
+                $order->riskScore()?->delete();
+                $order->delete();
+            }
+        });
+
+        return back()->with('success', "{$count} orders deleted successfully.");
+    }
+
+    public function blockPhone(Order $order): RedirectResponse
+    {
+        if (empty($order->phone)) {
+            return back()->with('error', 'Order has no phone number.');
+        }
+
+        BlockedCustomer::firstOrCreate(
+            ['phone' => $order->phone],
+            [
+                'reason' => 'Blocked via Order #'.$order->order_number,
+                'blocked_by' => auth()->id(),
+            ]
+        );
+
+        return back()->with('success', "Phone number {$order->phone} added to blocklist.");
     }
 }

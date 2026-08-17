@@ -53,7 +53,7 @@ Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remov
 
 Route::prefix('checkout')->name('checkout.')->group(function () {
     Route::get('/', [CheckoutController::class, 'index'])->name('index');
-    Route::post('/', [CheckoutController::class, 'store'])->name('store');
+    Route::post('/', [CheckoutController::class, 'store'])->name('store')->middleware('throttle:5,10');
     Route::post('/save-contact', [CheckoutController::class, 'saveContact'])->name('save-contact');
     Route::get('/thank-you', [CheckoutController::class, 'thankYou'])->name('thank-you');
 });
@@ -131,10 +131,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('stocks/variant/{variant}', [StockController::class, 'updateVariant'])->name('stocks.variant.update');
 
         Route::patch('orders/bulk-update', [OrderController::class, 'bulkUpdate'])->name('orders.bulk-update');
+        Route::delete('orders/bulk-destroy', [OrderController::class, 'bulkDestroy'])->name('orders.bulk-destroy');
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::put('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+        Route::post('orders/{order}/block-phone', [OrderController::class, 'blockPhone'])->name('orders.block-phone');
         Route::get('orders/{order}/print/{size}', [OrderController::class, 'print'])->name('orders.print');
         Route::get('orders/{order}/sync-courier', [CourierController::class, 'syncStatus'])->name('orders.sync-courier');
         Route::get('products-search-api', [OrderController::class, 'searchProducts'])->name('products.search-api');

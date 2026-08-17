@@ -58,6 +58,13 @@ class CheckoutController extends Controller
             ]);
         }
 
+        // Duplicate Pending Order Shield: prevent duplicate order within 5 minutes
+        if (Order::where('phone', $validated['phone'])->where('created_at', '>=', now()->subMinutes(5))->exists()) {
+            throw ValidationException::withMessages([
+                'phone' => 'An order was recently placed with this phone number. Please wait a few minutes before placing another order.',
+            ]);
+        }
+
         $cart = Session::get('cart', []);
 
         if (empty($cart)) {

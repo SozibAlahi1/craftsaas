@@ -5,13 +5,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { AlertTriangle, CheckCircle2, Clock, Copy, Eye, Filter, MoreVertical, Package, Pencil, RefreshCw, Search, Truck, XCircle } from 'lucide-react';
+import { AlertTriangle, Ban, CheckCircle2, Clock, Copy, Eye, Filter, MoreVertical, Package, Pencil, RefreshCw, Search, Trash2, Truck, XCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 interface Order {
     id: number;
     order_number: string;
     full_name: string;
+    phone?: string;
     status: string;
     payment_method: string;
     total: number;
@@ -147,6 +148,17 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
     const [bulkStatus, setBulkStatus] = useState<string>('');
     const [isBulkUpdating, setIsBulkUpdating] = useState(false);
 
+    const [deleteConfirmOrder, setDeleteConfirmOrder] = useState<Order | null>(null);
+    const [isDeletingSingle, setIsDeletingSingle] = useState(false);
+
+    const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+    const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+    const [blockConfirmOrder, setBlockConfirmOrder] = useState<Order | null>(null);
+    const [isBlockingPhone, setIsBlockingPhone] = useState(false);
+
+    const [restoreStock, setRestoreStock] = useState(true);
+
     const [search, setSearch] = useState(filters?.search || '');
     const [status, setStatus] = useState(filters?.status || 'all');
     const [dateFrom, setDateFrom] = useState(filters?.date_from || '');
@@ -196,6 +208,41 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                 onFinish: () => setActiveAction(null),
             },
         );
+    const handleDeleteSingle = () => {
+        if (!deleteConfirmOrder) return;
+        setIsDeletingSingle(true);
+        router.delete(route('admin.orders.destroy', deleteConfirmOrder.id), {
+            data: { restore_stock: restoreStock },
+            onSuccess: () => {
+                setDeleteConfirmOrder(null);
+                setSelectedIds((prev) => prev.filter((id) => id !== deleteConfirmOrder.id));
+            },
+            onFinish: () => setIsDeletingSingle(false),
+        });
+    };
+
+    const handleBulkDelete = () => {
+        if (selectedIds.length === 0) return;
+        setIsBulkDeleting(true);
+        router.delete(route('admin.orders.bulk-destroy'), {
+            data: { order_ids: selectedIds, restore_stock: restoreStock },
+            onSuccess: () => {
+                setSelectedIds([]);
+                setShowBulkDeleteConfirm(false);
+            },
+            onFinish: () => setIsBulkDeleting(false),
+        });
+    };
+
+    const handleBlockPhone = () => {
+        if (!blockConfirmOrder) return;
+        setIsBlockingPhone(true);
+        router.post(route('admin.orders.block-phone', blockConfirmOrder.id), {}, {
+            onSuccess: () => {
+                setBlockConfirmOrder(null);
+            },
+            onFinish: () => setIsBlockingPhone(false),
+        });
     };
 
     const applyFilters = () => {
@@ -330,7 +377,11 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                 </Select>
                                 <Button onClick={handleBulkUpdate} disabled={isBulkUpdating || !bulkStatus} size="sm">
                                     {isBulkUpdating ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : null}
-                                    Update
+                                    Update Status
+                                </Button>
+                                <Button variant="destructive" onClick={() => setShowBulkDeleteConfirm(true)} disabled={isBulkDeleting} size="sm">
+                                    <Trash2 className="mr-1.5 h-4 w-4" />
+                                    Delete Selected
                                 </Button>
                             </div>
                         </div>
@@ -452,6 +503,13 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                                     >
                                                         <Eye className="h-4 w-4" />
                                                     </Link>
+                                                    <button
+                                                        onClick={() => setDeleteConfirmOrder(order)}
+                                                        className="p-2 text-slate-400 transition-colors hover:text-red-600"
+                                                        title="Delete order"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </button>
                                                     <div className="relative">
                                                         <button
                                                             onClick={() => setOpenMenuId(openMenuId === order.id ? null : order.id)}
@@ -461,7 +519,7 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                                             <MoreVertical className="h-4 w-4" />
                                                         </button>
                                                         {openMenuId === order.id && (
-                                                            <div className="absolute bottom-full right-0 z-50 mb-1 w-40 rounded-lg border border-slate-200 bg-white shadow-lg">
+                                                            <div className="absolute bottom-full right-0 z-50 mb-1 w-44 rounded-lg border border-slate-200 bg-white shadow-lg">
                                                                 <div className="overflow-hidden rounded-lg">
                                                                     <button
                                                                         onClick={() => {
@@ -487,6 +545,26 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                                                                         <Eye className="h-4 w-4" />
                                                                         View Details
                                                                     </Link>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setBlockConfirmOrder(order);
+                                                                            setOpenMenuId(null);
+                                                                        }}
+                                                                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-amber-700 transition-colors hover:bg-amber-50"
+                                                                    >
+                                                                        <Ban className="h-4 w-4" />
+                                                                        Block Phone
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setDeleteConfirmOrder(order);
+                                                                            setOpenMenuId(null);
+                                                                        }}
+                                                                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                        Delete Order
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -534,6 +612,89 @@ export default function OrderIndex({ orders, filters }: OrderIndexProps) {
                     )}
                 </div>
             </div>
+
+            {/* Single Delete Confirmation Modal */}
+            {deleteConfirmOrder && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                        <h3 className="text-lg font-black text-slate-900">Delete Order #{deleteConfirmOrder.order_number}?</h3>
+                        <p className="mt-2 text-sm text-slate-500">
+                            Are you sure you want to delete this order? All associated records will be permanently removed.
+                        </p>
+                        <div className="mt-4 flex items-center gap-2">
+                            <Checkbox
+                                id="restoreStockSingle"
+                                checked={restoreStock}
+                                onCheckedChange={(checked) => setRestoreStock(!!checked)}
+                            />
+                            <label htmlFor="restoreStockSingle" className="text-xs font-bold text-slate-700 cursor-pointer">
+                                Return product items back to inventory stock
+                            </label>
+                        </div>
+                        <div className="mt-6 flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setDeleteConfirmOrder(null)} disabled={isDeletingSingle}>
+                                Cancel
+                            </Button>
+                            <Button variant="destructive" onClick={handleDeleteSingle} disabled={isDeletingSingle}>
+                                {isDeletingSingle ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                                Delete Order
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Bulk Delete Confirmation Modal */}
+            {showBulkDeleteConfirm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                        <h3 className="text-lg font-black text-slate-900">Delete {selectedIds.length} Selected Orders?</h3>
+                        <p className="mt-2 text-sm text-slate-500">
+                            Are you sure you want to permanently delete these {selectedIds.length} orders?
+                        </p>
+                        <div className="mt-4 flex items-center gap-2">
+                            <Checkbox
+                                id="restoreStockBulk"
+                                checked={restoreStock}
+                                onCheckedChange={(checked) => setRestoreStock(!!checked)}
+                            />
+                            <label htmlFor="restoreStockBulk" className="text-xs font-bold text-slate-700 cursor-pointer">
+                                Return product items back to inventory stock
+                            </label>
+                        </div>
+                        <div className="mt-6 flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setShowBulkDeleteConfirm(false)} disabled={isBulkDeleting}>
+                                Cancel
+                            </Button>
+                            <Button variant="destructive" onClick={handleBulkDelete} disabled={isBulkDeleting}>
+                                {isBulkDeleting ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                                Delete Selected
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Block Phone Number Confirmation Modal */}
+            {blockConfirmOrder && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
+                    <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+                        <h3 className="text-lg font-black text-slate-900">Block Phone Number?</h3>
+                        <p className="mt-2 text-sm text-slate-500">
+                            Add phone number <strong className="text-slate-900">{blockConfirmOrder.phone || 'N/A'}</strong> (Customer: {blockConfirmOrder.full_name}) to the restricted blocklist?
+                        </p>
+                        <div className="mt-6 flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setBlockConfirmOrder(null)} disabled={isBlockingPhone}>
+                                Cancel
+                            </Button>
+                            <Button className="bg-amber-600 hover:bg-amber-700 text-white" onClick={handleBlockPhone} disabled={isBlockingPhone}>
+                                {isBlockingPhone ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Ban className="mr-2 h-4 w-4" />}
+                                Block Phone
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AppLayout>
     );
 }
