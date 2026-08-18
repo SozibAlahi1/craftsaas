@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Image as ImageIcon, List, Plus, Save, Settings, Tag, Trash2, Upload, X } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, GripVertical, Image as ImageIcon, List, Plus, Save, Settings, Tag, Trash2, Upload, X } from 'lucide-react';
 import React from 'react';
 import { RichTextEditor } from '@/components/rich-text-editor';
 
@@ -181,6 +181,44 @@ export default function EditProduct({ categories, product }: EditProps) {
             image: file,
         };
         setData('variations', newVariations);
+    };
+
+    const moveVariation = (type: 'colors' | 'sizes', index: number, direction: 'up' | 'down') => {
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= data.variations[type].length) return;
+
+        const list = [...data.variations[type]];
+        const [movedItem] = list.splice(index, 1);
+        list.splice(targetIndex, 0, movedItem);
+
+        setData('variations', {
+            ...data.variations,
+            [type]: list,
+        });
+    };
+
+    const [draggedVar, setDraggedVar] = React.useState<{ type: 'colors' | 'sizes'; index: number } | null>(null);
+
+    const handleVarDragStart = (type: 'colors' | 'sizes', index: number) => {
+        setDraggedVar({ type, index });
+    };
+
+    const handleVarDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+    };
+
+    const handleVarDrop = (type: 'colors' | 'sizes', targetIndex: number) => {
+        if (!draggedVar || draggedVar.type !== type || draggedVar.index === targetIndex) return;
+
+        const list = [...data.variations[type]];
+        const [movedItem] = list.splice(draggedVar.index, 1);
+        list.splice(targetIndex, 0, movedItem);
+
+        setData('variations', {
+            ...data.variations,
+            [type]: list,
+        });
+        setDraggedVar(null);
     };
 
     return (
@@ -446,20 +484,54 @@ export default function EditProduct({ categories, product }: EditProps) {
 
                                 <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2">
                                     <div className="space-y-4">
-                                        <label className="text-xs font-black tracking-widest text-slate-400 uppercase">Colors</label>
+                                        <label className="text-xs font-black tracking-widest text-slate-400 uppercase">Colors (Drag to reorder)</label>
                                         {data.variations.colors.map((color: any, index: number) => (
-                                            <div key={index} className="flex gap-2">
+                                            <div
+                                                key={index}
+                                                draggable
+                                                onDragStart={() => handleVarDragStart('colors', index)}
+                                                onDragOver={handleVarDragOver}
+                                                onDrop={() => handleVarDrop('colors', index)}
+                                                className="flex items-center gap-2 rounded-md border border-slate-200 bg-white p-1.5 shadow-xs transition-colors hover:border-slate-300"
+                                            >
+                                                <button
+                                                    type="button"
+                                                    className="cursor-grab text-slate-400 hover:text-slate-600 active:cursor-grabbing"
+                                                    title="Drag to reorder"
+                                                >
+                                                    <GripVertical className="h-4 w-4" />
+                                                </button>
+                                                <div className="flex flex-col">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => moveVariation('colors', index, 'up')}
+                                                        disabled={index === 0}
+                                                        className="text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                                                        title="Move up"
+                                                    >
+                                                        <ArrowUp className="h-3 w-3" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => moveVariation('colors', index, 'down')}
+                                                        disabled={index === data.variations.colors.length - 1}
+                                                        className="text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                                                        title="Move down"
+                                                    >
+                                                        <ArrowDown className="h-3 w-3" />
+                                                    </button>
+                                                </div>
                                                 <input
                                                     type="text"
                                                     value={color.label}
                                                     onChange={(e) => updateVariation('colors', index, e.target.value)}
-                                                    className="flex-1 rounded-none border border-slate-200 px-4 py-2 text-sm transition-colors focus:border-slate-400 focus:ring-0 focus:outline-none"
+                                                    className="flex-1 rounded-md border border-slate-200 px-3 py-1.5 text-sm transition-colors focus:border-slate-400 focus:ring-0 focus:outline-none"
                                                     placeholder="e.g. Red"
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => removeVariation('colors', index)}
-                                                    className="border border-slate-200 p-2 text-slate-400 transition-colors hover:text-red-500"
+                                                    className="rounded-md border border-slate-200 p-2 text-slate-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </button>
@@ -475,20 +547,54 @@ export default function EditProduct({ categories, product }: EditProps) {
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="text-xs font-black tracking-widest text-slate-400 uppercase">Sizes</label>
+                                        <label className="text-xs font-black tracking-widest text-slate-400 uppercase">Sizes (Drag to reorder)</label>
                                         {data.variations.sizes.map((size: any, index: number) => (
-                                            <div key={index} className="flex gap-2">
+                                            <div
+                                                key={index}
+                                                draggable
+                                                onDragStart={() => handleVarDragStart('sizes', index)}
+                                                onDragOver={handleVarDragOver}
+                                                onDrop={() => handleVarDrop('sizes', index)}
+                                                className="flex items-center gap-2 rounded-md border border-slate-200 bg-white p-1.5 shadow-xs transition-colors hover:border-slate-300"
+                                            >
+                                                <button
+                                                    type="button"
+                                                    className="cursor-grab text-slate-400 hover:text-slate-600 active:cursor-grabbing"
+                                                    title="Drag to reorder"
+                                                >
+                                                    <GripVertical className="h-4 w-4" />
+                                                </button>
+                                                <div className="flex flex-col">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => moveVariation('sizes', index, 'up')}
+                                                        disabled={index === 0}
+                                                        className="text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                                                        title="Move up"
+                                                    >
+                                                        <ArrowUp className="h-3 w-3" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => moveVariation('sizes', index, 'down')}
+                                                        disabled={index === data.variations.sizes.length - 1}
+                                                        className="text-slate-400 hover:text-slate-700 disabled:opacity-30"
+                                                        title="Move down"
+                                                    >
+                                                        <ArrowDown className="h-3 w-3" />
+                                                    </button>
+                                                </div>
                                                 <input
                                                     type="text"
                                                     value={size.label}
                                                     onChange={(e) => updateVariation('sizes', index, e.target.value)}
-                                                    className="flex-1 rounded-none border border-slate-200 px-4 py-2 text-sm transition-colors focus:border-slate-400 focus:ring-0 focus:outline-none"
-                                                    placeholder="e.g. XL"
+                                                    className="flex-1 rounded-md border border-slate-200 px-3 py-1.5 text-sm transition-colors focus:border-slate-400 focus:ring-0 focus:outline-none"
+                                                    placeholder="e.g. 500 gram"
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => removeVariation('sizes', index)}
-                                                    className="border border-slate-200 p-2 text-slate-400 transition-colors hover:text-red-500"
+                                                    className="rounded-md border border-slate-200 p-2 text-slate-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </button>
