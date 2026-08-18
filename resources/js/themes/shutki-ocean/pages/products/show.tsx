@@ -33,10 +33,38 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
     const getLabel = (v: any) => (typeof v === 'string' ? v : (v?.label ?? ''));
     const getImage = (v: any) => (typeof v === 'string' ? null : (v?.image ?? null));
 
-    const [selectedColor, setSelectedColor] = useState(getLabel(product.variations.colors[0] ?? ''));
-    const [selectedSize, setSelectedSize] = useState(getLabel(product.variations.sizes[0] ?? ''));
+    const getFirstColor = () => {
+        const colors = product.variations?.colors || [];
+        const validColor = colors.map(getLabel).find((l: string) => Boolean(l && l.trim()));
+        if (validColor) return validColor;
+
+        if (product.variants && product.variants.length > 0) {
+            const vColor = product.variants[0].attribute_values?.find(
+                (av: any) => av.attribute?.name?.toLowerCase() === 'color',
+            )?.value;
+            if (vColor) return vColor;
+        }
+        return '';
+    };
+
+    const getFirstSize = () => {
+        const sizes = product.variations?.sizes || [];
+        const validSize = sizes.map(getLabel).find((l: string) => Boolean(l && l.trim()));
+        if (validSize) return validSize;
+
+        if (product.variants && product.variants.length > 0) {
+            const vSize = product.variants[0].attribute_values?.find(
+                (av: any) => av.attribute?.name?.toLowerCase() === 'size',
+            )?.value;
+            if (vSize) return vSize;
+        }
+        return '';
+    };
+
+    const [selectedColor, setSelectedColor] = useState(() => getFirstColor());
+    const [selectedSize, setSelectedSize] = useState(() => getFirstSize());
     const [quantity, setQuantity] = useState(1);
-    const [activeImage, setActiveImage] = useState(() => getImage(product.variations.colors[0]) ?? product.image);
+    const [activeImage, setActiveImage] = useState(() => getImage(product.variations?.colors?.[0]) ?? getImage(product.variations?.sizes?.[0]) ?? product.image);
     const [activeTab, setActiveTab] = useState<'details' | 'delivery' | 'reviews'>('details');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
