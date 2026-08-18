@@ -380,6 +380,7 @@ export default function OrderEdit({ order, products = [] }: OrderEditProps) {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="pending">Pending</SelectItem>
+                                        <SelectItem value="confirmed">Confirmed</SelectItem>
                                         <SelectItem value="processing">Processing</SelectItem>
                                         <SelectItem value="shipped">Shipped</SelectItem>
                                         <SelectItem value="delivered">Delivered</SelectItem>
