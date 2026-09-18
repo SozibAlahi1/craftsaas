@@ -233,46 +233,51 @@ export function Header() {
                                                             <img src={imgUrl} alt={item.name} className="h-full w-full rounded-sm object-cover" />
                                                         </div>
                                                         <div className="flex flex-1 flex-col justify-between">
-                                                            <div className="space-y-0.5">
+                                                            <div>
                                                                 <h4 className="text-[14px] leading-snug font-bold text-white">{item.name}</h4>
                                                                 {item.color && (
-                                                                    <span className="block text-[11px] font-bold text-gray-500 uppercase">
+                                                                    <span className="block text-[11px] font-bold text-gray-500 uppercase mt-0.5">
                                                                         {item.color} {item.size ? `/ ${item.size}` : ''}
                                                                     </span>
                                                                 )}
-                                                                <div className="text-[15px] font-black text-[#cba876]">
-                                                                    ৳ {parseInt(String(item.price).replace(/[^\d]/g, '')).toLocaleString()}
-                                                                </div>
                                                             </div>
-                                                            <div className="flex items-center justify-between">
-                                                                <div className="flex items-center gap-3">
-                                                                    <button
-                                                                        onClick={() =>
-                                                                            router.patch(route('cart.update', id), {
-                                                                                quantity: Math.max(1, item.quantity - 1),
-                                                                            })
-                                                                        }
-                                                                        className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#1c1c1c] bg-[#141414] text-gray-400 transition-colors hover:bg-[#1f1f1f] hover:text-white"
-                                                                    >
-                                                                        <Minus className="h-3 w-3" />
-                                                                    </button>
-                                                                    <span className="w-4 text-center text-[14px] font-bold text-white">
-                                                                        {item.quantity}
-                                                                    </span>
-                                                                    <button
-                                                                        onClick={() =>
-                                                                            router.patch(route('cart.update', id), { quantity: item.quantity + 1 })
-                                                                        }
-                                                                        className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#1c1c1c] bg-[#141414] text-gray-400 transition-colors hover:bg-[#1f1f1f] hover:text-white"
-                                                                    >
-                                                                        <Plus className="h-3 w-3" />
-                                                                    </button>
+                                                            <div className="flex items-center justify-between gap-2 mt-2">
+                                                                <div className="flex items-center gap-2.5">
+                                                                    <div className="text-[15px] font-black text-[#cba876]">
+                                                                        ৳ {parseInt(String(item.price).replace(/[^\d]/g, '')).toLocaleString()}
+                                                                    </div>
+                                                                    <div className="inline-flex items-center rounded-md border border-[#262626] bg-[#141414]">
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                router.patch(route('cart.update', id), {
+                                                                                    quantity: Math.max(1, item.quantity - 1),
+                                                                                })
+                                                                            }
+                                                                            className="flex h-6 w-6 items-center justify-center rounded-l-md text-gray-400 hover:bg-[#1f1f1f] hover:text-white transition-colors cursor-pointer"
+                                                                            aria-label="Decrease quantity"
+                                                                        >
+                                                                            <Minus className="h-3 w-3" />
+                                                                        </button>
+                                                                        <span className="min-w-[1.25rem] px-1 text-center text-xs font-bold text-white">
+                                                                            {item.quantity}
+                                                                        </span>
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                router.patch(route('cart.update', id), { quantity: item.quantity + 1 })
+                                                                            }
+                                                                            className="flex h-6 w-6 items-center justify-center rounded-r-md text-gray-400 hover:bg-[#1f1f1f] hover:text-white transition-colors cursor-pointer"
+                                                                            aria-label="Increase quantity"
+                                                                        >
+                                                                            <Plus className="h-3 w-3" />
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                                 <button
                                                                     onClick={() => router.delete(route('cart.remove', id))}
-                                                                    className="text-gray-500 transition-colors hover:text-red-500"
+                                                                    className="p-1 text-gray-500 transition-colors hover:text-rose-500 cursor-pointer"
+                                                                    aria-label="Remove item"
                                                                 >
-                                                                    <Trash2 className="h-5 w-5" />
+                                                                    <Trash2 className="h-4.5 w-4.5" />
                                                                 </button>
                                                             </div>
                                                         </div>
