@@ -221,50 +221,9 @@ export default function Checkout({ cart }: CheckoutProps) {
                                 </nav>
 
                                 <form onSubmit={handleSubmit} noValidate className="space-y-8">
-                                    {/* Contact Section */}
-                                    <section>
-                                        <div className="mb-3 flex items-center justify-between">
-                                            <h2 className="text-base font-semibold text-slate-900">Contact</h2>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <div className="relative">
-                                                <input
-                                                    type="tel"
-                                                    id="phone"
-                                                    value={data.phone}
-                                                    onChange={(e) => setData('phone', e.target.value)}
-                                                    onBlur={handleSaveContact}
-                                                    placeholder="Phone number (e.g. 01XXXXXXXXX)"
-                                                    className={`w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all ${
-                                                        errors.phone
-                                                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                                            : 'border-slate-300'
-                                                    }`}
-                                                />
-                                            </div>
-                                            {errors.phone && (
-                                                <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
-                                                    <AlertCircle className="h-3.5 w-3.5 flex-none" />
-                                                    {errors.phone}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </section>
-
-                                    {/* Delivery Address Section */}
+                                    {/* Delivery Section */}
                                     <section className="space-y-4">
                                         <h2 className="text-base font-semibold text-slate-900">Delivery</h2>
-
-                                        {/* Country/Region (Fixed to Bangladesh) */}
-                                        <div>
-                                            <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wider mb-1">
-                                                Country / Region
-                                            </label>
-                                            <div className="flex h-10 w-full items-center justify-between rounded-md border border-slate-300 bg-slate-50 px-3 text-sm text-slate-700">
-                                                <span>Bangladesh</span>
-                                                <Lock className="h-3.5 w-3.5 text-slate-400" />
-                                            </div>
-                                        </div>
 
                                         {/* Full Name */}
                                         <div className="space-y-1.5">
@@ -285,6 +244,31 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                 <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
                                                     <AlertCircle className="h-3.5 w-3.5 flex-none" />
                                                     {errors.full_name}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Mobile Number */}
+                                        <div className="space-y-1.5">
+                                            <div className="relative">
+                                                <input
+                                                    type="tel"
+                                                    id="phone"
+                                                    value={data.phone}
+                                                    onChange={(e) => setData('phone', e.target.value)}
+                                                    onBlur={handleSaveContact}
+                                                    placeholder="Phone number (e.g. 01XXXXXXXXX)"
+                                                    className={`w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all ${
+                                                        errors.phone
+                                                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                                                            : 'border-slate-300'
+                                                    }`}
+                                                />
+                                            </div>
+                                            {errors.phone && (
+                                                <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
+                                                    <AlertCircle className="h-3.5 w-3.5 flex-none" />
+                                                    {errors.phone}
                                                 </p>
                                             )}
                                         </div>
