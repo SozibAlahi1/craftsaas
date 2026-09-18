@@ -421,11 +421,6 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                     <span className="text-gray-400">{reviews.length} টি ভেরিফাইড রিভিউ</span>
                                 </div>
 
-                                <div
-                                    className="rich-description mt-5 line-clamp-3 text-sm leading-relaxed whitespace-pre-wrap text-gray-300"
-                                    dangerouslySetInnerHTML={{ __html: product.description }}
-                                />
-
                                 {/* Color & Size Selection */}
                                 {(product.variations.colors.filter((c) => {
                                     const l = getLabel(c);
@@ -601,6 +596,13 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                             </button>
                                         </div>
                                     </div>
+
+                                    {product.description && (
+                                        <div
+                                            className="rich-description mt-5 line-clamp-3 text-sm leading-relaxed whitespace-pre-wrap text-gray-300"
+                                            dangerouslySetInnerHTML={{ __html: product.description }}
+                                        />
+                                    )}
 
                                     {/* Trust & Guarantee Grid */}
                                     <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 backdrop-blur-sm">

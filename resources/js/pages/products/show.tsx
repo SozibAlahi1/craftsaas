@@ -433,11 +433,6 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                     </span>
                                 </div>
 
-                                <div
-                                    className="rich-description mt-5 line-clamp-3 text-sm leading-relaxed whitespace-pre-wrap text-slate-600"
-                                    dangerouslySetInnerHTML={{ __html: product.description }}
-                                />
-
                                 {/* Color & Size Selection */}
                                 {(product.variations.colors.filter((c) => {
                                     const l = getLabel(c);
@@ -616,6 +611,13 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                         <span>{isEnglish ? 'Order Now' : 'অর্ডার করুন'}</span>
                                     </button>
                                 </div>
+
+                                {product.description && (
+                                    <div
+                                        className="rich-description mt-5 line-clamp-3 text-sm leading-relaxed whitespace-pre-wrap text-slate-600"
+                                        dangerouslySetInnerHTML={{ __html: product.description }}
+                                    />
+                                )}
 
                                     {/* Trust & Guarantee Grid */}
                                     <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-3 sm:p-4">

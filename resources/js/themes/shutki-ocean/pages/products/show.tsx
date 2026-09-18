@@ -296,11 +296,6 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                     )}
                                 </div>
 
-                                <div
-                                    className="rich-description mt-4 line-clamp-3 text-sm leading-7 text-slate-600"
-                                    dangerouslySetInnerHTML={{ __html: product.description }}
-                                />
-
                                 {/* Color / Size / Weight Selector */}
                                 {(product.variations.colors.filter((c) => getLabel(c)?.trim()).length > 0 ||
                                     product.variations.sizes.filter((s) => getLabel(s)?.trim()).length > 0) && (
@@ -442,6 +437,13 @@ export default function Show({ product, relatedProducts = [] }: { product: Produ
                                         <ShoppingBag className="h-4 w-4" /> এখনই অর্ডার করুন
                                     </button>
                                 </div>
+
+                                {product.description && (
+                                    <div
+                                        className="rich-description mt-4 line-clamp-3 text-sm leading-7 text-slate-600"
+                                        dangerouslySetInnerHTML={{ __html: product.description }}
+                                    />
+                                )}
 
                                 {/* Trust Strip */}
                                 <div className="mt-6 grid grid-cols-3 gap-2 border-t border-slate-100 pt-4">

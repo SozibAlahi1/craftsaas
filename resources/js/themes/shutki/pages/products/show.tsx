@@ -331,12 +331,6 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                     )}
                                 </div>
 
-                                <div
-                                    className="rich-description mt-4 line-clamp-3 text-sm leading-7 whitespace-pre-wrap"
-                                    style={{ color: P.earthMid }}
-                                    dangerouslySetInnerHTML={{ __html: product.description }}
-                                />
-
                                 {/* Variations */}
                                 {(product.variations.colors.filter((c) => getLabel(c)?.trim()).length > 0 ||
                                     product.variations.sizes.filter((s) => getLabel(s)?.trim()).length > 0) && (
@@ -507,6 +501,14 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                         <ShoppingBag className="h-4 w-4 shrink-0" /> এখনই অর্ডার করুন
                                     </button>
                                 </div>
+
+                                {product.description && (
+                                    <div
+                                        className="rich-description mt-4 line-clamp-3 text-sm leading-7 whitespace-pre-wrap"
+                                        style={{ color: P.earthMid }}
+                                        dangerouslySetInnerHTML={{ __html: product.description }}
+                                    />
+                                )}
 
                                 {/* Trust row */}
                                 <div className="mt-5 grid grid-cols-3 gap-2 pt-4" style={{ borderTop: `1px solid ${P.border}` }}>
