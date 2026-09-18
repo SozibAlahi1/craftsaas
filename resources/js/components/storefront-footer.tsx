@@ -57,7 +57,9 @@ export function StorefrontFooter() {
             'Our Showrooms': 'আমাদের শো-রুম',
         };
 
-        if (labelMap[label]) {
+        const isEnglish = settings?.site_theme === 'example' || settings?.site_theme === 'wildtannery';
+
+        if (!isEnglish && labelMap[label]) {
             label = labelMap[label];
         }
 
@@ -143,7 +145,7 @@ export function StorefrontFooter() {
                     </div>
 
                     <div>
-                        <h3 className="text-foreground text-2xl font-bold">আমার অ্যাকাউন্ট</h3>
+                        <h3 className="text-foreground text-2xl font-bold">{isEnglish ? 'My Account' : 'আমার অ্যাকাউন্ট'}</h3>
                         <ul className="mt-4 space-y-3">
                             {accountLinks.map((link, idx) => (
                                 <li key={idx}>{renderLink(link)}</li>
@@ -152,7 +154,7 @@ export function StorefrontFooter() {
                     </div>
 
                     <div>
-                        <h3 className="text-foreground text-2xl font-bold">তথ্য ও নীতি</h3>
+                        <h3 className="text-foreground text-2xl font-bold">{isEnglish ? 'Information & Policies' : 'তথ্য ও নীতি'}</h3>
                         <ul className="mt-4 space-y-3">
                             {informationLinks.map((link, idx) => (
                                 <li key={idx}>{renderLink(link)}</li>
@@ -161,12 +163,12 @@ export function StorefrontFooter() {
                     </div>
 
                     <div>
-                        <h3 className="text-foreground text-2xl font-bold">যোগাযোগ করুন</h3>
+                        <h3 className="text-foreground text-2xl font-bold">{isEnglish ? 'Contact Us' : 'যোগাযোগ করুন'}</h3>
 
                         <div className="mt-4 space-y-4">
                             {footerPhone && (
                                 <div>
-                                    <p className="text-muted-foreground text-sm font-semibold">কোনো প্রশ্ন থাকলে কল করুন</p>
+                                    <p className="text-muted-foreground text-sm font-semibold">{isEnglish ? 'Have any questions? Call us' : 'কোনো প্রশ্ন থাকলে কল করুন'}</p>
                                     <a href={`tel:${footerPhone}`} className="text-foreground mt-1 block text-3xl font-black tracking-tight">
                                         {footerPhone}
                                     </a>

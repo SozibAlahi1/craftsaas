@@ -136,6 +136,7 @@ export function StorefrontHeader() {
     const logoUrl = (settings as any)?.site_logo_url as string | undefined;
     const siteName = (settings as any)?.site_name || 'wildtannery';
     const siteTheme = (settings as any)?.site_theme || 'classic';
+    const isEnglish = siteTheme === 'example' || siteTheme === 'wildtannery';
     const accountHref = auth.user ? route('dashboard') : route('login');
 
     useEffect(() => {
@@ -190,7 +191,7 @@ export function StorefrontHeader() {
         showDropdown && searchQuery.trim().length > 0 ? (
             <div className="absolute top-full left-0 z-50 mt-1 w-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-lg">
                 {isSearching ? (
-                    <div className="px-4 py-3 text-sm text-slate-500">খুঁজছি...</div>
+                    <div className="px-4 py-3 text-sm text-slate-500">{isEnglish ? 'Searching...' : 'খুঁজছি...'}</div>
                 ) : searchResults.length > 0 ? (
                     <ul className="max-h-[60vh] overflow-auto py-2">
                         {searchResults.map((product) => (
@@ -212,7 +213,7 @@ export function StorefrontHeader() {
                         ))}
                     </ul>
                 ) : (
-                    <div className="px-4 py-3 text-sm text-slate-500">কোনো পণ্য পাওয়া যায়নি</div>
+                    <div className="px-4 py-3 text-sm text-slate-500">{isEnglish ? 'No products found' : 'কোনো পণ্য পাওয়া যায়নি'}</div>
                 )}
             </div>
         ) : null;
@@ -221,7 +222,7 @@ export function StorefrontHeader() {
         const html = document.documentElement;
         html.dataset.theme = siteTheme;
     }, [siteTheme]);
-    const accountLabel = auth.user ? 'আপনার একাউন্ট' : 'সাইন ইন';
+    const accountLabel = auth.user ? (isEnglish ? 'My Account' : 'আপনার একাউন্ট') : (isEnglish ? 'Sign In' : 'সাইন ইন');
 
     // Auto-open drawer when items are added
     if (cartCount > prevCartCount) {
@@ -275,7 +276,7 @@ export function StorefrontHeader() {
                                         <div className="flex items-center justify-between">
                                             <SheetTitle className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-slate-900">
                                                 <ShoppingCart className="h-6 w-6 text-orange-600" />
-                                                শপিং কার্ট ({cartCount})
+                                                {isEnglish ? 'Shopping Cart' : 'শপিং কার্ট'} ({cartCount})
                                             </SheetTitle>
                                         </div>
                                     </SheetHeader>
@@ -286,8 +287,8 @@ export function StorefrontHeader() {
                                                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 text-slate-300">
                                                     <ShoppingCart className="h-10 w-10" />
                                                 </div>
-                                                <h3 className="text-lg font-bold text-slate-950">আপনার কার্টটি খালি</h3>
-                                                <p className="mt-2 text-sm text-slate-500">মনে হচ্ছে আপনি এখনও আপনার কার্টে কিছু যোগ করেননি।</p>
+                                                <h3 className="text-lg font-bold text-slate-950">{isEnglish ? 'Your cart is empty' : 'আপনার কার্টটি খালি'}</h3>
+                                                <p className="mt-2 text-sm text-slate-500">{isEnglish ? "Looks like you haven't added anything to your cart yet." : 'মনে হচ্ছে আপনি এখনও আপনার কার্টে কিছু যোগ করেননি।'}</p>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
@@ -385,7 +386,7 @@ export function StorefrontHeader() {
                                     {cartCount > 0 && (
                                         <div className="space-y-4 border-t border-slate-100 bg-white p-6">
                                             <div className="flex items-center justify-between">
-                                                <span className="text-[15px] font-bold tracking-wide text-slate-900 uppercase">মোট:</span>
+                                                <span className="text-[15px] font-bold tracking-wide text-slate-900 uppercase">{isEnglish ? 'Total:' : 'মোট:'}</span>
                                                 <span className="text-[22px] font-bold text-orange-600">
                                                     ৳
                                                     {Object.values(cart)
@@ -399,7 +400,7 @@ export function StorefrontHeader() {
                                             <div className="space-y-3">
                                                 <Link href={route('checkout.index')} className="w-full">
                                                     <Button className="h-12 w-full rounded-md bg-slate-950 text-sm font-bold tracking-tight text-white uppercase shadow-sm transition-colors hover:bg-slate-800">
-                                                        চেকআউট
+                                                        {isEnglish ? 'Checkout' : 'চেকআউট'}
                                                     </Button>
                                                 </Link>
                                             </div>
@@ -417,7 +418,7 @@ export function StorefrontHeader() {
                                 </SheetTrigger>
                                 <SheetContent side="left" className="w-[min(22rem,100vw)] overflow-y-auto bg-white">
                                     <SheetHeader className="mb-6 text-left">
-                                        <SheetTitle className="text-xl font-black tracking-tight text-slate-950">মেনু</SheetTitle>
+                                        <SheetTitle className="text-xl font-black tracking-tight text-slate-950">{isEnglish ? 'Menu' : 'মেনু'}</SheetTitle>
                                     </SheetHeader>
 
                                     <div ref={mobileSearchRef} className="relative mb-6">
@@ -432,7 +433,7 @@ export function StorefrontHeader() {
                                                 onChange={(e) => setSearchQuery(e.target.value)}
                                                 onFocus={() => setShowDropdown(true)}
                                                 aria-label="Search products"
-                                                placeholder="পণ্য খুঁজুন..."
+                                                placeholder={isEnglish ? 'Search products...' : 'পণ্য খুঁজুন...'}
                                                 className="h-11 border-0 bg-transparent px-4 text-sm shadow-none focus-visible:ring-0"
                                             />
                                             <button
@@ -451,7 +452,7 @@ export function StorefrontHeader() {
                                             href={route('products.index')}
                                             className="flex w-full items-center justify-between rounded-md bg-slate-950 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-slate-800"
                                         >
-                                            সকল পণ্য দেখুন
+                                            {isEnglish ? 'View All Products' : 'সকল পণ্য দেখুন'}
                                             <ChevronDown className="h-4 w-4 -rotate-90" />
                                         </Link>
                                     </div>
@@ -516,7 +517,7 @@ export function StorefrontHeader() {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onFocus={() => setShowDropdown(true)}
                                 aria-label="Search products"
-                                placeholder="পণ্য খুঁজুন..."
+                                placeholder={isEnglish ? 'Search products...' : 'পণ্য খুঁজুন...'}
                                 className="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 text-sm outline-none placeholder:text-slate-500 focus:ring-0"
                             />
                             <button
@@ -536,7 +537,7 @@ export function StorefrontHeader() {
                                 <UserRound className="h-6 w-6" />
                             </span>
                             <span className="text-sm leading-tight">
-                                <span className="block text-slate-500">{auth.user ? 'হ্যালো' : 'সাইন ইন করুন'}</span>
+                                <span className="block text-slate-500">{auth.user ? (isEnglish ? 'Hello' : 'হ্যালো') : (isEnglish ? 'Sign In' : 'সাইন ইন করুন')}</span>
                                 <span className="font-semibold text-slate-900">{accountLabel}</span>
                             </span>
                         </Link>
@@ -557,7 +558,7 @@ export function StorefrontHeader() {
                                     <div className="flex items-center justify-between">
                                         <SheetTitle className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-slate-900">
                                             <ShoppingCart className="h-6 w-6 text-orange-600" />
-                                            শপিং কার্ট ({cartCount})
+                                            {isEnglish ? 'Shopping Cart' : 'শপিং কার্ট'} ({cartCount})
                                         </SheetTitle>
                                     </div>
                                 </SheetHeader>
@@ -568,8 +569,8 @@ export function StorefrontHeader() {
                                             <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-slate-50 text-slate-300">
                                                 <ShoppingCart className="h-10 w-10" />
                                             </div>
-                                            <h3 className="text-lg font-bold text-slate-950">আপনার কার্টটি খালি</h3>
-                                            <p className="mt-2 text-sm text-slate-500">মনে হচ্ছে আপনি এখনও আপনার কার্টে কিছু যোগ করেননি।</p>
+                                            <h3 className="text-lg font-bold text-slate-950">{isEnglish ? 'Your cart is empty' : 'আপনার কার্টটি খালি'}</h3>
+                                            <p className="mt-2 text-sm text-slate-500">{isEnglish ? "Looks like you haven't added anything to your cart yet." : 'মনে হচ্ছে আপনি এখনও আপনার কার্টে কিছু যোগ করেননি।'}</p>
                                         </div>
                                     ) : (
                                         <div className="space-y-3">
@@ -661,7 +662,7 @@ export function StorefrontHeader() {
                                 {cartCount > 0 && (
                                     <div className="space-y-4 border-t border-slate-100 bg-white p-6">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[15px] font-bold tracking-wide text-slate-900 uppercase">মোট:</span>
+                                            <span className="text-[15px] font-bold tracking-wide text-slate-900 uppercase">{isEnglish ? 'Total:' : 'মোট:'}</span>
                                             <span className="text-[22px] font-bold text-orange-600">
                                                 ৳
                                                 {Object.values(cart)
@@ -675,7 +676,7 @@ export function StorefrontHeader() {
                                         <div className="space-y-3">
                                             <Link href={route('checkout.index')} className="w-full">
                                                 <Button className="h-12 w-full rounded-md bg-slate-950 text-sm font-bold tracking-tight text-white uppercase shadow-sm transition-colors hover:bg-slate-800">
-                                                    চেকআউট
+                                                    {isEnglish ? 'Checkout' : 'চেকআউট'}
                                                 </Button>
                                             </Link>
                                         </div>
