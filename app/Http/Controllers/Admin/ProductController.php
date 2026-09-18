@@ -88,18 +88,26 @@ class ProductController extends Controller
         $normalizedVariations = ['colors' => [], 'sizes' => []];
         foreach (['colors', 'sizes'] as $type) {
             foreach ($variations[$type] ?? [] as $index => $variation) {
-                if (! empty(trim($variation['label'] ?? ''))) {
-                    $item = ['label' => trim($variation['label'])];
-                    if ($request->hasFile("variations.{$type}.{$index}.image")) {
-                        $path = $request->file("variations.{$type}.{$index}.image")->store('products/variations', 'public');
-                        $item['image'] = Storage::disk('public')->url($path);
-                    } elseif (! empty($variation['image']) && is_string($variation['image'])) {
-                        $item['image'] = $variation['image'];
-                    } else {
-                        $item['image'] = null;
-                    }
-                    $normalizedVariations[$type][] = $item;
+                $hasImage = $request->hasFile("variations.{$type}.{$index}.image") || (! empty($variation['image']) && is_string($variation['image']));
+                $label = trim($variation['label'] ?? '');
+
+                if (empty($label) && ! $hasImage) {
+                    continue;
                 }
+                if (empty($label)) {
+                    $label = ($type === 'colors' ? 'Color ' : 'Size ').($index + 1);
+                }
+
+                $item = ['label' => $label];
+                if ($request->hasFile("variations.{$type}.{$index}.image")) {
+                    $path = $request->file("variations.{$type}.{$index}.image")->store('products/variations', 'public');
+                    $item['image'] = Storage::disk('public')->url($path);
+                } elseif (! empty($variation['image']) && is_string($variation['image'])) {
+                    $item['image'] = $variation['image'];
+                } else {
+                    $item['image'] = null;
+                }
+                $normalizedVariations[$type][] = $item;
             }
         }
         $validated['variations'] = $normalizedVariations;
@@ -196,18 +204,26 @@ class ProductController extends Controller
         $normalizedVariations = ['colors' => [], 'sizes' => []];
         foreach (['colors', 'sizes'] as $type) {
             foreach ($variations[$type] ?? [] as $index => $variation) {
-                if (! empty(trim($variation['label'] ?? ''))) {
-                    $item = ['label' => trim($variation['label'])];
-                    if ($request->hasFile("variations.{$type}.{$index}.image")) {
-                        $path = $request->file("variations.{$type}.{$index}.image")->store('products/variations', 'public');
-                        $item['image'] = Storage::disk('public')->url($path);
-                    } elseif (! empty($variation['image']) && is_string($variation['image'])) {
-                        $item['image'] = $variation['image'];
-                    } else {
-                        $item['image'] = null;
-                    }
-                    $normalizedVariations[$type][] = $item;
+                $hasImage = $request->hasFile("variations.{$type}.{$index}.image") || (! empty($variation['image']) && is_string($variation['image']));
+                $label = trim($variation['label'] ?? '');
+
+                if (empty($label) && ! $hasImage) {
+                    continue;
                 }
+                if (empty($label)) {
+                    $label = ($type === 'colors' ? 'Color ' : 'Size ').($index + 1);
+                }
+
+                $item = ['label' => $label];
+                if ($request->hasFile("variations.{$type}.{$index}.image")) {
+                    $path = $request->file("variations.{$type}.{$index}.image")->store('products/variations', 'public');
+                    $item['image'] = Storage::disk('public')->url($path);
+                } elseif (! empty($variation['image']) && is_string($variation['image'])) {
+                    $item['image'] = $variation['image'];
+                } else {
+                    $item['image'] = null;
+                }
+                $normalizedVariations[$type][] = $item;
             }
         }
         $validated['variations'] = $normalizedVariations;

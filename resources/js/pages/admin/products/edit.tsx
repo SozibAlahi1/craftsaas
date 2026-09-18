@@ -442,7 +442,12 @@ export default function EditProduct({ categories, product }: EditProps) {
                                         type="button"
                                         onClick={() => {
                                             // Generate combinations
-                                            const colors = data.variations.colors.filter((c: any) => c.label.trim() !== '');
+                                            const colors = data.variations.colors
+                                                .map((c: any, i: number) => ({
+                                                    ...c,
+                                                    label: c.label?.trim() ? c.label.trim() : (c.image ? `Color ${i + 1}` : ''),
+                                                }))
+                                                .filter((c: any) => c.label !== '');
                                             const sizes = data.variations.sizes.filter((s: any) => s.label.trim() !== '');
                                             let combos: any[] = [];
 
@@ -484,7 +489,10 @@ export default function EditProduct({ categories, product }: EditProps) {
 
                                 <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2">
                                     <div className="space-y-4">
-                                        <label className="text-xs font-black tracking-widest text-slate-400 uppercase">Colors (Drag to reorder)</label>
+                                        <div className="flex items-center justify-between">
+                                            <label className="text-xs font-black tracking-widest text-slate-400 uppercase">Colors (Image & Name)</label>
+                                            <span className="text-[11px] text-slate-400">Drag to reorder</span>
+                                        </div>
                                         {data.variations.colors.map((color: any, index: number) => (
                                             <div
                                                 key={index}
@@ -492,7 +500,7 @@ export default function EditProduct({ categories, product }: EditProps) {
                                                 onDragStart={() => handleVarDragStart('colors', index)}
                                                 onDragOver={handleVarDragOver}
                                                 onDrop={() => handleVarDrop('colors', index)}
-                                                className="flex items-center gap-2 rounded-md border border-slate-200 bg-white p-1.5 shadow-xs transition-colors hover:border-slate-300"
+                                                className="flex items-center gap-2.5 rounded-lg border border-slate-200 bg-white p-2 shadow-xs transition-colors hover:border-slate-300"
                                             >
                                                 <button
                                                     type="button"
@@ -521,47 +529,57 @@ export default function EditProduct({ categories, product }: EditProps) {
                                                         <ArrowDown className="h-3 w-3" />
                                                     </button>
                                                 </div>
+
+                                                {/* Prominent Image Preview / Upload */}
+                                                <div className="relative">
+                                                    <label
+                                                        className="relative flex h-11 w-11 flex-none cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 transition-colors hover:border-slate-400 hover:bg-slate-100"
+                                                        title="Upload variation image"
+                                                    >
+                                                        {color.image ? (
+                                                            <img
+                                                                src={typeof color.image === 'string' ? color.image : URL.createObjectURL(color.image)}
+                                                                alt={color.label || `Color ${index + 1}`}
+                                                                className="h-full w-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex flex-col items-center justify-center text-slate-400">
+                                                                <ImageIcon className="h-4 w-4" />
+                                                                <span className="text-[8px] font-bold">Image</span>
+                                                            </div>
+                                                        )}
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            className="hidden"
+                                                            onChange={(e) => updateVariationImage('colors', index, e.target.files?.[0] ?? null)}
+                                                        />
+                                                    </label>
+                                                    {color.image && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => updateVariationImage('colors', index, null)}
+                                                            className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white shadow hover:bg-red-600"
+                                                            title="Remove image"
+                                                        >
+                                                            <X className="h-2.5 w-2.5" />
+                                                        </button>
+                                                    )}
+                                                </div>
+
                                                 <input
                                                     type="text"
                                                     value={color.label}
                                                     onChange={(e) => updateVariation('colors', index, e.target.value)}
                                                     className="flex-1 rounded-md border border-slate-200 px-3 py-1.5 text-sm transition-colors focus:border-slate-400 focus:ring-0 focus:outline-none"
-                                                    placeholder="e.g. Red"
+                                                    placeholder={`Color name (e.g. Color ${index + 1})`}
                                                 />
-                                                <label
-                                                    className="relative flex h-8 w-8 flex-none cursor-pointer items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-slate-50 transition-colors hover:border-slate-400 hover:bg-slate-100"
-                                                    title="Upload color image"
-                                                >
-                                                    {color.image ? (
-                                                        <img
-                                                            src={typeof color.image === 'string' ? color.image : URL.createObjectURL(color.image)}
-                                                            alt={color.label || 'Color'}
-                                                            className="h-full w-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <ImageIcon className="h-4 w-4 text-slate-400" />
-                                                    )}
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="hidden"
-                                                        onChange={(e) => updateVariationImage('colors', index, e.target.files?.[0] ?? null)}
-                                                    />
-                                                </label>
-                                                {color.image && (
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => updateVariationImage('colors', index, null)}
-                                                        className="rounded-md p-1 text-slate-400 transition-colors hover:text-red-500"
-                                                        title="Remove color image"
-                                                    >
-                                                        <X className="h-3.5 w-3.5" />
-                                                    </button>
-                                                )}
+
                                                 <button
                                                     type="button"
                                                     onClick={() => removeVariation('colors', index)}
                                                     className="rounded-md border border-slate-200 p-2 text-slate-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+                                                    title="Remove variation"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </button>

@@ -337,36 +337,55 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                 {(product.variations.colors.filter((c) => getLabel(c)?.trim()).length > 0 ||
                                     product.variations.sizes.filter((s) => getLabel(s)?.trim()).length > 0) && (
                                     <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                                        {product.variations.colors.filter((c) => getLabel(c)?.trim()).length > 0 && (
+                                        {product.variations.colors.filter((c, i) => getLabel(c)?.trim() || getColorImage(c, i)).length > 0 && (
                                             <div>
-                                                <div className="mb-2 text-xs font-black tracking-wider uppercase" style={{ color: P.earthMid }}>
-                                                    কালার
+                                                <div className="mb-2 flex items-center gap-2 text-xs font-black tracking-wider uppercase" style={{ color: P.earthMid }}>
+                                                    <span>কালার</span>
+                                                    {selectedColor && (
+                                                        <>
+                                                            <span className="text-gray-300">:</span>
+                                                            <span className="capitalize" style={{ color: P.sage }}>{selectedColor}</span>
+                                                        </>
+                                                    )}
                                                 </div>
-                                                <div className="flex flex-wrap gap-2.5">
+                                                <div className="flex flex-wrap items-center gap-3">
                                                     {product.variations.colors.map((c, index) => {
-                                                        const label = getLabel(c);
+                                                        const label = getLabel(c) || `Color ${index + 1}`;
                                                         const colorImg = getColorImage(c, index);
-                                                        if (!label?.trim()) return null;
                                                         const isSelected = selectedColor === label;
                                                         return (
                                                             <button
-                                                                key={label}
+                                                                key={label || index}
+                                                                type="button"
+                                                                title={label}
                                                                 onClick={() => selectColor(label, colorImg)}
-                                                                className="inline-flex items-center gap-2 rounded-xl border-2 px-3 py-1.5 text-sm font-bold transition-all"
+                                                                className={`group relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-xl border-2 p-0.5 transition-all duration-200 ${
+                                                                    isSelected ? 'scale-105 shadow-md' : 'hover:scale-102'
+                                                                }`}
                                                                 style={{
                                                                     borderColor: isSelected ? P.sage : P.border,
-                                                                    background: isSelected ? P.sage : P.white,
-                                                                    color: isSelected ? P.white : P.earth,
+                                                                    background: P.white,
                                                                 }}
                                                             >
-                                                                {colorImg && (
+                                                                {colorImg ? (
                                                                     <img
                                                                         src={colorImg}
                                                                         alt={label}
-                                                                        className="h-7 w-7 flex-none rounded-lg object-cover border border-black/10"
+                                                                        className="h-full w-full rounded-lg object-cover"
                                                                     />
+                                                                ) : (
+                                                                    <span className="flex h-full w-full items-center justify-center rounded-lg bg-gray-100 p-1 text-center text-[11px] font-bold text-gray-700">
+                                                                        {label}
+                                                                    </span>
                                                                 )}
-                                                                <span>{label}</span>
+                                                                {isSelected && (
+                                                                    <span
+                                                                        className="absolute bottom-1 right-1 flex h-4 w-4 items-center justify-center rounded-full text-white shadow-sm ring-1 ring-white"
+                                                                        style={{ background: P.sage }}
+                                                                    >
+                                                                        <Check className="h-2.5 w-2.5 stroke-[3]" />
+                                                                    </span>
+                                                                )}
                                                             </button>
                                                         );
                                                     })}

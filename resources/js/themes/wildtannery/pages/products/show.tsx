@@ -440,38 +440,53 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                         return l && l.trim();
                                     }).length > 0) && (
                                     <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                                        {product.variations.colors.filter((c) => {
+                                        {product.variations.colors.filter((c, i) => {
                                             const l = getLabel(c);
-                                            return l && l.trim();
+                                            return (l && l.trim()) || getColorImage(c, i);
                                         }).length > 0 && (
                                             <div>
-                                                <div className="text-xs font-bold tracking-wider text-gray-300 uppercase">কালার সিলেক্ট করুন</div>
-                                                <div className="mt-3 flex flex-wrap gap-2.5">
+                                                <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-gray-300 uppercase">
+                                                    <span>কালার সিলেক্ট করুন</span>
+                                                    {selectedColor && (
+                                                        <>
+                                                            <span className="text-gray-600">:</span>
+                                                            <span className="font-bold capitalize text-[#cba876]">{selectedColor}</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                                <div className="mt-3 flex flex-wrap items-center gap-3">
                                                     {product.variations.colors.map((color, index) => {
-                                                        const label = getLabel(color);
+                                                        const label = getLabel(color) || `Color ${index + 1}`;
                                                         const colorImg = getColorImage(color, index);
-                                                        if (!label || !label.trim()) return null;
                                                         const isSelected = selectedColor === label;
                                                         return (
                                                             <button
-                                                                key={label}
+                                                                key={label || index}
                                                                 type="button"
-                                                                className={`inline-flex items-center gap-2.5 rounded-xl border px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${
+                                                                title={label}
+                                                                className={`group relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-xl border-2 p-0.5 transition-all duration-200 ${
                                                                     isSelected
-                                                                        ? 'border-[#cba876] bg-[#cba876] text-black shadow-md shadow-[#cba876]/20'
-                                                                        : 'border-white/10 bg-[#0d0d0d] text-gray-300 hover:border-white/30 hover:text-white'
+                                                                        ? 'border-[#cba876] ring-2 ring-[#cba876]/30 shadow-md shadow-[#cba876]/20 scale-105'
+                                                                        : 'border-white/10 bg-[#0d0d0d] hover:border-white/30 hover:scale-102'
                                                                 }`}
                                                                 onClick={() => selectColor(label, colorImg)}
                                                             >
-                                                                {colorImg && (
+                                                                {colorImg ? (
                                                                     <img
                                                                         src={colorImg}
                                                                         alt={label}
-                                                                        className={`h-7 w-7 flex-none rounded-lg object-cover border ${isSelected ? 'border-black/30' : 'border-white/20'}`}
+                                                                        className="h-full w-full rounded-lg object-cover"
                                                                     />
+                                                                ) : (
+                                                                    <span className="flex h-full w-full items-center justify-center rounded-lg bg-white/5 p-1 text-center text-[11px] font-bold text-gray-300">
+                                                                        {label}
+                                                                    </span>
                                                                 )}
-                                                                <span>{label}</span>
-                                                                {isSelected && <Check className="h-3.5 w-3.5 stroke-[3] flex-none" />}
+                                                                {isSelected && (
+                                                                    <span className="absolute bottom-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#cba876] text-black shadow-sm ring-1 ring-black/40">
+                                                                        <Check className="h-2.5 w-2.5 stroke-[3]" />
+                                                                    </span>
+                                                                )}
                                                             </button>
                                                         );
                                                     })}
