@@ -124,12 +124,19 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                 <div className={`flex-1 flex flex-col justify-between ${isShutkiTheme ? 'px-2 pb-2.5 pt-2 sm:px-4 sm:pt-3 sm:pb-4' : 'px-4 pt-3 pb-4'}`}>
                                     <div>
                                         <h3 className={`font-bold text-slate-950 ${isShutkiTheme ? 'line-clamp-2 text-xs sm:text-[1.05rem] leading-tight' : 'line-clamp-1 text-[1.05rem] leading-6'}`}>{product.name}</h3>
-                                        <div className={`font-black text-orange-600 ${isShutkiTheme ? 'mt-1 text-sm sm:text-[1.35rem] leading-none' : 'mt-2 text-[1.35rem] leading-none'}`}>{product.price}</div>
-
-                                        <div className={`flex flex-wrap items-center gap-x-1.5 gap-y-0.5 font-semibold ${isShutkiTheme ? 'mt-1 text-[10px] sm:text-xs' : 'mt-3 text-xs'}`}>
-                                            {product.old_price && <span className="text-slate-400 line-through whitespace-nowrap">{product.old_price}</span>}
+                                        <div className="mt-2 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                                            <span className={`font-black text-orange-600 ${isShutkiTheme ? 'text-sm sm:text-[1.35rem]' : 'text-[1.35rem]'} leading-none`}>
+                                                {product.price}
+                                            </span>
+                                            {product.old_price && (
+                                                <span className="text-sm sm:text-base font-semibold text-slate-400 line-through whitespace-nowrap">
+                                                    {product.old_price}
+                                                </span>
+                                            )}
                                             {product.discount_text && (
-                                                <span className="rounded bg-orange-50 px-1.5 py-0.5 text-[9px] sm:text-[10px] sm:text-xs text-orange-600 whitespace-nowrap">{product.discount_text}</span>
+                                                <span className="rounded bg-orange-50 px-2 py-0.5 text-xs sm:text-[13px] font-bold text-orange-600 whitespace-nowrap">
+                                                    {product.discount_text}
+                                                </span>
                                             )}
                                         </div>
                                     </div>
