@@ -33,6 +33,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
     }
 
     const isShutkiTheme = settings?.site_theme === 'shutki';
+    const isEnglish = settings?.site_theme === 'example' || settings?.site_theme === 'wildtannery';
     const primaryColor = isShutkiTheme ? 'hsl(89,32%,54%)' : '#cba876';
     const hoverColor = isShutkiTheme ? 'hsl(89,35%,42%)' : '#b89563';
     const textColor = isShutkiTheme ? 'hsl(89,32%,54%)' : '#cba876';
@@ -151,7 +152,7 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                                 e.currentTarget.style.color = textColor;
                                             }}
                                         >
-                                            বিস্তারিত দেখুন
+                                            {isEnglish ? 'View Details' : 'বিস্তারিত দেখুন'}
                                         </div>
                                     ) : (
                                         <div
@@ -171,7 +172,9 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                                             }}
                                             onClick={(e) => handleAddToCart(e, product)}
                                         >
-                                            {isAdded ? 'যুক্ত করা হয়েছে! ✓' : 'কার্টে যুক্ত করুন'}
+                                            {isAdded
+                                                ? (isEnglish ? 'Added! ✓' : 'যুক্ত করা হয়েছে! ✓')
+                                                : (isEnglish ? 'Add to Cart' : 'কার্টে যুক্ত করুন')}
                                         </div>
                                     )}
                                 </div>
