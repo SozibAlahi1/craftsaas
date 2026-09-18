@@ -146,7 +146,7 @@ export default function Index({ products, initialCategory = 'All', initialCatego
                                     )}
                                 </div>
                                 <div className="mt-3 flex flex-col justify-between">
-                                    <h3 className="line-clamp-1 text-sm font-bold text-slate-900 transition-colors group-hover:text-orange-600">
+                                    <h3 className="line-clamp-2 text-sm font-bold text-slate-900 transition-colors group-hover:text-orange-600 min-h-[2.5rem]">
                                         {product.name}
                                     </h3>
                                     <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">

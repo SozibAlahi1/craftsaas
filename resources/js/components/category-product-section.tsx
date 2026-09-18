@@ -27,6 +27,7 @@ interface CategoryProductSectionProps {
 export function CategoryProductSection({ category }: CategoryProductSectionProps) {
     const { settings } = usePage().props as any;
     const [addedProductId, setAddedProductId] = useState<number | null>(null);
+    const [bannerError, setBannerError] = useState(false);
 
     if (!category.products || category.products.length === 0) {
         return null;
@@ -82,21 +83,41 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
         );
     };
 
+    const bannerSrc = category.banner_image
+        ? category.banner_image.startsWith('http') || category.banner_image.startsWith('/')
+            ? category.banner_image
+            : `/storage/${category.banner_image}`
+        : null;
+
     return (
-        <div className="space-y-4 py-4 sm:py-6 lg:py-8">
-            {/* Category Banner (Clickable Heading) */}
-            {category.banner_image && (
+        <div className="space-y-3 sm:space-y-4 py-3 sm:py-6 lg:py-8">
+            {/* Category Banner (Clickable Heading) or Fallback Text Header */}
+            {bannerSrc && !bannerError ? (
                 <Link
                     href={route('products.index', { category: category.slug })}
                     className="group block overflow-hidden rounded-md transition-transform duration-500 hover:scale-[1.01]"
                 >
                     <img
-                        src={category.banner_image}
+                        src={bannerSrc}
                         alt={category.name}
                         className="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105"
                         loading="lazy"
+                        onError={() => setBannerError(true)}
                     />
                 </Link>
+            ) : (
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                    <h2 className="text-base sm:text-xl font-bold tracking-tight text-slate-900 uppercase">
+                        {category.name}
+                    </h2>
+                    <Link
+                        href={route('products.index', { category: category.slug })}
+                        className="text-xs sm:text-sm font-semibold transition-colors hover:underline"
+                        style={{ color: primaryColor }}
+                    >
+                        {isEnglish ? 'View All' : 'সব দেখুন'} &rarr;
+                    </Link>
+                </div>
             )}
 
             {/* Product Grid */}
@@ -104,87 +125,92 @@ export function CategoryProductSection({ category }: CategoryProductSectionProps
                 {category.products.map((product) => {
                     const isVariable = isVariableProduct(product);
                     const isAdded = addedProductId === product.id;
+                    const productImage = product.image
+                        ? product.image.startsWith('http') || product.image.startsWith('/')
+                            ? product.image
+                            : `/storage/${product.image}`
+                        : '/images/placeholder.png';
 
                     return (
                         <Link
                             key={product.id}
                             href={route('products.show', product.slug)}
-                            className="block h-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-slate-300"
+                            className="group flex h-full flex-col overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md"
                         >
-                            <div className={`flex h-full ${isShutkiTheme ? 'min-h-0' : 'min-h-[380px]'} flex-col`}>
-                                <div className="relative w-full aspect-square overflow-hidden bg-white">
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="w-full h-full object-cover"
-                                        loading="lazy"
-                                    />
-                                </div>
+                            <div className="relative w-full aspect-square overflow-hidden bg-slate-100">
+                                <img
+                                    src={productImage}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    loading="lazy"
+                                />
+                            </div>
 
-                                <div className={`flex-1 flex flex-col justify-between ${isShutkiTheme ? 'px-2 pb-2.5 pt-2 sm:px-4 sm:pt-3 sm:pb-4' : 'px-4 pt-3 pb-4'}`}>
-                                    <div>
-                                        <h3 className={`font-bold text-slate-950 ${isShutkiTheme ? 'line-clamp-2 text-xs sm:text-[1.05rem] leading-tight' : 'line-clamp-1 text-[1.05rem] leading-6'}`}>{product.name}</h3>
-                                        <div className="mt-2 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                                            <span className={`font-black text-orange-600 ${isShutkiTheme ? 'text-sm sm:text-[1.35rem]' : 'text-[1.35rem]'} leading-none`}>
-                                                {product.price}
+                            <div className="flex flex-1 flex-col justify-between p-2.5 sm:p-4">
+                                <div>
+                                    <h3 className="line-clamp-2 text-xs sm:text-sm font-bold text-slate-950 leading-snug min-h-[2rem] sm:min-h-[2.5rem]">
+                                        {product.name}
+                                    </h3>
+                                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                        <span className="text-sm sm:text-base font-black text-orange-600 leading-none whitespace-nowrap">
+                                            {product.price}
+                                        </span>
+                                        {product.old_price && (
+                                            <span className="text-[11px] sm:text-xs font-semibold text-slate-400 line-through whitespace-nowrap">
+                                                {product.old_price}
                                             </span>
-                                            {product.old_price && (
-                                                <span className="text-sm sm:text-base font-semibold text-slate-400 line-through whitespace-nowrap">
-                                                    {product.old_price}
-                                                </span>
-                                            )}
-                                            {product.discount_text && (
-                                                <span className="rounded bg-orange-50 px-2 py-0.5 text-xs sm:text-[13px] font-bold text-orange-600 whitespace-nowrap">
-                                                    {product.discount_text}
-                                                </span>
-                                            )}
-                                        </div>
+                                        )}
+                                        {product.discount_text && (
+                                            <span className="rounded bg-orange-50 px-1.5 py-0.5 text-[10px] sm:text-xs font-bold text-orange-600 whitespace-nowrap">
+                                                {product.discount_text}
+                                            </span>
+                                        )}
                                     </div>
-
-                                    {/* Action Button */}
-                                    {isVariable ? (
-                                        <div
-                                            className={`w-full rounded-full border text-center font-black tracking-wider uppercase transition-all duration-300 ${isShutkiTheme ? 'mt-2 py-1 sm:py-2 text-[10px] sm:text-xs' : 'mt-4 py-2 text-xs'}`}
-                                            style={{
-                                                borderColor: primaryColor,
-                                                color: textColor,
-                                                backgroundColor: 'transparent',
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.currentTarget.style.backgroundColor = primaryColor;
-                                                e.currentTarget.style.color = textHoverColor;
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.currentTarget.style.backgroundColor = 'transparent';
-                                                e.currentTarget.style.color = textColor;
-                                            }}
-                                        >
-                                            {isEnglish ? 'View Details' : 'বিস্তারিত দেখুন'}
-                                        </div>
-                                    ) : (
-                                        <div
-                                            className={`w-full rounded-full text-center font-black tracking-wider uppercase text-white shadow-sm transition-all duration-300 ${isShutkiTheme ? 'mt-2 py-1 sm:py-2 text-[10px] sm:text-xs' : 'mt-4 py-2 text-xs'}`}
-                                            style={{
-                                                backgroundColor: isAdded ? '#10b981' : primaryColor,
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                if (!isAdded) {
-                                                    e.currentTarget.style.backgroundColor = hoverColor;
-                                                }
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                if (!isAdded) {
-                                                    e.currentTarget.style.backgroundColor = primaryColor;
-                                                }
-                                            }}
-                                            onClick={(e) => handleAddToCart(e, product)}
-                                        >
-                                            {isAdded
-                                                ? (isEnglish ? 'Added! ✓' : 'যুক্ত করা হয়েছে! ✓')
-                                                : (isEnglish ? 'Add to Cart' : 'কার্টে যুক্ত করুন')}
-                                        </div>
-                                    )}
                                 </div>
+
+                                {/* Action Button */}
+                                {isVariable ? (
+                                    <div
+                                        className="mt-2.5 w-full rounded-full border text-center font-bold tracking-wider uppercase transition-all duration-300 py-1.5 sm:py-2 text-[10px] sm:text-xs"
+                                        style={{
+                                            borderColor: primaryColor,
+                                            color: textColor,
+                                            backgroundColor: 'transparent',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.backgroundColor = primaryColor;
+                                            e.currentTarget.style.color = textHoverColor;
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                            e.currentTarget.style.color = textColor;
+                                        }}
+                                    >
+                                        {isEnglish ? 'View Details' : 'বিস্তারিত দেখুন'}
+                                    </div>
+                                ) : (
+                                    <div
+                                        className="mt-2.5 w-full rounded-full text-center font-bold tracking-wider uppercase text-white shadow-sm transition-all duration-300 py-1.5 sm:py-2 text-[10px] sm:text-xs"
+                                        style={{
+                                            backgroundColor: isAdded ? '#10b981' : primaryColor,
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (!isAdded) {
+                                                e.currentTarget.style.backgroundColor = hoverColor;
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (!isAdded) {
+                                                e.currentTarget.style.backgroundColor = primaryColor;
+                                            }
+                                        }}
+                                        onClick={(e) => handleAddToCart(e, product)}
+                                    >
+                                        {isAdded
+                                            ? (isEnglish ? 'Added! ✓' : 'যুক্ত করা হয়েছে! ✓')
+                                            : (isEnglish ? 'Add to Cart' : 'কার্টে যুক্ত করুন')}
+                                    </div>
+                                )}
                             </div>
                         </Link>
                     );
