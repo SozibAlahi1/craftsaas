@@ -1,9 +1,13 @@
-import { StorefrontFooter } from '@/components/storefront-footer';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { AlertCircle, ChevronRight, Contact, CreditCard, Lock, ShieldCheck, ShoppingBag, Truck } from 'lucide-react';
-import { Header as StorefrontHeader } from '../../themes/wildtannery/components/Header';
+import {
+    AlertCircle,
+    ChevronDown,
+    ChevronRight,
+    Lock,
+    ShieldCheck,
+    ShoppingBag,
+} from 'lucide-react';
+import React, { useState } from 'react';
 
 interface CartItem {
     slug: string;
@@ -23,6 +27,9 @@ export default function Checkout({ cart }: CheckoutProps) {
     const { props } = usePage();
     const settings = props.settings as any;
 
+    const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+    const [discountCode, setDiscountCode] = useState('');
+
     const { data, setData, post, processing, errors } = useForm({
         full_name: '',
         phone: '',
@@ -33,11 +40,16 @@ export default function Checkout({ cart }: CheckoutProps) {
 
     const cartItems = Object.entries(cart);
     const subtotal = cartItems.reduce((sum, [_, item]) => {
-        const price = parseInt(item.price.replace(/[^\d]/g, ''));
+        const price = parseInt(item.price.replace(/[^\d]/g, '')) || 0;
         return sum + price * item.quantity;
     }, 0);
-    const shipping_cost_inside = settings?.shipping_cost_inside_dhaka ? parseInt(settings.shipping_cost_inside_dhaka) : 60;
-    const shipping_cost_outside = settings?.shipping_cost_outside_dhaka ? parseInt(settings.shipping_cost_outside_dhaka) : 120;
+
+    const shipping_cost_inside = settings?.shipping_cost_inside_dhaka
+        ? parseInt(settings.shipping_cost_inside_dhaka)
+        : 60;
+    const shipping_cost_outside = settings?.shipping_cost_outside_dhaka
+        ? parseInt(settings.shipping_cost_outside_dhaka)
+        : 120;
     const shipping = data.shipping_area === 'inside' ? shipping_cost_inside : shipping_cost_outside;
     const total = subtotal + shipping;
 
@@ -45,12 +57,8 @@ export default function Checkout({ cart }: CheckoutProps) {
         e.preventDefault();
         post(route('checkout.store'), {
             preserveScroll: true,
-            onSuccess: () => {
-                // Handle success
-            },
-            onError: (errors) => {
-                // Scroll to the first error
-                const firstErrorKey = Object.keys(errors)[0];
+            onError: (errs) => {
+                const firstErrorKey = Object.keys(errs)[0];
                 const element = document.getElementById(firstErrorKey);
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -79,290 +87,480 @@ export default function Checkout({ cart }: CheckoutProps) {
 
     return (
         <>
-            <Head title="Checkout" />
-            <main className="bg-background text-foreground min-h-screen">
-                <StorefrontHeader />
+            <Head title={`Checkout – ${settings?.site_name || 'Store'}`} />
 
-                {/* Header Section */}
-                <div className="bg-card border-border border-b">
-                    <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
-                        <div className="text-muted-foreground mb-4 flex items-center gap-2 text-sm font-medium">
-                            <Link href={route('home')} className="hover:text-foreground transition-colors">
-                                Home
-                            </Link>
-                            <ChevronRight className="h-4 w-4" />
-                            <Link href={route('products.index')} className="hover:text-foreground transition-colors">
-                                Shop
-                            </Link>
-                            <ChevronRight className="h-4 w-4" />
-                            <span className="text-foreground font-bold">Checkout</span>
-                        </div>
-                        <h1 className="text-foreground text-3xl font-black tracking-tight sm:text-4xl">Complete Your Order</h1>
-                        <p className="text-muted-foreground mt-2">Please provide your delivery details and choose a payment method.</p>
+            <div className="min-h-screen bg-white font-sans text-slate-800 antialiased selection:bg-slate-900 selection:text-white">
+                {/* Mobile Header with Logo & Collapsible Order Summary */}
+                <header className="border-b border-slate-200 bg-white lg:hidden">
+                    <div className="flex items-center justify-between px-4 py-3.5">
+                        <Link href={route('home')} className="flex items-center gap-2">
+                            {settings?.site_logo_url ? (
+                                <img
+                                    src={settings.site_logo_url}
+                                    alt={settings?.site_name || 'Logo'}
+                                    className="h-8 max-h-8 w-auto object-contain"
+                                />
+                            ) : (
+                                <span className="text-lg font-bold tracking-tight text-slate-900">
+                                    {settings?.site_name || 'Store'}
+                                </span>
+                            )}
+                        </Link>
                     </div>
-                </div>
 
-                <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
-                    <form onSubmit={handleSubmit} noValidate className="lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12">
-                        {/* Left Column: Form Sections */}
-                        <div className="space-y-6 lg:col-span-7">
-                            {/* Contact & Shipping Information */}
-                            <section className="border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6">
-                                <div className="border-border mb-5 flex items-center gap-3 border-b pb-4">
-                                    <div className="bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full shadow-md">
-                                        <Contact className="h-5 w-5" />
-                                    </div>
-                                    <h2 className="text-foreground text-xl font-bold tracking-tight">Delivery Information</h2>
+                    {/* Mobile Order Summary Bar */}
+                    <div className="border-t border-slate-200 bg-[#fafafa]">
+                        <button
+                            type="button"
+                            onClick={() => setIsSummaryOpen((prev) => !prev)}
+                            className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm transition-colors hover:bg-slate-100/60"
+                        >
+                            <span className="flex items-center gap-2 font-medium text-sky-700">
+                                <ShoppingBag className="h-4 w-4" />
+                                <span>{isSummaryOpen ? 'Hide order summary' : 'Show order summary'}</span>
+                                <ChevronDown
+                                    className={`h-4 w-4 transition-transform duration-200 ${
+                                        isSummaryOpen ? 'rotate-180' : ''
+                                    }`}
+                                />
+                            </span>
+                            <span className="text-base font-bold text-slate-900">৳{total.toLocaleString()}</span>
+                        </button>
+
+                        {/* Collapsible Mobile Cart Drawer */}
+                        {isSummaryOpen && (
+                            <div className="border-t border-slate-200 px-4 pt-4 pb-6">
+                                <div className="space-y-3.5">
+                                    {cartItems.map(([id, item]) => (
+                                        <div key={id} className="flex items-center gap-3">
+                                            <div className="relative flex h-16 w-16 flex-none items-center justify-center rounded-lg border border-slate-200 bg-white p-0.5">
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    className="h-full w-full rounded-md object-cover"
+                                                />
+                                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-slate-500 text-[11px] font-semibold text-white shadow ring-2 ring-white">
+                                                    {item.quantity}
+                                                </span>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="line-clamp-2 text-sm font-medium text-slate-900">
+                                                    {item.name}
+                                                </h4>
+                                                {(item.color || item.size) && (
+                                                    <p className="mt-0.5 text-xs text-slate-500">
+                                                        {item.color}
+                                                        {item.color && item.size ? ' / ' : ''}
+                                                        {item.size}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <div className="text-sm font-medium text-slate-900">
+                                                ৳{parseInt(item.price.replace(/[^\d]/g, '') || '0').toLocaleString()}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
 
-                                <div className="space-y-4">
-                                    {/* Personal Details */}
-                                    <div className="space-y-4">
-                                        <div className="w-full">
-                                            <label htmlFor="full_name" className="text-muted-foreground mb-1 block text-sm font-bold">
-                                                Full Name
+                                <div className="mt-5 space-y-2.5 border-t border-slate-200 pt-4 text-sm">
+                                    <div className="flex justify-between text-slate-600">
+                                        <span>Subtotal</span>
+                                        <span className="font-medium text-slate-900">৳{subtotal.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between text-slate-600">
+                                        <span>Shipping</span>
+                                        <span className="font-medium text-slate-900">৳{shipping}</span>
+                                    </div>
+                                    <div className="flex justify-between border-t border-slate-200 pt-2.5 text-base font-bold text-slate-900">
+                                        <span>Total</span>
+                                        <span>
+                                            <span className="mr-1 text-xs font-normal text-slate-500">BDT</span>
+                                            ৳{total.toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </header>
+
+                {/* Main 2-Column Shopify Layout */}
+                <div className="mx-auto max-w-7xl">
+                    <div className="lg:grid lg:grid-cols-12 lg:min-h-screen">
+                        {/* LEFT COLUMN: Checkout Form (~58% width on desktop) */}
+                        <div className="px-4 py-8 sm:px-6 lg:col-span-7 lg:px-12 lg:py-10">
+                            <div className="mx-auto max-w-xl">
+                                {/* Desktop Logo */}
+                                <div className="mb-6 hidden lg:block">
+                                    <Link href={route('home')} className="inline-block">
+                                        {settings?.site_logo_url ? (
+                                            <img
+                                                src={settings.site_logo_url}
+                                                alt={settings?.site_name || 'Logo'}
+                                                className="h-9 max-h-9 w-auto object-contain"
+                                            />
+                                        ) : (
+                                            <span className="text-2xl font-black tracking-tight text-slate-900">
+                                                {settings?.site_name || 'Store'}
+                                            </span>
+                                        )}
+                                    </Link>
+                                </div>
+
+                                {/* Shopify Breadcrumb Trail */}
+                                <nav className="mb-8 hidden items-center gap-1.5 text-xs text-slate-500 lg:flex">
+                                    <Link href={route('home')} className="hover:text-slate-900">
+                                        Cart
+                                    </Link>
+                                    <ChevronRight className="h-3 w-3 text-slate-400" />
+                                    <span className="font-semibold text-slate-900">Information</span>
+                                    <ChevronRight className="h-3 w-3 text-slate-400" />
+                                    <span>Shipping</span>
+                                    <ChevronRight className="h-3 w-3 text-slate-400" />
+                                    <span>Payment</span>
+                                </nav>
+
+                                <form onSubmit={handleSubmit} noValidate className="space-y-8">
+                                    {/* Contact Section */}
+                                    <section>
+                                        <div className="mb-3 flex items-center justify-between">
+                                            <h2 className="text-base font-semibold text-slate-900">Contact</h2>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <div className="relative">
+                                                <input
+                                                    type="tel"
+                                                    id="phone"
+                                                    value={data.phone}
+                                                    onChange={(e) => setData('phone', e.target.value)}
+                                                    onBlur={handleSaveContact}
+                                                    placeholder="Phone number (e.g. 01XXXXXXXXX)"
+                                                    className={`w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all ${
+                                                        errors.phone
+                                                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                                                            : 'border-slate-300'
+                                                    }`}
+                                                />
+                                            </div>
+                                            {errors.phone && (
+                                                <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
+                                                    <AlertCircle className="h-3.5 w-3.5 flex-none" />
+                                                    {errors.phone}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </section>
+
+                                    {/* Delivery Address Section */}
+                                    <section className="space-y-4">
+                                        <h2 className="text-base font-semibold text-slate-900">Delivery</h2>
+
+                                        {/* Country/Region (Fixed to Bangladesh) */}
+                                        <div>
+                                            <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wider mb-1">
+                                                Country / Region
                                             </label>
-                                            <Input
+                                            <div className="flex h-10 w-full items-center justify-between rounded-md border border-slate-300 bg-slate-50 px-3 text-sm text-slate-700">
+                                                <span>Bangladesh</span>
+                                                <Lock className="h-3.5 w-3.5 text-slate-400" />
+                                            </div>
+                                        </div>
+
+                                        {/* Full Name */}
+                                        <div className="space-y-1.5">
+                                            <input
                                                 type="text"
                                                 id="full_name"
                                                 value={data.full_name}
                                                 onChange={(e) => setData('full_name', e.target.value)}
                                                 onBlur={handleSaveContact}
-                                                placeholder="e.g. John Doe"
-                                                className={`border-border bg-muted/50 focus:bg-card focus:border-primary h-12 transition-all ${errors.full_name ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
+                                                placeholder="Full name"
+                                                className={`w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all ${
+                                                    errors.full_name
+                                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                                                        : 'border-slate-300'
+                                                }`}
                                             />
                                             {errors.full_name && (
-                                                <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600">
-                                                    <AlertCircle className="h-3 w-3" />
+                                                <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
+                                                    <AlertCircle className="h-3.5 w-3.5 flex-none" />
                                                     {errors.full_name}
                                                 </p>
                                             )}
                                         </div>
 
-                                        <div className="w-full">
-                                            <label htmlFor="phone" className="text-muted-foreground mb-1 block text-sm font-bold">
-                                                Phone Number
-                                            </label>
-                                            <Input
-                                                type="tel"
-                                                id="phone"
-                                                value={data.phone}
-                                                onChange={(e) => setData('phone', e.target.value)}
-                                                onBlur={handleSaveContact}
-                                                placeholder="e.g. 01XXXXXXXXX"
-                                                className={`border-border bg-muted/50 focus:bg-card focus:border-primary h-12 transition-all ${errors.phone ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
-                                            />
-                                            {errors.phone && (
-                                                <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600">
-                                                    <AlertCircle className="h-3 w-3" />
-                                                    {errors.phone}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Address Details */}
-                                    <div className="pt-1">
-                                        <div>
-                                            <label htmlFor="address" className="text-muted-foreground mb-1 block text-sm font-bold">
-                                                Full Address
-                                            </label>
-                                            <Textarea
+                                        {/* Address */}
+                                        <div className="space-y-1.5">
+                                            <textarea
                                                 id="address"
                                                 rows={3}
                                                 value={data.address}
                                                 onChange={(e) => setData('address', e.target.value)}
                                                 onBlur={handleSaveContact}
-                                                placeholder="House no, Street name, Area..."
-                                                className={`border-border bg-muted/50 focus:bg-card focus:border-primary transition-all ${errors.address ? 'border-rose-500 bg-rose-50/30 focus:border-rose-500' : ''}`}
+                                                placeholder="Address (House number, road name, area, thana/district)"
+                                                className={`w-full resize-none rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all ${
+                                                    errors.address
+                                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                                                        : 'border-slate-300'
+                                                }`}
                                             />
                                             {errors.address && (
-                                                <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 flex items-center gap-1 text-xs font-bold text-rose-600">
-                                                    <AlertCircle className="h-3 w-3" />
+                                                <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
+                                                    <AlertCircle className="h-3.5 w-3.5 flex-none" />
                                                     {errors.address}
                                                 </p>
                                             )}
                                         </div>
-                                    </div>
-                                </div>
-                            </section>
+                                    </section>
 
-                            {/* Shipping Area */}
-                            <section className="border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6">
-                                <div className="mb-5 flex items-center gap-3">
-                                    <div className="bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full shadow-md">
-                                        <Truck className="h-5 w-5" />
-                                    </div>
-                                    <h2 className="text-foreground text-xl font-bold tracking-tight">Select Shipping Area</h2>
-                                </div>
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <label
-                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.shipping_area === 'inside' ? 'border-primary bg-muted ring-primary ring-2' : 'border-border hover:border-border/80 bg-card'}`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="shipping_area"
-                                            value="inside"
-                                            checked={data.shipping_area === 'inside'}
-                                            onChange={() => setData('shipping_area', 'inside')}
-                                            className="sr-only"
-                                        />
-                                        <span className="flex flex-1">
-                                            <span className="flex flex-col">
-                                                <span className="text-foreground block text-[15px] font-black">Inside Dhaka</span>
-                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium">
-                                                    Delivery Charge: ৳{shipping_cost_inside}
-                                                </span>
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <label
-                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.shipping_area === 'outside' ? 'border-primary bg-muted ring-primary ring-2' : 'border-border hover:border-border/80 bg-card'}`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="shipping_area"
-                                            value="outside"
-                                            checked={data.shipping_area === 'outside'}
-                                            onChange={() => setData('shipping_area', 'outside')}
-                                            className="sr-only"
-                                        />
-                                        <span className="flex flex-1">
-                                            <span className="flex flex-col">
-                                                <span className="text-foreground block text-[15px] font-black">Outside Dhaka</span>
-                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium">
-                                                    Delivery Charge: ৳{shipping_cost_outside}
-                                                </span>
-                                            </span>
-                                        </span>
-                                    </label>
-                                </div>
-                                {errors.shipping_area && (
-                                    <p className="animate-in fade-in slide-in-from-top-1 mt-1.5 flex items-center gap-1 text-sm font-bold text-rose-600">
-                                        <AlertCircle className="h-4 w-4" />
-                                        {errors.shipping_area}
-                                    </p>
-                                )}
-                            </section>
+                                    {/* Shipping Method Section (Shopify Box Style) */}
+                                    <section className="space-y-3">
+                                        <h2 className="text-base font-semibold text-slate-900">Shipping method</h2>
 
-                            {/* Payment Method */}
-                            <section className="border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6">
-                                <div className="mb-5 flex items-center gap-3">
-                                    <div className="bg-primary text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full shadow-md">
-                                        <CreditCard className="h-5 w-5" />
-                                    </div>
-                                    <h2 className="text-foreground text-xl font-bold tracking-tight">Payment Method</h2>
-                                </div>
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                                    <label
-                                        className={`relative flex cursor-pointer flex-col rounded-xl border p-4 shadow-sm transition-all focus:outline-none ${data.payment_method === 'cod' ? 'border-primary bg-muted ring-primary ring-2' : 'border-border hover:border-border/80 bg-card'}`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            name="payment_method"
-                                            value="cod"
-                                            checked={data.payment_method === 'cod'}
-                                            onChange={() => setData('payment_method', 'cod')}
-                                            className="sr-only"
-                                        />
-                                        <span className="flex flex-1">
-                                            <span className="flex flex-col">
-                                                <span className="text-foreground block text-[15px] font-black">Cash on Delivery</span>
-                                                <span className="text-muted-foreground mt-1 flex items-center text-xs leading-tight font-medium italic">
-                                                    Pay when you receive the product
+                                        <div className="overflow-hidden rounded-lg border border-slate-300 bg-white divide-y divide-slate-200">
+                                            {/* Inside Dhaka */}
+                                            <label
+                                                className={`flex cursor-pointer items-center justify-between p-4 transition-colors ${
+                                                    data.shipping_area === 'inside'
+                                                        ? 'bg-sky-50/40'
+                                                        : 'hover:bg-slate-50'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <input
+                                                        type="radio"
+                                                        name="shipping_area"
+                                                        value="inside"
+                                                        checked={data.shipping_area === 'inside'}
+                                                        onChange={() => setData('shipping_area', 'inside')}
+                                                        className="h-4 w-4 text-slate-900 border-slate-300 focus:ring-slate-900"
+                                                    />
+                                                    <div>
+                                                        <p className="text-sm font-medium text-slate-900">
+                                                            Inside Dhaka (ঢাকার ভেতরে)
+                                                        </p>
+                                                        <p className="text-xs text-slate-500">1–2 business days</p>
+                                                    </div>
+                                                </div>
+                                                <span className="text-sm font-semibold text-slate-900">
+                                                    ৳{shipping_cost_inside}
                                                 </span>
-                                            </span>
-                                        </span>
-                                        {data.payment_method === 'cod' && (
-                                            <div className="bg-primary text-primary-foreground absolute top-3 right-3 rounded-full p-1">
-                                                <ShieldCheck className="h-4 w-4" />
-                                            </div>
+                                            </label>
+
+                                            {/* Outside Dhaka */}
+                                            <label
+                                                className={`flex cursor-pointer items-center justify-between p-4 transition-colors ${
+                                                    data.shipping_area === 'outside'
+                                                        ? 'bg-sky-50/40'
+                                                        : 'hover:bg-slate-50'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <input
+                                                        type="radio"
+                                                        name="shipping_area"
+                                                        value="outside"
+                                                        checked={data.shipping_area === 'outside'}
+                                                        onChange={() => setData('shipping_area', 'outside')}
+                                                        className="h-4 w-4 text-slate-900 border-slate-300 focus:ring-slate-900"
+                                                    />
+                                                    <div>
+                                                        <p className="text-sm font-medium text-slate-900">
+                                                            Outside Dhaka (ঢাকার বাইরে)
+                                                        </p>
+                                                        <p className="text-xs text-slate-500">2–4 business days</p>
+                                                    </div>
+                                                </div>
+                                                <span className="text-sm font-semibold text-slate-900">
+                                                    ৳{shipping_cost_outside}
+                                                </span>
+                                            </label>
+                                        </div>
+
+                                        {errors.shipping_area && (
+                                            <p className="flex items-center gap-1 text-xs text-red-600">
+                                                <AlertCircle className="h-3.5 w-3.5 flex-none" />
+                                                {errors.shipping_area}
+                                            </p>
                                         )}
-                                    </label>
+                                    </section>
 
+                                    {/* Payment Section (Shopify Accordion Style) */}
+                                    <section className="space-y-3">
+                                        <div>
+                                            <h2 className="text-base font-semibold text-slate-900">Payment</h2>
+                                            <p className="text-xs text-slate-500">
+                                                All transactions are secure and encrypted.
+                                            </p>
+                                        </div>
+
+                                        <div className="overflow-hidden rounded-lg border border-slate-300 bg-white">
+                                            {/* Option: Cash on Delivery */}
+                                            <label
+                                                className={`flex cursor-pointer items-center justify-between p-4 transition-colors ${
+                                                    data.payment_method === 'cod' ? 'bg-sky-50/40' : 'hover:bg-slate-50'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <input
+                                                        type="radio"
+                                                        name="payment_method"
+                                                        value="cod"
+                                                        checked={data.payment_method === 'cod'}
+                                                        onChange={() => setData('payment_method', 'cod')}
+                                                        className="h-4 w-4 text-slate-900 border-slate-300 focus:ring-slate-900"
+                                                    />
+                                                    <span className="text-sm font-medium text-slate-900">
+                                                        Cash on Delivery (COD) / ক্যাশ অন ডেলিভারি
+                                                    </span>
+                                                </div>
+                                                <ShieldCheck className="h-5 w-5 text-slate-400" />
+                                            </label>
+
+                                            {/* Sub-panel when COD is selected */}
+                                            {data.payment_method === 'cod' && (
+                                                <div className="border-t border-slate-200 bg-[#fafafa] p-4 text-xs text-slate-600 leading-relaxed">
+                                                    পণ্য ডেলিভারি পাওয়ার পর দেখে মূল্য পরিশোধ করুন। Pay with cash when
+                                                    your order is delivered to your doorstep.
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {errors.payment_method && (
+                                            <p className="flex items-center gap-1 text-xs text-red-600">
+                                                <AlertCircle className="h-3.5 w-3.5 flex-none" />
+                                                {errors.payment_method}
+                                            </p>
+                                        )}
+                                    </section>
+
+                                    {/* Submit Action Row */}
+                                    <div className="flex flex-col-reverse items-center justify-between gap-4 pt-4 sm:flex-row">
+                                        <Link
+                                            href={route('home')}
+                                            className="text-xs font-medium text-sky-700 hover:text-sky-800 transition-colors"
+                                        >
+                                            ‹ Return to shop
+                                        </Link>
+
+                                        <button
+                                            type="submit"
+                                            disabled={processing}
+                                            className="w-full sm:w-auto sm:px-8 py-3.5 rounded-lg bg-[#1773B0] hover:bg-[#125a8a] text-white text-sm font-semibold shadow-sm transition-all hover:shadow focus:ring-2 focus:ring-[#1773B0] focus:ring-offset-2 focus:outline-none disabled:opacity-60 flex items-center justify-center gap-2"
+                                        >
+                                            {processing ? (
+                                                <>
+                                                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                                    <span>Processing order...</span>
+                                                </>
+                                            ) : (
+                                                <span>Complete order</span>
+                                            )}
+                                        </button>
+                                    </div>
+                                </form>
+
+                                {/* Shopify Minimal Footer Policies */}
+                                <div className="mt-12 border-t border-slate-200 pt-6 text-[11px] text-slate-500">
+                                    <div className="flex flex-wrap gap-x-4 gap-y-2">
+                                        <span className="hover:underline cursor-pointer">Refund policy</span>
+                                        <span className="hover:underline cursor-pointer">Shipping policy</span>
+                                        <span className="hover:underline cursor-pointer">Privacy policy</span>
+                                        <span className="hover:underline cursor-pointer">Terms of service</span>
+                                    </div>
                                 </div>
-                                {errors.payment_method && (
-                                    <p className="animate-in fade-in slide-in-from-top-1 mt-4 flex items-center gap-1 text-sm font-bold text-rose-600">
-                                        <AlertCircle className="h-4 w-4" />
-                                        {errors.payment_method}
-                                    </p>
-                                )}
-                            </section>
-                        </div>
-
-                        {/* Right Column: Order Summary */}
-                        <div className="mt-6 lg:col-span-5 lg:mt-0">
-                            <div className="sticky top-28 space-y-6">
-                                <section className="border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6">
-                                    <h2 className="text-foreground mb-4 flex items-center gap-2.5 text-xl font-bold tracking-tight">
-                                        <ShoppingBag className="h-6 w-6 text-orange-600" />
-                                        Order Summary
-                                    </h2>
-
-                                    <div className="flow-root">
-                                        <ul className="divide-border/50 -my-6 divide-y">
-                                            {cartItems.map(([id, item]) => (
-                                                <li key={id} className="flex py-6">
-                                                    <div className="border-border bg-muted h-20 w-20 flex-none overflow-hidden rounded-md border p-0.5">
-                                                        <img src={item.image} alt={item.name} className="h-full w-full rounded-sm object-cover" />
-                                                    </div>
-                                                    <div className="ml-4 flex flex-1 flex-col justify-between">
-                                                        <div>
-                                                            <h4 className="text-foreground text-sm leading-tight font-bold">{item.name}</h4>
-                                                            <p className="text-muted-foreground mt-1 text-xs font-bold tracking-tight uppercase">
-                                                                {item.color} {item.size ? `/ ${item.size}` : ''}
-                                                            </p>
-                                                        </div>
-                                                        <div className="flex items-center justify-between">
-                                                            <p className="text-muted-foreground text-sm font-bold">Qty: {item.quantity}</p>
-                                                            <p className="text-foreground text-sm font-black">
-                                                                ৳{parseInt(item.price.replace(/[^\d]/g, '')).toLocaleString()}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    <div className="border-border mt-8 space-y-4 border-t pt-8">
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-muted-foreground font-bold tracking-tight uppercase">Subtotal</span>
-                                            <span className="text-foreground font-black">৳{subtotal.toLocaleString()}</span>
-                                        </div>
-                                        <div className="flex items-center justify-between text-sm">
-                                            <div className="flex items-center gap-2">
-                                                <Truck className="text-muted-foreground h-4 w-4" />
-                                                <span className="text-muted-foreground font-bold tracking-tight uppercase">Shipping</span>
-                                            </div>
-                                            <span className="text-foreground font-black">৳{shipping}</span>
-                                        </div>
-                                        <div className="border-border flex items-center justify-between border-t-2 border-dashed pt-4">
-                                            <span className="text-foreground text-lg font-black tracking-tight uppercase">Total Payable</span>
-                                            <span className="text-2xl font-black text-orange-600">৳{total.toLocaleString()}</span>
-                                        </div>
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        disabled={processing}
-                                        className="bg-primary text-primary-foreground hover:bg-primary/95 mt-8 w-full rounded-md px-6 py-4 text-sm font-black tracking-widest uppercase shadow-xl transition-all hover:scale-[1.02] focus:ring-0 focus:ring-offset-0 focus:outline-none active:scale-[0.98] disabled:opacity-50"
-                                    >
-                                        {processing ? 'Processing...' : 'Place Order Now'}
-                                    </button>
-
-                                    <div className="text-muted-foreground mt-6 flex items-center justify-center gap-2 text-[10px] font-black tracking-widest uppercase">
-                                        <Lock className="h-3 w-3" />
-                                        <span>SSL SECURE CHECKOUT</span>
-                                    </div>
-                                </section>
                             </div>
                         </div>
-                    </form>
-                </div>
 
-                <StorefrontFooter />
-            </main>
+                        {/* RIGHT COLUMN: Order Summary Desktop (~42% width, Shopify light-gray background) */}
+                        <div className="hidden border-l border-slate-200 bg-[#f9fafb] lg:col-span-5 lg:block lg:min-h-screen lg:px-10 lg:py-10">
+                            <div className="sticky top-10 mx-auto max-w-md space-y-6">
+                                {/* Cart Items List */}
+                                <div className="space-y-4">
+                                    {cartItems.map(([id, item]) => (
+                                        <div key={id} className="flex items-center gap-4">
+                                            {/* Shopify Item Image with Round Quantity Badge */}
+                                            <div className="relative flex h-16 w-16 flex-none items-center justify-center rounded-lg border border-slate-200 bg-white p-0.5 shadow-xs">
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                    className="h-full w-full rounded-md object-cover"
+                                                />
+                                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-slate-500 text-[11px] font-semibold text-white shadow ring-2 ring-white">
+                                                    {item.quantity}
+                                                </span>
+                                            </div>
+
+                                            {/* Details */}
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="line-clamp-2 text-sm font-medium text-slate-900">
+                                                    {item.name}
+                                                </h4>
+                                                {(item.color || item.size) && (
+                                                    <p className="mt-0.5 text-xs text-slate-500">
+                                                        {item.color}
+                                                        {item.color && item.size ? ' / ' : ''}
+                                                        {item.size}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            {/* Price */}
+                                            <div className="text-sm font-medium text-slate-900">
+                                                ৳{parseInt(item.price.replace(/[^\d]/g, '') || '0').toLocaleString()}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Discount Code Input (Shopify Style) */}
+                                <div className="flex gap-2 border-y border-slate-200 py-4">
+                                    <input
+                                        type="text"
+                                        value={discountCode}
+                                        onChange={(e) => setDiscountCode(e.target.value)}
+                                        placeholder="Discount code"
+                                        className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+                                    />
+                                    <button
+                                        type="button"
+                                        disabled={!discountCode.trim()}
+                                        className="rounded-md border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Apply
+                                    </button>
+                                </div>
+
+                                {/* Pricing Breakdown */}
+                                <div className="space-y-3 text-sm">
+                                    <div className="flex justify-between text-slate-600">
+                                        <span>Subtotal</span>
+                                        <span className="font-medium text-slate-900">৳{subtotal.toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between text-slate-600">
+                                        <span>Shipping</span>
+                                        <span className="font-medium text-slate-900">৳{shipping}</span>
+                                    </div>
+                                    <div className="flex items-baseline justify-between border-t border-slate-200 pt-3">
+                                        <span className="text-base font-medium text-slate-900">Total</span>
+                                        <span className="text-2xl font-bold tracking-tight text-slate-900">
+                                            <span className="mr-1.5 text-xs font-normal text-slate-500">BDT</span>
+                                            ৳{total.toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Trust & Security */}
+                                <div className="flex items-center justify-center gap-2 text-xs text-slate-400 pt-2">
+                                    <Lock className="h-3.5 w-3.5" />
+                                    <span>Guaranteed safe and secure checkout</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 }
+
