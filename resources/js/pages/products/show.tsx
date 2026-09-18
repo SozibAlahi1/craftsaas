@@ -113,20 +113,23 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
         return null;
     };
 
-    const [selectedColor, setSelectedColor] = useState(() => getFirstColor());
-    const [selectedSize, setSelectedSize] = useState(() => getFirstSize());
+    const [selectedColor, setSelectedColor] = useState<string | null>(null);
+    const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(1);
-    const [activeImage, setActiveImage] = useState(() => {
-        return getColorImage(product.variations?.colors?.[0], 0) ?? getImage(product.variations?.sizes?.[0]) ?? product.image;
-    });
+    const [activeImage, setActiveImage] = useState(() => product.image);
     const [activeTab, setActiveTab] = useState<'details' | 'delivery' | 'reviews'>('details');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
 
     const selectColor = (label: string, image: string | null) => {
-        setSelectedColor(label);
-        if (image) {
-            setActiveImage(image);
+        if (selectedColor === label) {
+            setSelectedColor(null);
+            setActiveImage(product.image);
+        } else {
+            setSelectedColor(label);
+            if (image) {
+                setActiveImage(image);
+            }
         }
     };
 
