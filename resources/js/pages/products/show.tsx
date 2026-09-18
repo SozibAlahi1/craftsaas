@@ -286,7 +286,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
     return (
         <>
             <Head title={product.name} />
-            <main className="min-h-screen bg-slate-50 font-sans text-slate-900">
+            <main className="min-h-screen overflow-x-hidden bg-slate-50 font-sans text-slate-900">
                 <StorefrontHeader />
 
                 {successMessage && (
@@ -298,7 +298,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                     </div>
                 )}
 
-                <section className="mx-auto max-w-[1440px] px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+                <section className="mx-auto max-w-[1440px] px-4 py-4 sm:px-6 sm:py-6 lg:px-8 overflow-hidden">
                     {/* Breadcrumb */}
                     <div className="mb-6 flex flex-wrap items-center gap-2 text-sm font-medium text-slate-500">
                         <Link
@@ -312,11 +312,11 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                         <span className="max-w-[280px] truncate font-semibold text-slate-800 sm:max-w-md">{product.name}</span>
                     </div>
 
-                    <div className="grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+                    <div className="grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] w-full min-w-0">
                         {/* Gallery Section */}
-                        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
+                        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 w-full min-w-0">
                             {/* Main Image */}
-                            <div className="flex-1 order-1 lg:order-2">
+                            <div className="flex-1 order-1 lg:order-2 w-full min-w-0">
                                 <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                                     <div className="relative aspect-square overflow-hidden bg-slate-100">
                                         <img
@@ -349,7 +349,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
 
                             {/* Thumbnails */}
                             {allImages.length > 1 && (
-                                <div className="order-2 lg:order-1 flex gap-2.5 overflow-x-auto pb-1 sm:grid sm:grid-cols-4 lg:flex lg:w-24 lg:flex-col lg:gap-3 lg:overflow-visible">
+                                <div className="order-2 lg:order-1 flex w-full max-w-full min-w-0 gap-2.5 overflow-x-auto pb-2 pt-0.5 sm:grid sm:grid-cols-4 lg:flex lg:w-24 lg:flex-col lg:gap-3 lg:overflow-visible">
                                     {allImages.map((image, index) => (
                                         <button
                                             key={`${product.slug}-${index}`}
@@ -372,7 +372,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                         </div>
 
                         {/* Product Summary & Buy Options */}
-                        <div className="space-y-6">
+                        <div className="space-y-6 w-full min-w-0">
                             <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-8 shadow-sm">
                                 <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-bold tracking-wider text-orange-600 uppercase">
                                     <Sparkles className="h-3.5 w-3.5" />
@@ -553,8 +553,8 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                 <div className="mt-6 flex flex-col gap-4">
                                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                                         {/* Quantity Selector */}
-                                        <div className="flex items-center justify-between sm:justify-start gap-3">
-                                            <span className="text-xs font-bold tracking-wider text-slate-600 uppercase sm:hidden">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-xs font-bold tracking-wider text-slate-600 uppercase">
                                                 {isEnglish ? 'Quantity' : 'পরিমাণ'}:
                                             </span>
                                             <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
@@ -583,12 +583,12 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                         </div>
 
                                         {/* Action Buttons */}
-                                        <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-1 sm:gap-3">
+                                        <div className="grid grid-cols-2 gap-2.5 w-full sm:flex sm:flex-1 sm:gap-3">
                                             <button
                                                 type="button"
                                                 onClick={() => handleAddToCart(product, quantity, selectedColor, selectedSize)}
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl border-2 border-orange-500 py-3 sm:py-3.5 px-3 sm:px-5 text-xs sm:text-sm font-bold text-orange-600 transition-all duration-200 hover:bg-orange-50 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
+                                                className="inline-flex w-full sm:w-auto sm:flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-xl border-2 border-orange-500 py-3 sm:py-3.5 px-2 sm:px-5 text-xs sm:text-sm font-bold text-orange-600 transition-all duration-200 hover:bg-orange-50 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
                                             >
                                                 <ShoppingBag className="h-4 w-4 shrink-0" />
                                                 <span>{isEnglish ? 'Add to Cart' : 'কার্টে যুক্ত করুন'}</span>
@@ -598,7 +598,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                 type="button"
                                                 onClick={() => handleBuyNow(product, quantity, selectedColor, selectedSize)}
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-orange-600 py-3 sm:py-3.5 px-3 sm:px-5 text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-600/20 transition-all duration-200 hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
+                                                className="inline-flex w-full sm:w-auto sm:flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-orange-600 py-3 sm:py-3.5 px-2 sm:px-5 text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-600/20 transition-all duration-200 hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
                                             >
                                                 <ShoppingCart className="h-4 w-4 shrink-0" />
                                                 <span>{isEnglish ? 'Order Now' : 'অর্ডার করুন'}</span>
