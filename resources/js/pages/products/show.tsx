@@ -312,32 +312,11 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                         <span className="max-w-[280px] truncate font-semibold text-slate-800 sm:max-w-md">{product.name}</span>
                     </div>
 
-                    <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+                    <div className="grid gap-6 lg:gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
                         {/* Gallery Section */}
-                        <div className="flex flex-col-reverse gap-4 lg:flex-row">
-                            {allImages.length > 1 && (
-                                <div className="grid grid-cols-4 gap-3 lg:flex lg:w-24 lg:flex-col lg:gap-3">
-                                    {allImages.map((image, index) => (
-                                        <button
-                                            key={`${product.slug}-${index}`}
-                                            onClick={() => setActiveImage(image)}
-                                            className={`group relative overflow-hidden rounded-xl border transition-all duration-200 focus:outline-none ${
-                                                activeImage === image
-                                                    ? 'border-orange-500 shadow-md ring-2 ring-orange-500/20'
-                                                    : 'border-slate-200 bg-white opacity-80 hover:border-slate-400 hover:opacity-100'
-                                            }`}
-                                        >
-                                            <img
-                                                src={image}
-                                                alt={`${product.name} thumbnail ${index + 1}`}
-                                                className="aspect-square h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                            />
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-
-                            <div className="flex-1">
+                        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
+                            {/* Main Image */}
+                            <div className="flex-1 order-1 lg:order-2">
                                 <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                                     <div className="relative aspect-square overflow-hidden bg-slate-100">
                                         <img
@@ -367,45 +346,70 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Thumbnails */}
+                            {allImages.length > 1 && (
+                                <div className="order-2 lg:order-1 flex gap-2.5 overflow-x-auto pb-1 sm:grid sm:grid-cols-4 lg:flex lg:w-24 lg:flex-col lg:gap-3 lg:overflow-visible">
+                                    {allImages.map((image, index) => (
+                                        <button
+                                            key={`${product.slug}-${index}`}
+                                            onClick={() => setActiveImage(image)}
+                                            className={`group relative h-16 w-16 sm:h-auto sm:w-auto shrink-0 overflow-hidden rounded-xl border transition-all duration-200 focus:outline-none ${
+                                                activeImage === image
+                                                    ? 'border-orange-500 shadow-md ring-2 ring-orange-500/20'
+                                                    : 'border-slate-200 bg-white opacity-80 hover:border-slate-400 hover:opacity-100'
+                                            }`}
+                                        >
+                                            <img
+                                                src={image}
+                                                alt={`${product.name} thumbnail ${index + 1}`}
+                                                className="aspect-square h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* Product Summary & Buy Options */}
                         <div className="space-y-6">
-                            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                            <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-8 shadow-sm">
                                 <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-bold tracking-wider text-orange-600 uppercase">
                                     <Sparkles className="h-3.5 w-3.5" />
                                     {isEnglish ? 'Popular Item' : 'পপুলার অফার'}
                                 </div>
 
-                                <h1 className="text-2xl leading-tight font-extrabold tracking-tight text-slate-950 sm:text-3xl lg:text-4xl">
+                                <h1 className="text-xl sm:text-3xl lg:text-4xl leading-tight font-extrabold tracking-tight text-slate-950">
                                     {product.name}
                                 </h1>
 
-                                <div className="mt-4 flex flex-wrap items-baseline gap-3">
-                                    <span className="text-3xl font-black text-orange-600 sm:text-4xl">
-                                        {getVariantPrice(getSelectedVariant())
-                                            ? `৳${parseInt(String(getVariantPrice(getSelectedVariant()))).toLocaleString()}`
-                                            : product.price}
-                                    </span>
+                                <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                                    <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
+                                        <span className="text-2xl sm:text-4xl font-black text-orange-600">
+                                            {getVariantPrice(getSelectedVariant())
+                                                ? `৳${parseInt(String(getVariantPrice(getSelectedVariant()))).toLocaleString()}`
+                                                : product.price}
+                                        </span>
 
-                                    {product.old_price && !getSelectedVariant()?.price && (
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <span className="text-lg font-semibold text-slate-400 line-through">{product.old_price}</span>
-                                            {getSavingsText() && (
-                                                <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">
-                                                    {getSavingsText()}
-                                                </span>
-                                            )}
-                                        </div>
-                                    )}
+                                        {product.old_price && !getSelectedVariant()?.price && (
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-base sm:text-lg font-semibold text-slate-400 line-through">{product.old_price}</span>
+                                                {getSavingsText() && (
+                                                    <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 whitespace-nowrap">
+                                                        {getSavingsText()}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
 
-                                    <div className="ml-auto">
+                                    <div>
                                         {(
                                             getSelectedVariant()
                                                 ? getSelectedVariant()?.stock_quantity > 0
                                                 : product.is_in_stock && product.stock_quantity > 0
                                         ) ? (
-                                            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                                            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 sm:px-3 py-1 text-xs font-bold text-emerald-700 whitespace-nowrap">
                                                 <span className="relative flex h-2 w-2">
                                                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
                                                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
@@ -413,7 +417,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                 {isEnglish ? 'In Stock' : 'স্টকে আছে'}
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-bold text-red-700">
+                                            <span className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-2.5 sm:px-3 py-1 text-xs font-bold text-red-700 whitespace-nowrap">
                                                 <span className="h-2 w-2 rounded-full bg-red-500"></span>
                                                 {isEnglish ? 'Out of Stock' : 'স্টক শেষ'}
                                             </span>
@@ -547,56 +551,63 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
 
                                 {/* Quantity & Actions */}
                                 <div className="mt-6 flex flex-col gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
-                                            <button
-                                                type="button"
-                                                onClick={() => setQuantity((current) => Math.max(1, current - 1))}
-                                                className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-lg font-bold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40"
-                                                aria-label="Decrease quantity"
-                                                disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                            >
-                                                –
-                                            </button>
+                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                                        {/* Quantity Selector */}
+                                        <div className="flex items-center justify-between sm:justify-start gap-3">
+                                            <span className="text-xs font-bold tracking-wider text-slate-600 uppercase sm:hidden">
+                                                {isEnglish ? 'Quantity' : 'পরিমাণ'}:
+                                            </span>
+                                            <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                                                    className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg text-lg font-bold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40"
+                                                    aria-label="Decrease quantity"
+                                                    disabled={!product.is_in_stock || product.stock_quantity <= 0}
+                                                >
+                                                    –
+                                                </button>
 
-                                            <span className="mx-4 min-w-[2rem] text-center text-base font-extrabold text-slate-900">{quantity}</span>
+                                                <span className="mx-3 sm:mx-4 min-w-[2rem] text-center text-sm sm:text-base font-extrabold text-slate-900">{quantity}</span>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => setQuantity((current) => Math.min(product.stock_quantity, current + 1))}
-                                                className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-lg font-bold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40"
-                                                aria-label="Increase quantity"
-                                                disabled={!product.is_in_stock || product.stock_quantity <= 0 || quantity >= product.stock_quantity}
-                                            >
-                                                +
-                                            </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setQuantity((current) => Math.min(product.stock_quantity, current + 1))}
+                                                    className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg text-lg font-bold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40"
+                                                    aria-label="Increase quantity"
+                                                    disabled={!product.is_in_stock || product.stock_quantity <= 0 || quantity >= product.stock_quantity}
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
                                         </div>
 
-                                        <div className="flex flex-1 gap-3">
+                                        {/* Action Buttons */}
+                                        <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-1 sm:gap-3">
                                             <button
                                                 type="button"
                                                 onClick={() => handleAddToCart(product, quantity, selectedColor, selectedSize)}
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-orange-500 px-5 py-3.5 text-sm font-bold text-orange-600 transition-all duration-200 hover:bg-orange-50 active:scale-[0.98] disabled:opacity-50"
+                                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl border-2 border-orange-500 py-3 sm:py-3.5 px-3 sm:px-5 text-xs sm:text-sm font-bold text-orange-600 transition-all duration-200 hover:bg-orange-50 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
                                             >
-                                                <ShoppingBag className="h-4 w-4" />
-                                                {isEnglish ? 'Add to Cart' : 'কার্টে যুক্ত করুন'}
+                                                <ShoppingBag className="h-4 w-4 shrink-0" />
+                                                <span>{isEnglish ? 'Add to Cart' : 'কার্টে যুক্ত করুন'}</span>
                                             </button>
 
                                             <button
                                                 type="button"
                                                 onClick={() => handleBuyNow(product, quantity, selectedColor, selectedSize)}
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-orange-600 px-5 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-600/20 transition-all duration-200 hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50"
+                                                className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-orange-600 py-3 sm:py-3.5 px-3 sm:px-5 text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-600/20 transition-all duration-200 hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
                                             >
-                                                <ShoppingCart className="h-4 w-4" />
-                                                {isEnglish ? 'Order Now' : 'অর্ডার করুন'}
+                                                <ShoppingCart className="h-4 w-4 shrink-0" />
+                                                <span>{isEnglish ? 'Order Now' : 'অর্ডার করুন'}</span>
                                             </button>
                                         </div>
                                     </div>
 
                                     {/* Trust & Guarantee Grid */}
-                                    <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+                                    <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-3 sm:p-4">
                                         <div className="flex items-center gap-3">
                                             <div className="flex h-9 w-9 flex-none items-center justify-center rounded-lg bg-orange-100 text-orange-600">
                                                 <Truck className="h-5 w-5" />
@@ -1043,7 +1054,7 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                             )}
                                         </div>
                                         <div className="mt-3 flex flex-col justify-between">
-                                            <h3 className="line-clamp-1 text-sm font-bold text-slate-900 transition-colors group-hover:text-orange-600">
+                                            <h3 className="line-clamp-2 text-xs sm:text-sm font-bold text-slate-900 transition-colors group-hover:text-orange-600 min-h-[2rem] sm:min-h-[2.5rem]">
                                                 {item.name}
                                             </h3>
                                             <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
