@@ -95,11 +95,29 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
         return '';
     };
 
+    const getColorImage = (color: any, index: number) => {
+        const raw = getImage(color);
+        if (raw) {
+            return raw.startsWith('http') || raw.startsWith('/') ? raw : `/storage/${raw}`;
+        }
+        // Fallback: If product has gallery images corresponding to colors
+        if (product.gallery && Array.isArray(product.gallery) && product.gallery.length > 0) {
+            if (product.gallery[index]) {
+                const g = product.gallery[index];
+                return g.startsWith('http') || g.startsWith('/') ? g : `/storage/${g}`;
+            }
+        }
+        if (index === 0 && product.image) {
+            return product.image.startsWith('http') || product.image.startsWith('/') ? product.image : `/storage/${product.image}`;
+        }
+        return null;
+    };
+
     const [selectedColor, setSelectedColor] = useState(() => getFirstColor());
     const [selectedSize, setSelectedSize] = useState(() => getFirstSize());
     const [quantity, setQuantity] = useState(1);
     const [activeImage, setActiveImage] = useState(() => {
-        return getImage(product.variations?.colors?.[0]) ?? getImage(product.variations?.sizes?.[0]) ?? product.image;
+        return getColorImage(product.variations?.colors?.[0], 0) ?? getImage(product.variations?.sizes?.[0]) ?? product.image;
     });
     const [activeTab, setActiveTab] = useState<'details' | 'delivery' | 'reviews'>('details');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -119,9 +137,10 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
         }
     };
 
-    const variationImages = [...product.variations.colors.map(getImage), ...product.variations.sizes.map(getImage)].filter((src): src is string =>
-        Boolean(src),
-    );
+    const variationImages = [
+        ...product.variations.colors.map((c, i) => getColorImage(c, i)),
+        ...product.variations.sizes.map(getImage),
+    ].filter((src): src is string => Boolean(src));
 
     const allImages = Array.from(new Set([product.image, ...(product.gallery || []), ...variationImages])).filter(Boolean);
 
@@ -438,28 +457,32 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                 <div className="text-xs font-bold tracking-wider text-slate-700 uppercase">
                                                     {isEnglish ? 'Select Color' : 'কালার সিলেক্ট করুন'}
                                                 </div>
-                                                <div className="mt-3 flex flex-wrap gap-2">
-                                                    {product.variations.colors.map((color) => {
+                                                <div className="mt-3 flex flex-wrap gap-2.5">
+                                                    {product.variations.colors.map((color, index) => {
                                                         const label = getLabel(color);
-                                                        const img = getImage(color);
+                                                        const colorImg = getColorImage(color, index);
                                                         if (!label || !label.trim()) return null;
                                                         const isSelected = selectedColor === label;
                                                         return (
                                                             <button
                                                                 key={label}
                                                                 type="button"
-                                                                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                                                                className={`inline-flex items-center gap-2.5 rounded-xl border px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${
                                                                     isSelected
-                                                                        ? 'border-orange-500 bg-orange-500 text-white shadow-sm'
+                                                                        ? 'border-orange-500 bg-orange-500 text-white shadow-sm ring-2 ring-orange-500/20'
                                                                         : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                                                                 }`}
-                                                                onClick={() => selectColor(label, img)}
+                                                                onClick={() => selectColor(label, colorImg)}
                                                             >
-                                                                {img ? (
-                                                                    <img src={img} alt={label} className="h-4 w-4 rounded-md object-cover" />
-                                                                ) : null}
+                                                                {colorImg && (
+                                                                    <img
+                                                                        src={colorImg}
+                                                                        alt={label}
+                                                                        className={`h-7 w-7 flex-none rounded-lg object-cover border ${isSelected ? 'border-white/40' : 'border-slate-200'}`}
+                                                                    />
+                                                                )}
                                                                 <span>{label}</span>
-                                                                {isSelected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+                                                                {isSelected && <Check className="h-3.5 w-3.5 stroke-[3] flex-none" />}
                                                             </button>
                                                         );
                                                     })}

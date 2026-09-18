@@ -78,10 +78,27 @@ export default function Show({ product, relatedProducts }: { product: Product; r
         return '';
     };
 
+    const getColorImage = (color: any, index: number) => {
+        const raw = getImage(color);
+        if (raw) {
+            return raw.startsWith('http') || raw.startsWith('/') ? raw : `/storage/${raw}`;
+        }
+        if (product.gallery && Array.isArray(product.gallery) && product.gallery.length > 0) {
+            if (product.gallery[index]) {
+                const g = product.gallery[index];
+                return g.startsWith('http') || g.startsWith('/') ? g : `/storage/${g}`;
+            }
+        }
+        if (index === 0 && product.image) {
+            return product.image.startsWith('http') || product.image.startsWith('/') ? product.image : `/storage/${product.image}`;
+        }
+        return null;
+    };
+
     const [selectedColor, setSelectedColor] = useState(() => getFirstColor());
     const [selectedSize, setSelectedSize] = useState(() => getFirstSize());
     const [quantity, setQuantity] = useState(1);
-    const [activeImage, setActiveImage] = useState(() => getImage(product.variations?.colors?.[0]) ?? getImage(product.variations?.sizes?.[0]) ?? product.image);
+    const [activeImage, setActiveImage] = useState(() => getColorImage(product.variations?.colors?.[0], 0) ?? getImage(product.variations?.sizes?.[0]) ?? product.image);
     const [activeTab, setActiveTab] = useState<'details' | 'delivery' | 'reviews'>('details');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
@@ -112,10 +129,11 @@ export default function Show({ product, relatedProducts }: { product: Product; r
         if (image) setActiveImage(image);
     };
 
-    const variationImages = [...product.variations.colors.map(getImage), ...product.variations.sizes.map(getImage)].filter((s): s is string =>
-        Boolean(s),
-    );
-    const allImages = Array.from(new Set([product.image, ...(product.gallery || []), ...variationImages]));
+    const variationImages = [
+        ...product.variations.colors.map((c, i) => getColorImage(c, i)),
+        ...product.variations.sizes.map(getImage),
+    ].filter((s): s is string => Boolean(s));
+    const allImages = Array.from(new Set([product.image, ...(product.gallery || []), ...variationImages])).filter(Boolean);
 
     const {
         data: reviewData,
@@ -324,23 +342,31 @@ export default function Show({ product, relatedProducts }: { product: Product; r
                                                 <div className="mb-2 text-xs font-black tracking-wider uppercase" style={{ color: P.earthMid }}>
                                                     কালার
                                                 </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {product.variations.colors.map((c) => {
+                                                <div className="flex flex-wrap gap-2.5">
+                                                    {product.variations.colors.map((c, index) => {
                                                         const label = getLabel(c);
-                                                        const img = getImage(c);
+                                                        const colorImg = getColorImage(c, index);
                                                         if (!label?.trim()) return null;
+                                                        const isSelected = selectedColor === label;
                                                         return (
                                                             <button
                                                                 key={label}
-                                                                onClick={() => selectColor(label, img)}
-                                                                className="rounded-lg border-2 px-4 py-2 text-sm font-bold transition-all"
+                                                                onClick={() => selectColor(label, colorImg)}
+                                                                className="inline-flex items-center gap-2 rounded-xl border-2 px-3 py-1.5 text-sm font-bold transition-all"
                                                                 style={{
-                                                                    borderColor: selectedColor === label ? P.sage : P.border,
-                                                                    background: selectedColor === label ? P.sage : P.white,
-                                                                    color: selectedColor === label ? P.white : P.earth,
+                                                                    borderColor: isSelected ? P.sage : P.border,
+                                                                    background: isSelected ? P.sage : P.white,
+                                                                    color: isSelected ? P.white : P.earth,
                                                                 }}
                                                             >
-                                                                {label}
+                                                                {colorImg && (
+                                                                    <img
+                                                                        src={colorImg}
+                                                                        alt={label}
+                                                                        className="h-7 w-7 flex-none rounded-lg object-cover border border-black/10"
+                                                                    />
+                                                                )}
+                                                                <span>{label}</span>
                                                             </button>
                                                         );
                                                     })}

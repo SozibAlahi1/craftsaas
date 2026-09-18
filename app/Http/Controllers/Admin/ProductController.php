@@ -89,7 +89,16 @@ class ProductController extends Controller
         foreach (['colors', 'sizes'] as $type) {
             foreach ($variations[$type] ?? [] as $index => $variation) {
                 if (! empty(trim($variation['label'] ?? ''))) {
-                    $normalizedVariations[$type][] = ['label' => trim($variation['label'])];
+                    $item = ['label' => trim($variation['label'])];
+                    if ($request->hasFile("variations.{$type}.{$index}.image")) {
+                        $path = $request->file("variations.{$type}.{$index}.image")->store('products/variations', 'public');
+                        $item['image'] = Storage::disk('public')->url($path);
+                    } elseif (! empty($variation['image']) && is_string($variation['image'])) {
+                        $item['image'] = $variation['image'];
+                    } else {
+                        $item['image'] = null;
+                    }
+                    $normalizedVariations[$type][] = $item;
                 }
             }
         }
@@ -188,7 +197,16 @@ class ProductController extends Controller
         foreach (['colors', 'sizes'] as $type) {
             foreach ($variations[$type] ?? [] as $index => $variation) {
                 if (! empty(trim($variation['label'] ?? ''))) {
-                    $normalizedVariations[$type][] = ['label' => trim($variation['label'])];
+                    $item = ['label' => trim($variation['label'])];
+                    if ($request->hasFile("variations.{$type}.{$index}.image")) {
+                        $path = $request->file("variations.{$type}.{$index}.image")->store('products/variations', 'public');
+                        $item['image'] = Storage::disk('public')->url($path);
+                    } elseif (! empty($variation['image']) && is_string($variation['image'])) {
+                        $item['image'] = $variation['image'];
+                    } else {
+                        $item['image'] = null;
+                    }
+                    $normalizedVariations[$type][] = $item;
                 }
             }
         }
