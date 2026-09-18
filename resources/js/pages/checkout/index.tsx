@@ -115,7 +115,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                             onClick={() => setIsSummaryOpen((prev) => !prev)}
                             className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm transition-colors hover:bg-slate-100/60"
                         >
-                            <span className="flex items-center gap-2 font-medium text-sky-700">
+                            <span className="flex items-center gap-2 font-medium text-orange-600">
                                 <ShoppingBag className="h-4 w-4" />
                                 <span>{isSummaryOpen ? 'Hide order summary' : 'Show order summary'}</span>
                                 <ChevronDown
@@ -124,7 +124,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                     }`}
                                 />
                             </span>
-                            <span className="text-base font-bold text-slate-900">৳{total.toLocaleString()}</span>
+                            <span className="text-base font-bold text-orange-600">৳{total.toLocaleString()}</span>
                         </button>
 
                         {/* Collapsible Mobile Cart Drawer */}
@@ -139,7 +139,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                     alt={item.name}
                                                     className="h-full w-full rounded-md object-cover"
                                                 />
-                                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-slate-500 text-[11px] font-semibold text-white shadow ring-2 ring-white">
+                                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-orange-600 text-[11px] font-semibold text-white shadow ring-2 ring-white">
                                                     {item.quantity}
                                                 </span>
                                             </div>
@@ -234,7 +234,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                 onChange={(e) => setData('full_name', e.target.value)}
                                                 onBlur={handleSaveContact}
                                                 placeholder="Full name"
-                                                className={`w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all ${
+                                                className={`w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none transition-all ${
                                                     errors.full_name
                                                         ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
                                                         : 'border-slate-300'
@@ -258,7 +258,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                     onChange={(e) => setData('phone', e.target.value)}
                                                     onBlur={handleSaveContact}
                                                     placeholder="Phone number (e.g. 01XXXXXXXXX)"
-                                                    className={`w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all ${
+                                                    className={`w-full rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none transition-all ${
                                                         errors.phone
                                                             ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
                                                             : 'border-slate-300'
@@ -282,7 +282,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                 onChange={(e) => setData('address', e.target.value)}
                                                 onBlur={handleSaveContact}
                                                 placeholder="Address (House number, road name, area, thana/district)"
-                                                className={`w-full resize-none rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all ${
+                                                className={`w-full resize-none rounded-md border bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none transition-all ${
                                                     errors.address
                                                         ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
                                                         : 'border-slate-300'
@@ -306,7 +306,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                             <label
                                                 className={`flex cursor-pointer items-center justify-between p-4 transition-colors ${
                                                     data.shipping_area === 'inside'
-                                                        ? 'bg-sky-50/40'
+                                                        ? 'bg-orange-50/50'
                                                         : 'hover:bg-slate-50'
                                                 }`}
                                             >
@@ -317,11 +317,11 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                         value="inside"
                                                         checked={data.shipping_area === 'inside'}
                                                         onChange={() => setData('shipping_area', 'inside')}
-                                                        className="h-4 w-4 text-slate-900 border-slate-300 focus:ring-slate-900"
+                                                        className="h-4 w-4 text-orange-600 border-slate-300 focus:ring-orange-500 accent-orange-600"
                                                     />
                                                     <div>
                                                         <p className="text-sm font-medium text-slate-900">
-                                                            Inside Dhaka (ঢাকার ভেতরে)
+                                                            Inside Dhaka
                                                         </p>
                                                         <p className="text-xs text-slate-500">1–2 business days</p>
                                                     </div>
@@ -335,7 +335,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                             <label
                                                 className={`flex cursor-pointer items-center justify-between p-4 transition-colors ${
                                                     data.shipping_area === 'outside'
-                                                        ? 'bg-sky-50/40'
+                                                        ? 'bg-orange-50/50'
                                                         : 'hover:bg-slate-50'
                                                 }`}
                                             >
@@ -346,11 +346,11 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                         value="outside"
                                                         checked={data.shipping_area === 'outside'}
                                                         onChange={() => setData('shipping_area', 'outside')}
-                                                        className="h-4 w-4 text-slate-900 border-slate-300 focus:ring-slate-900"
+                                                        className="h-4 w-4 text-orange-600 border-slate-300 focus:ring-orange-500 accent-orange-600"
                                                     />
                                                     <div>
                                                         <p className="text-sm font-medium text-slate-900">
-                                                            Outside Dhaka (ঢাকার বাইরে)
+                                                            Outside Dhaka
                                                         </p>
                                                         <p className="text-xs text-slate-500">2–4 business days</p>
                                                     </div>
@@ -382,7 +382,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                             {/* Option: Cash on Delivery */}
                                             <label
                                                 className={`flex cursor-pointer items-center justify-between p-4 transition-colors ${
-                                                    data.payment_method === 'cod' ? 'bg-sky-50/40' : 'hover:bg-slate-50'
+                                                    data.payment_method === 'cod' ? 'bg-orange-50/50' : 'hover:bg-slate-50'
                                                 }`}
                                             >
                                                 <div className="flex items-center gap-3">
@@ -392,20 +392,19 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                         value="cod"
                                                         checked={data.payment_method === 'cod'}
                                                         onChange={() => setData('payment_method', 'cod')}
-                                                        className="h-4 w-4 text-slate-900 border-slate-300 focus:ring-slate-900"
+                                                        className="h-4 w-4 text-orange-600 border-slate-300 focus:ring-orange-500 accent-orange-600"
                                                     />
                                                     <span className="text-sm font-medium text-slate-900">
-                                                        Cash on Delivery (COD) / ক্যাশ অন ডেলিভারি
+                                                        Cash on Delivery (COD)
                                                     </span>
                                                 </div>
-                                                <ShieldCheck className="h-5 w-5 text-slate-400" />
+                                                <ShieldCheck className="h-5 w-5 text-orange-600" />
                                             </label>
 
                                             {/* Sub-panel when COD is selected */}
                                             {data.payment_method === 'cod' && (
                                                 <div className="border-t border-slate-200 bg-[#fafafa] p-4 text-xs text-slate-600 leading-relaxed">
-                                                    পণ্য ডেলিভারি পাওয়ার পর দেখে মূল্য পরিশোধ করুন। Pay with cash when
-                                                    your order is delivered to your doorstep.
+                                                    Pay with cash when your order is delivered to your doorstep.
                                                 </div>
                                             )}
                                         </div>
@@ -422,7 +421,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                     <div className="flex flex-col-reverse items-center justify-between gap-4 pt-4 sm:flex-row">
                                         <Link
                                             href={route('home')}
-                                            className="text-xs font-medium text-sky-700 hover:text-sky-800 transition-colors"
+                                            className="text-xs font-semibold text-orange-600 hover:text-orange-700 transition-colors"
                                         >
                                             ‹ Return to shop
                                         </Link>
@@ -430,7 +429,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                         <button
                                             type="submit"
                                             disabled={processing}
-                                            className="w-full sm:w-auto sm:px-8 py-3.5 rounded-lg bg-[#1773B0] hover:bg-[#125a8a] text-white text-sm font-semibold shadow-sm transition-all hover:shadow focus:ring-2 focus:ring-[#1773B0] focus:ring-offset-2 focus:outline-none disabled:opacity-60 flex items-center justify-center gap-2"
+                                            className="w-full sm:w-auto sm:px-10 py-3.5 rounded-lg bg-orange-600 hover:bg-orange-700 active:scale-[0.99] text-white text-sm font-bold shadow-md shadow-orange-600/20 transition-all hover:shadow-lg focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
                                         >
                                             {processing ? (
                                                 <>
@@ -470,7 +469,7 @@ export default function Checkout({ cart }: CheckoutProps) {
                                                     alt={item.name}
                                                     className="h-full w-full rounded-md object-cover"
                                                 />
-                                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-slate-500 text-[11px] font-semibold text-white shadow ring-2 ring-white">
+                                                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-orange-600 text-[11px] font-semibold text-white shadow ring-2 ring-white">
                                                     {item.quantity}
                                                 </span>
                                             </div>
@@ -504,12 +503,12 @@ export default function Checkout({ cart }: CheckoutProps) {
                                         value={discountCode}
                                         onChange={(e) => setDiscountCode(e.target.value)}
                                         placeholder="Discount code"
-                                        className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
+                                        className="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none"
                                     />
                                     <button
                                         type="button"
                                         disabled={!discountCode.trim()}
-                                        className="rounded-md border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="rounded-md border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                     >
                                         Apply
                                     </button>
@@ -527,8 +526,8 @@ export default function Checkout({ cart }: CheckoutProps) {
                                     </div>
                                     <div className="flex items-baseline justify-between border-t border-slate-200 pt-3">
                                         <span className="text-base font-medium text-slate-900">Total</span>
-                                        <span className="text-2xl font-bold tracking-tight text-slate-900">
-                                            <span className="mr-1.5 text-xs font-normal text-slate-500">BDT</span>
+                                        <span className="text-2xl font-black tracking-tight text-orange-600">
+                                            <span className="mr-1.5 text-xs font-bold text-slate-500">BDT</span>
                                             ৳{total.toLocaleString()}
                                         </span>
                                     </div>
