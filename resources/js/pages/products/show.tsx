@@ -550,61 +550,55 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                 )}
 
                                 {/* Quantity & Actions */}
-                                <div className="mt-6 flex flex-col gap-4">
-                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                                        {/* Quantity Selector */}
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-xs font-bold tracking-wider text-slate-600 uppercase">
-                                                {isEnglish ? 'Quantity' : 'পরিমাণ'}:
-                                            </span>
-                                            <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setQuantity((current) => Math.max(1, current - 1))}
-                                                    className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg text-lg font-bold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40"
-                                                    aria-label="Decrease quantity"
-                                                    disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                >
-                                                    –
-                                                </button>
-
-                                                <span className="mx-3 sm:mx-4 min-w-[2rem] text-center text-sm sm:text-base font-extrabold text-slate-900">{quantity}</span>
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setQuantity((current) => Math.min(product.stock_quantity, current + 1))}
-                                                    className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg text-lg font-bold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40"
-                                                    aria-label="Increase quantity"
-                                                    disabled={!product.is_in_stock || product.stock_quantity <= 0 || quantity >= product.stock_quantity}
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Action Buttons */}
-                                        <div className="grid grid-cols-2 gap-2.5 w-full sm:flex sm:flex-1 sm:gap-3">
+                                <div className="mt-6 flex flex-col gap-3">
+                                    {/* Row 1: Quantity Selector + Add to Cart Button */}
+                                    <div className="flex items-center gap-2.5 sm:gap-3 w-full">
+                                        <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1 shrink-0">
                                             <button
                                                 type="button"
-                                                onClick={() => handleAddToCart(product, quantity, selectedColor, selectedSize)}
+                                                onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                                                className="inline-flex h-10 w-9 sm:w-10 items-center justify-center rounded-lg text-lg font-bold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40"
+                                                aria-label="Decrease quantity"
                                                 disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                className="inline-flex w-full sm:w-auto sm:flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-xl border-2 border-orange-500 py-3 sm:py-3.5 px-2 sm:px-5 text-xs sm:text-sm font-bold text-orange-600 transition-all duration-200 hover:bg-orange-50 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
                                             >
-                                                <ShoppingBag className="h-4 w-4 shrink-0" />
-                                                <span>{isEnglish ? 'Add to Cart' : 'কার্টে যুক্ত করুন'}</span>
+                                                –
                                             </button>
+
+                                            <span className="mx-2 sm:mx-3 min-w-[1.75rem] text-center text-sm sm:text-base font-extrabold text-slate-900">{quantity}</span>
 
                                             <button
                                                 type="button"
-                                                onClick={() => handleBuyNow(product, quantity, selectedColor, selectedSize)}
-                                                disabled={!product.is_in_stock || product.stock_quantity <= 0}
-                                                className="inline-flex w-full sm:w-auto sm:flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-orange-600 py-3 sm:py-3.5 px-2 sm:px-5 text-xs sm:text-sm font-black text-white shadow-lg shadow-orange-600/20 transition-all duration-200 hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
+                                                onClick={() => setQuantity((current) => Math.min(product.stock_quantity, current + 1))}
+                                                className="inline-flex h-10 w-9 sm:w-10 items-center justify-center rounded-lg text-lg font-bold text-slate-600 transition-colors hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40"
+                                                aria-label="Increase quantity"
+                                                disabled={!product.is_in_stock || product.stock_quantity <= 0 || quantity >= product.stock_quantity}
                                             >
-                                                <ShoppingCart className="h-4 w-4 shrink-0" />
-                                                <span>{isEnglish ? 'Order Now' : 'অর্ডার করুন'}</span>
+                                                +
                                             </button>
                                         </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => handleAddToCart(product, quantity, selectedColor, selectedSize)}
+                                            disabled={!product.is_in_stock || product.stock_quantity <= 0}
+                                            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-orange-500 py-3 sm:py-3.5 px-4 text-xs sm:text-sm font-bold text-orange-600 transition-all duration-200 hover:bg-orange-50 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
+                                        >
+                                            <ShoppingBag className="h-4 w-4 shrink-0" />
+                                            <span>{isEnglish ? 'Add to Cart' : 'কার্টে যুক্ত করুন'}</span>
+                                        </button>
                                     </div>
+
+                                    {/* Row 2: Full-width Order Now (Buy Now) Button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => handleBuyNow(product, quantity, selectedColor, selectedSize)}
+                                        disabled={!product.is_in_stock || product.stock_quantity <= 0}
+                                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-orange-600 py-3.5 sm:py-4 px-6 text-sm sm:text-base font-black text-white shadow-lg shadow-orange-600/25 transition-all duration-200 hover:bg-orange-700 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap"
+                                    >
+                                        <ShoppingCart className="h-5 w-5 shrink-0" />
+                                        <span>{isEnglish ? 'Order Now' : 'অর্ডার করুন'}</span>
+                                    </button>
+                                </div>
 
                                     {/* Trust & Guarantee Grid */}
                                     <div className="mt-4 grid grid-cols-2 gap-2.5 sm:gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-3 sm:p-4">
@@ -645,7 +639,6 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
                                 {bundleItems.length > 0 && (
                                     <div className="mt-8 border-t border-slate-200 pt-6">
