@@ -293,27 +293,27 @@ export function StorefrontHeader() {
                                         ) : (
                                             <div className="space-y-3">
                                                 {Object.entries(cart).map(([id, item]) => (
-                                                    <div key={id} className="rounded-md border border-slate-200 bg-white p-4">
-                                                        <div className="flex gap-4">
-                                                            <div className="h-20 w-20 flex-none overflow-hidden rounded-md border border-slate-100 bg-white p-0.5">
+                                                    <div key={id} className="rounded-md border border-slate-200 bg-white p-3">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="h-16 w-16 flex-none overflow-hidden rounded-md border border-slate-100 bg-white p-0.5">
                                                                 <img
                                                                     src={item.image}
                                                                     alt={item.name}
                                                                     className="h-full w-full rounded-sm object-cover"
                                                                 />
                                                             </div>
-                                                            <div className="flex flex-1 flex-col justify-between">
+                                                            <div className="flex flex-1 flex-col justify-center gap-1 min-w-0">
                                                                 <div>
-                                                                    <h4 className="text-[14px] leading-snug font-bold text-slate-900">{item.name}</h4>
+                                                                    <h4 className="text-[13px] sm:text-[14px] leading-snug font-bold text-slate-900 line-clamp-2">{item.name}</h4>
                                                                     {(item.color || item.size) && (
                                                                         <span className="block text-[11px] font-medium text-slate-500 uppercase mt-0.5">
                                                                             {item.color} {item.color && item.size ? '/' : ''} {item.size}
                                                                         </span>
                                                                     )}
                                                                 </div>
-                                                                <div className="flex items-center justify-between gap-2 mt-2">
+                                                                <div className="flex items-center justify-between gap-2 pt-0.5">
                                                                     <div className="flex items-center gap-2.5">
-                                                                        <div className="text-[15px] font-bold text-orange-600">
+                                                                        <div className="text-[14px] sm:text-[15px] font-bold text-orange-600">
                                                                             ৳ {parseInt(item.price.replace(/[^\d]/g, '')).toLocaleString()}
                                                                         </div>
                                                                         {siteTheme === 'shutki' ? (
@@ -585,23 +585,23 @@ export function StorefrontHeader() {
                                     ) : (
                                         <div className="space-y-3">
                                             {Object.entries(cart).map(([id, item]) => (
-                                                <div key={id} className="rounded-md border border-slate-200 bg-white p-4">
-                                                    <div className="flex gap-4">
-                                                        <div className="h-20 w-20 flex-none overflow-hidden rounded-md border border-slate-100 bg-white p-0.5">
+                                                <div key={id} className="rounded-md border border-slate-200 bg-white p-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="h-16 w-16 flex-none overflow-hidden rounded-md border border-slate-100 bg-white p-0.5">
                                                             <img src={item.image} alt={item.name} className="h-full w-full rounded-sm object-cover" />
                                                         </div>
-                                                        <div className="flex flex-1 flex-col justify-between">
+                                                        <div className="flex flex-1 flex-col justify-center gap-1 min-w-0">
                                                             <div>
-                                                                <h4 className="text-[14px] leading-snug font-bold text-slate-900">{item.name}</h4>
+                                                                <h4 className="text-[13px] sm:text-[14px] leading-snug font-bold text-slate-900 line-clamp-2">{item.name}</h4>
                                                                 {(item.color || item.size) && (
                                                                     <span className="block text-[11px] font-medium text-slate-500 uppercase mt-0.5">
                                                                         {item.color} {item.color && item.size ? '/' : ''} {item.size}
                                                                     </span>
                                                                 )}
                                                             </div>
-                                                            <div className="flex items-center justify-between gap-2 mt-2">
+                                                            <div className="flex items-center justify-between gap-2 pt-0.5">
                                                                 <div className="flex items-center gap-2.5">
-                                                                    <div className="text-[15px] font-bold text-orange-600">
+                                                                    <div className="text-[14px] sm:text-[15px] font-bold text-orange-600">
                                                                         ৳ {parseInt(item.price.replace(/[^\d]/g, '')).toLocaleString()}
                                                                     </div>
                                                                     {siteTheme === 'shutki' ? (
