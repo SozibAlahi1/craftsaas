@@ -367,6 +367,20 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                     {product.name}
                                 </h1>
 
+                                <div className="mt-2.5 flex items-center gap-2 text-sm text-gray-300">
+                                    <div className="flex items-center gap-1">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <Star
+                                                key={star}
+                                                className={`h-4 w-4 ${star <= Math.round(parseFloat(averageRating)) ? 'fill-amber-400 text-amber-400' : 'text-gray-600'}`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="font-bold text-white">{averageRating}</span>
+                                    <span className="text-gray-500">|</span>
+                                    <span className="text-gray-400">{reviews.length} টি ভেরিফাইড রিভিউ</span>
+                                </div>
+
                                 <div className="mt-4 flex flex-wrap items-baseline gap-3">
                                     <span className="text-3xl font-black text-[#cba876] sm:text-4xl">
                                         {getVariantPrice(getSelectedVariant())
@@ -405,20 +419,6 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                             </span>
                                         )}
                                     </div>
-                                </div>
-
-                                <div className="mt-4 flex items-center gap-2 text-sm text-gray-300">
-                                    <div className="flex items-center gap-1">
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                            <Star
-                                                key={star}
-                                                className={`h-4 w-4 ${star <= Math.round(parseFloat(averageRating)) ? 'fill-amber-400 text-amber-400' : 'text-gray-600'}`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <span className="font-bold text-white">{averageRating}</span>
-                                    <span className="text-gray-500">|</span>
-                                    <span className="text-gray-400">{reviews.length} টি ভেরিফাইড রিভিউ</span>
                                 </div>
 
                                 {/* Color & Size Selection */}

@@ -375,6 +375,22 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                     {product.name}
                                 </h1>
 
+                                <div className="mt-2.5 flex items-center gap-2 text-sm text-slate-600">
+                                    <div className="flex items-center gap-0.5">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <Star
+                                                key={star}
+                                                className={`h-4 w-4 ${star <= Math.round(parseFloat(averageRating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-300'}`}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="font-bold text-slate-900">{averageRating}</span>
+                                    <span className="text-slate-300">|</span>
+                                    <span className="text-slate-500">
+                                        {reviews.length} {isEnglish ? 'verified reviews' : 'টি ভেরিফাইড রিভিউ'}
+                                    </span>
+                                </div>
+
                                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                                     <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
                                         <span className="text-2xl sm:text-4xl font-black text-orange-600">
@@ -387,9 +403,9 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                             <div className="flex items-center gap-2">
                                                 <span className="text-base sm:text-lg font-semibold text-slate-400 line-through">{product.old_price}</span>
                                                 {getSavingsText() && (
-                                                    <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 whitespace-nowrap">
-                                                        {getSavingsText()}
-                                                    </span>
+                                                     <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 whitespace-nowrap">
+                                                         {getSavingsText()}
+                                                     </span>
                                                 )}
                                             </div>
                                         )}
@@ -415,22 +431,6 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                             </span>
                                         )}
                                     </div>
-                                </div>
-
-                                <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
-                                    <div className="flex items-center gap-0.5">
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                            <Star
-                                                key={star}
-                                                className={`h-4 w-4 ${star <= Math.round(parseFloat(averageRating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-300'}`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <span className="font-bold text-slate-900">{averageRating}</span>
-                                    <span className="text-slate-300">|</span>
-                                    <span className="text-slate-500">
-                                        {reviews.length} {isEnglish ? 'verified reviews' : 'টি ভেরিফাইড রিভিউ'}
-                                    </span>
                                 </div>
 
                                 {/* Color & Size Selection */}
