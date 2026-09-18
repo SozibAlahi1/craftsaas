@@ -6,8 +6,9 @@ import AppLogoIcon from '@/components/app-logo-icon';
 export function StorefrontFooter() {
     const { props } = usePage();
     const settings = props.settings as any;
+    const isEnglish = settings?.site_theme === 'example' || settings?.site_theme === 'wildtannery';
 
-    const footerDescription = settings?.footer_description || 'বাংলাদেশের সেরা শুকটি মাছের অনলাইন বাজার। তাজা ও মানসম্পন্ন শুকটি মাছ সরাসরি আপনার দরজায়।';
+    const footerDescription = settings?.footer_description || (isEnglish ? 'Your premier online store. Delivering high-quality products directly to your doorstep.' : 'বাংলাদেশের সেরা শুকটি মাছের অনলাইন বাজার। তাজা ও মানসম্পন্ন শুকটি মাছ সরাসরি আপনার দরজায়।');
     const footerFacebookUrl = settings?.footer_facebook_url || 'https://facebook.com';
     const footerYoutubeUrl = settings?.footer_youtube_url || 'https://youtube.com';
     const footerPhone = settings?.footer_phone || '01700000000';
@@ -56,8 +57,6 @@ export function StorefrontFooter() {
             'Complain Box': 'অভিযোগ বক্স',
             'Our Showrooms': 'আমাদের শো-রুম',
         };
-
-        const isEnglish = settings?.site_theme === 'example' || settings?.site_theme === 'wildtannery';
 
         if (!isEnglish && labelMap[label]) {
             label = labelMap[label];
