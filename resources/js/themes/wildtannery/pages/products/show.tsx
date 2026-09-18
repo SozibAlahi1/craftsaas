@@ -92,19 +92,10 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
         return '';
     };
 
-    const getColorImage = (color: any, index: number) => {
+    const getColorImage = (color: any, index?: number) => {
         const raw = getImage(color);
         if (raw) {
             return raw.startsWith('http') || raw.startsWith('/') ? raw : `/storage/${raw}`;
-        }
-        if (product.gallery && Array.isArray(product.gallery) && product.gallery.length > 0) {
-            if (product.gallery[index]) {
-                const g = product.gallery[index];
-                return g.startsWith('http') || g.startsWith('/') ? g : `/storage/${g}`;
-            }
-        }
-        if (index === 0 && product.image) {
-            return product.image.startsWith('http') || product.image.startsWith('/') ? product.image : `/storage/${product.image}`;
         }
         return null;
     };
@@ -125,6 +116,8 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
             setSelectedColor(label);
             if (image) {
                 setActiveImage(image);
+            } else {
+                setActiveImage(product.image);
             }
         }
     };
@@ -457,43 +450,68 @@ export default function Show({ product, relatedProducts }: ProductShowProps) {
                                                         </>
                                                     )}
                                                 </div>
-                                                <div className="mt-3 flex flex-wrap items-center gap-3">
-                                                    {product.variations.colors.map((color, index) => {
-                                                        const label = getLabel(color) || `Color ${index + 1}`;
-                                                        const colorImg = getColorImage(color, index);
-                                                        const isSelected = selectedColor === label;
-                                                        return (
-                                                            <button
-                                                                key={label || index}
-                                                                type="button"
-                                                                title={label}
-                                                                className={`group relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-xl border-2 p-0.5 transition-all duration-200 ${
-                                                                    isSelected
-                                                                        ? 'border-[#cba876] ring-2 ring-[#cba876]/30 shadow-md shadow-[#cba876]/20 scale-105'
-                                                                        : 'border-white/10 bg-[#0d0d0d] hover:border-white/30 hover:scale-102'
-                                                                }`}
-                                                                onClick={() => selectColor(label, colorImg)}
-                                                            >
-                                                                {colorImg ? (
-                                                                    <img
-                                                                        src={colorImg}
-                                                                        alt={label}
-                                                                        className="h-full w-full rounded-lg object-cover"
-                                                                    />
-                                                                ) : (
-                                                                    <span className="flex h-full w-full items-center justify-center rounded-lg bg-white/5 p-1 text-center text-[11px] font-bold text-gray-300">
-                                                                        {label}
-                                                                    </span>
-                                                                )}
-                                                                {isSelected && (
-                                                                    <span className="absolute bottom-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#cba876] text-black shadow-sm ring-1 ring-black/40">
-                                                                        <Check className="h-2.5 w-2.5 stroke-[3]" />
-                                                                    </span>
-                                                                )}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
+                                                {product.variations.colors.some((c, i) => Boolean(getColorImage(c, i))) ? (
+                                                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                                                        {product.variations.colors.map((color, index) => {
+                                                            const label = getLabel(color) || `Color ${index + 1}`;
+                                                            const colorImg = getColorImage(color, index);
+                                                            const isSelected = selectedColor === label;
+                                                            return (
+                                                                <button
+                                                                    key={label || index}
+                                                                    type="button"
+                                                                    title={label}
+                                                                    className={`group relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-xl border-2 p-0.5 transition-all duration-200 ${
+                                                                        isSelected
+                                                                            ? 'border-[#cba876] ring-2 ring-[#cba876]/30 shadow-md shadow-[#cba876]/20 scale-105'
+                                                                            : 'border-white/10 bg-[#0d0d0d] hover:border-white/30 hover:scale-102'
+                                                                    }`}
+                                                                    onClick={() => selectColor(label, colorImg)}
+                                                                >
+                                                                    {colorImg ? (
+                                                                        <img
+                                                                            src={colorImg}
+                                                                            alt={label}
+                                                                            className="h-full w-full rounded-lg object-cover"
+                                                                        />
+                                                                    ) : (
+                                                                        <span className="flex h-full w-full items-center justify-center rounded-lg bg-white/5 p-1 text-center text-[11px] font-bold text-gray-300">
+                                                                            {label}
+                                                                        </span>
+                                                                    )}
+                                                                    {isSelected && (
+                                                                        <span className="absolute bottom-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#cba876] text-black shadow-sm ring-1 ring-black/40">
+                                                                            <Check className="h-2.5 w-2.5 stroke-[3]" />
+                                                                        </span>
+                                                                    )}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                ) : (
+                                                    <div className="mt-3 flex flex-wrap gap-2">
+                                                        {product.variations.colors.map((color, index) => {
+                                                            const label = getLabel(color);
+                                                            if (!label || !label.trim()) return null;
+                                                            const isSelected = selectedColor === label;
+                                                            return (
+                                                                <button
+                                                                    key={label || index}
+                                                                    type="button"
+                                                                    className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
+                                                                        isSelected
+                                                                            ? 'border-[#cba876] bg-[#cba876] text-black shadow-md shadow-[#cba876]/20'
+                                                                            : 'border-white/10 bg-[#0d0d0d] text-gray-300 hover:border-white/30 hover:text-white'
+                                                                    }`}
+                                                                    onClick={() => selectColor(label, null)}
+                                                                >
+                                                                    <span>{label}</span>
+                                                                    {isSelected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
 
